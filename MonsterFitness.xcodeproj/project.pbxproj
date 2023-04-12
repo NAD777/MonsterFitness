@@ -14,6 +14,7 @@
 		01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2D29E594100012CFE7 /* MonsterFitness.xcdatamodeld */; };
 		01F06D3129E594110012CFE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01F06D3029E594110012CFE7 /* Assets.xcassets */; };
 		01F06D3429E594110012CFE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01F06D3229E594110012CFE7 /* LaunchScreen.storyboard */; };
+		0A5766BE29E6EDEF00648944 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A5766BD29E6EDEF00648944 /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		01F06D3029E594110012CFE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01F06D3329E594110012CFE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		01F06D3529E594110012CFE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0A5766BD29E6EDEF00648944 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 		01F06D2329E594100012CFE7 /* MonsterFitness */ = {
 			isa = PBXGroup;
 			children = (
+				0A5766BC29E6EDD300648944 /* Models */,
 				01F06D2429E594100012CFE7 /* AppDelegate.swift */,
 				01F06D2629E594100012CFE7 /* SceneDelegate.swift */,
 				01F06D2829E594100012CFE7 /* RootViewController.swift */,
@@ -68,6 +71,14 @@
 				0128BC8C29E6D92800321EF8 /* Router.swift */,
 			);
 			path = MonsterFitness;
+			sourceTree = "<group>";
+		};
+		0A5766BC29E6EDD300648944 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0A5766BD29E6EDEF00648944 /* User.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +155,7 @@
 				01F06D2529E594100012CFE7 /* AppDelegate.swift in Sources */,
 				0128BC8D29E6D92800321EF8 /* Router.swift in Sources */,
 				01F06D2729E594100012CFE7 /* SceneDelegate.swift in Sources */,
+				0A5766BE29E6EDEF00648944 /* User.swift in Sources */,
 				01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
