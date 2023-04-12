@@ -12,9 +12,23 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-
+//    var router: Router?
+//    var window: UIWindow?
+//    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+//        // Override point for customization after application launch.
+//        let vc = RootViewController()
+//
+//        window = UIWindow()
+//        window?.rootViewController = vc
+//        window?.makeKeyAndVisible()
+////        application.windows.first?.rootViewController = vc
+//        router = Router(rootViewController: vc)
+//        return true
+//    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
         return true
     }
 
