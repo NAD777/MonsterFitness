@@ -17,11 +17,11 @@ enum Genders{
 struct User{
 
      let name: String
-     var age: Int
-     var weight: Int
-     var height: Int
-     var gender: Genders
-    var target: Int = 2500
+     var age: Int?
+     var weight: Int?
+     var height: Int?
+     var gender: Genders?
+     var target: Int = 2500
 
     
  }
