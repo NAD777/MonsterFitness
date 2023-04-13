@@ -15,6 +15,4 @@ class RootViewController: UIViewController, Routable {
         view.backgroundColor = .red
     }
 
-
 }
-
