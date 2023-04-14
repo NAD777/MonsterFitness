@@ -15,6 +15,7 @@
 		01F06D3129E594110012CFE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01F06D3029E594110012CFE7 /* Assets.xcassets */; };
 		01F06D3429E594110012CFE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01F06D3229E594110012CFE7 /* LaunchScreen.storyboard */; };
 		0A5766FF29E96CBD00648944 /* Models in Resources */ = {isa = PBXBuildFile; fileRef = 0A5766FE29E96CBC00648944 /* Models */; };
+		0A57670129E9872C00648944 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A57670029E9872C00648944 /* ProfileViewController.swift */; };
 		92C7114029E82AAF00A195E1 /* StepCountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C7113F29E82AAF00A195E1 /* StepCountModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,7 @@
 		01F06D3329E594110012CFE7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		01F06D3529E594110012CFE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A5766FE29E96CBC00648944 /* Models */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Models; sourceTree = "<group>"; };
+		0A57670029E9872C00648944 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		92C7113829E6EC2C00A195E1 /* MonsterFitness.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MonsterFitness.entitlements; sourceTree = "<group>"; };
 		92C7113F29E82AAF00A195E1 /* StepCountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepCountModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -74,6 +76,7 @@
 				01F06D3529E594110012CFE7 /* Info.plist */,
 				01F06D2D29E594100012CFE7 /* MonsterFitness.xcdatamodeld */,
 				0128BC8C29E6D92800321EF8 /* Router.swift */,
+				0A57670029E9872C00648944 /* ProfileViewController.swift */,
 			);
 			path = MonsterFitness;
 			sourceTree = "<group>";
@@ -183,6 +186,7 @@
 				92C7114029E82AAF00A195E1 /* StepCountModel.swift in Sources */,
 				01F06D2529E594100012CFE7 /* AppDelegate.swift in Sources */,
 				0128BC8D29E6D92800321EF8 /* Router.swift in Sources */,
+				0A57670129E9872C00648944 /* ProfileViewController.swift in Sources */,
 				01F06D2729E594100012CFE7 /* SceneDelegate.swift in Sources */,
 				01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */,
 			);
