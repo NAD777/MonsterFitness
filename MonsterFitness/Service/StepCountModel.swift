@@ -15,7 +15,7 @@ final class StepCountModel {
 
     private let healthStore = HKHealthStore()
 
-    public func getStepCountForToday(completion: @escaping (Double) -> Void) throws {
+    public func getStepCountForToday(completion: @escaping (Int) -> Void) throws {
         guard let stepQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             throw Errors.unknownError
         }
@@ -28,18 +28,20 @@ final class StepCountModel {
                                       options: .cumulativeSum) { _, result, _ in
 
             guard let result = result, let sum = result.sumQuantity() else {
-                completion(0.0)
+                completion(0)
                 return
             }
-            completion(sum.doubleValue(for: HKUnit.count()))
+            completion(Int(sum.doubleValue(for: HKUnit.count())))
         }
         healthStore.execute(query)
     }
 
     // получаем данные о шагах за прошлый год
-    public func getStepCountsForPreviousYear(completion: @escaping ([Date: Int]) -> Void ) {
+    public func getStepCountsForPreviousYear(completion: @escaping ([Date: Int]) -> Void ) throws {
         let healthStore = HKHealthStore()
-        let stepCountQuantity = HKQuantityType.quantityType(forIdentifier: .stepCount)!
+        guard let stepCountQuantity = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+            throw Errors.unknownError
+        }
         let calendar = Calendar.current
 
         let endDate = Date()
