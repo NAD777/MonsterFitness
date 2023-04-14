@@ -8,7 +8,7 @@
 import Foundation
 import HealthKit
 
-final class StepCountModel: Error {
+final class StepCountModel {
     enum Errors: Error {
         case unknownError
     }
