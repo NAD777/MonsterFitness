@@ -14,8 +14,7 @@ enum Genders{
 }
 
 
-struct User{
-
+struct User {
      let name: String
      var age: Int?
      var weight: Int?
