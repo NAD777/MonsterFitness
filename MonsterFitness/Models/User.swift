@@ -21,6 +21,7 @@ struct User{
      var weight: Int?
      var height: Int?
      var gender: Genders?
+     var target: Int = 2500
 
     
  }
