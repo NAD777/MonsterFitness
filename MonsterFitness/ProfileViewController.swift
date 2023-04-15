@@ -117,19 +117,13 @@ class ProfileViewController: UIViewController {
         
         userView.minus.addAction(UIAction(title: "-", handler: { _ in
             var cnt = Int(self.userView.target.text ?? "0") ?? 0
-            cnt -= 100
-            if cnt < 0 {
-                cnt = 0
-            }
+            cnt = max(cnt - 100, 0)
             self.userView.target.text = String(cnt)
                         }), for: .touchUpInside)
         
         userView.plus.addAction(UIAction(title: "-", handler: { _ in
             var cnt = Int(self.userView.target.text ?? "0") ?? 0
-            cnt += 100
-            if cnt > 50000 {
-                cnt = 50000
-            }
+            cnt = min(cnt + 100, 50000)
             self.userView.target.text = String(cnt)
                         }), for: .touchUpInside)
     }
