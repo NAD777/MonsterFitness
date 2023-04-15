@@ -17,8 +17,11 @@ class GenetareBlock {
         curStack.addArrangedSubview(label)
         curStack.backgroundColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
         curStack.layer.cornerRadius = 14
-        curStack.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        //curStack.widthAnchor.constraint(equalToConstant: 80).isActive = true
         curStack.translatesAutoresizingMaskIntoConstraints = false
+        textfiled.leftAnchor.constraint(equalTo: curStack.leftAnchor, constant: 10).isActive = true
+        label.rightAnchor.constraint(equalTo: curStack.rightAnchor, constant: 10).isActive = true
+        curStack.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return curStack
     }
     init(count: String, placeholder: String, unit: String) {
@@ -28,6 +31,8 @@ class GenetareBlock {
         textfiled.font = UIFont(name: ".default", size: 25)
         label.font = UIFont(name: ".default", size: 25)
         textfiled.layer.contentsGravity = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        textfiled.translatesAutoresizingMaskIntoConstraints = false
 //        label.widthAnchor.constraint(equalToConstant: 60).isActive = true
 //        textfiled.widthAnchor.constraint(equalToConstant: 60).isActive = true
     }
@@ -107,15 +112,25 @@ class ProfileViewController: UIViewController {
         userView.stackForUserInformation2.addArrangedSubview(userView.height?.block ?? UILabel())
         userView.stackForUserInformation2.addArrangedSubview(userView.gender?.block ?? UILabel())
         userView.stack.axis = .vertical
+        userView.stack.layer.cornerRadius = 16
         userView.stack.addArrangedSubview(userView.stackForUserInformation1)
         userView.stack.addArrangedSubview(userView.stackForUserInformation2)
         view.addSubview(userView.stack)
+        userView.stackForUserInformation1.translatesAutoresizingMaskIntoConstraints = false
+        userView.stackForUserInformation2.translatesAutoresizingMaskIntoConstraints = false
         userView.stack.translatesAutoresizingMaskIntoConstraints = false
         userView.stack.topAnchor.constraint(equalTo: userView.name.bottomAnchor, constant: 100).isActive = true
         userView.stack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
         userView.stack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30).isActive = true
         
         userView.stack.backgroundColor = CONFIG.deviderColor
+        
+        userView.stackForUserInformation1.leftAnchor.constraint(equalTo: userView.stack.leftAnchor, constant: 30).isActive = true
+        userView.stackForUserInformation1.rightAnchor.constraint(equalTo: userView.stack.rightAnchor, constant: -30).isActive = true
+        
+        userView.stackForUserInformation2.leftAnchor.constraint(equalTo: userView.stack.leftAnchor, constant: 30).isActive = true
+        userView.stackForUserInformation2.rightAnchor.constraint(equalTo: userView.stack.rightAnchor, constant: -30).isActive = true
+        userView.stackForUserInformation1.topAnchor.constraint(equalTo: userView.stack.topAnchor, constant: 10).isActive = true
         
     }
     
@@ -140,7 +155,7 @@ class ProfileViewController: UIViewController {
         
         userView.stackForButton.leftAnchor.constraint(equalTo: userView.stackForTarget.leftAnchor, constant: 30).isActive = true
         userView.stackForButton.rightAnchor.constraint(equalTo: userView.stackForTarget.rightAnchor, constant: -30).isActive = true
-        userView.stackForButton.bottomAnchor.constraint(equalTo: userView.stackForTarget.bottomAnchor, constant: 30).isActive = true
+
         
         labelTarget.translatesAutoresizingMaskIntoConstraints = false
         labelTarget.leftAnchor.constraint(equalTo: userView.stack.leftAnchor, constant: 0).isActive = true
