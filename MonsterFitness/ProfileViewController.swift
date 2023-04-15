@@ -27,11 +27,11 @@ class GenetareBlock {
         textfiled.text = count
         label.text = unit
         textfiled.placeholder = placeholder
-        textfiled.font = UIFont(name: ".default", size: 25)
-        label.font = UIFont(name: ".default", size: 25)
+        textfiled.font = textfiled.font?.withSize(25)
+        label.font = label.font.withSize(25)
         label.translatesAutoresizingMaskIntoConstraints = false
         textfiled.translatesAutoresizingMaskIntoConstraints = false
-        textfiled.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        textfiled.widthAnchor.constraint(equalToConstant: 55).isActive = true
         textfiled.textAlignment = .natural
     }
     @available(*, unavailable)
@@ -97,7 +97,8 @@ class ProfileViewController: UIViewController {
     
     func settingsName() {
         userView.name.textColor = CONFIG.searchFieldTextColor
-        userView.name.font = UIFont(name: ".default", size: 50)
+        userView.name.placeholder = "Your name"
+        userView.name.font = userView.name.font?.withSize(50)
         view.addSubview(userView.name)
         userView.name.translatesAutoresizingMaskIntoConstraints = false
         userView.name.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
@@ -139,11 +140,11 @@ class ProfileViewController: UIViewController {
     func settingsStackForTarget() {
         let labelTarget = UILabel()
         labelTarget.text = "Your target:"
-        labelTarget.font = UIFont(name: ".default", size: 40)
+        labelTarget.font = labelTarget.font.withSize(25)
         labelTarget.textColor = CONFIG.searchFieldTextColor
         labelTarget.textAlignment = .center
         
-        userView.target.font = UIFont(name: "default", size: 40)
+        userView.target.font = userView.target.font.withSize(25)
         userView.stackForTarget.axis = .vertical
         userView.stackForTarget.addArrangedSubview(labelTarget)
         userView.stackForTarget.addArrangedSubview(userView.stackForButton)
@@ -186,6 +187,7 @@ class ProfileViewController: UIViewController {
             but.layer.cornerRadius = CONFIG.buttonCornerRadius
             but.translatesAutoresizingMaskIntoConstraints = false
             but.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            but.titleLabel?.font = but.titleLabel?.font.withSize(25)
             
         }
         
