@@ -53,13 +53,13 @@ class UserView: UIView {
 
 class ProfileViewController: UIViewController {
     private var userView = UserView()
-    var curUser: User? {
+    var currentUser: User? {
         didSet {
-            userView.name.text = curUser?.name
-            userView.age = GenetareBlock(count: String(curUser?.age ?? 15), placeholder: "age", unit: "y.o.")
-            userView.weight = GenetareBlock(count: String(curUser?.weight ?? 0), placeholder: "weight", unit: "kg")
-            userView.height = GenetareBlock(count: String(curUser?.height ?? 0), placeholder: "height", unit: "cm")
-            switch curUser?.gender {
+            userView.name.text = currentUser?.name
+            userView.age = GenetareBlock(count: String(currentUser?.age ?? 15), placeholder: "age", unit: "y.o.")
+            userView.weight = GenetareBlock(count: String(currentUser?.weight ?? 0), placeholder: "weight", unit: "kg")
+            userView.height = GenetareBlock(count: String(currentUser?.height ?? 0), placeholder: "height", unit: "cm")
+            switch currentUser?.gender {
             case .male:
                 userView.gender = GenetareBlock(count: "male", placeholder: "gender", unit: "")
             case .female:
@@ -67,13 +67,13 @@ class ProfileViewController: UIViewController {
             default:
                 userView.gender = GenetareBlock(count: "strange", placeholder: "gender", unit: "")
             }
-            userView.target.text = String(curUser?.target ?? 0)
+            userView.target.text = String(currentUser?.target ?? 0)
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the viewa
-        curUser = User(name: "Bob", age: 19, weight: 48, height: 198, gender: .male, target: 6600)
+        currentUser = User(name: "Bob", age: 19, weight: 48, height: 198, gender: .male, target: 6600)
         view.backgroundColor = UIColor(red: 0.45, green: 0.45, blue: 0.45, alpha: 1.00)
         userView.stack.axis = .vertical
         userView.stackForUserInformation.addArrangedSubview(userView.age?.block ?? UILabel())
@@ -115,16 +115,16 @@ class ProfileViewController: UIViewController {
         userView.minus.widthAnchor.constraint(equalToConstant: 60).isActive = true
         
         
-        userView.minus.addAction(UIAction(title: "-", handler: { _ in
-            var cnt = Int(self.userView.target.text ?? "0") ?? 0
+        userView.minus.addAction(UIAction(title: "-", handler: { [weak self] _ in
+            var cnt = Int(self?.userView.target.text ?? "0") ?? 0
             cnt = max(cnt - 100, 0)
-            self.userView.target.text = String(cnt)
+            self?.userView.target.text = String(cnt)
                         }), for: .touchUpInside)
         
-        userView.plus.addAction(UIAction(title: "-", handler: { _ in
-            var cnt = Int(self.userView.target.text ?? "0") ?? 0
+        userView.plus.addAction(UIAction(title: "-", handler: { [weak self] _ in
+            var cnt = Int(self?.userView.target.text ?? "0") ?? 0
             cnt = min(cnt + 100, 50000)
-            self.userView.target.text = String(cnt)
+            self?.userView.target.text = String(cnt)
                         }), for: .touchUpInside)
     }
 }
