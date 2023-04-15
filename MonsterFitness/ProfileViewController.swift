@@ -15,26 +15,24 @@ class GenetareBlock {
         let curStack = UIStackView()
         curStack.addArrangedSubview(textfiled)
         curStack.addArrangedSubview(label)
-        curStack.backgroundColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
+        curStack.backgroundColor = CONFIG.buttonBackgroudColor
         curStack.layer.cornerRadius = 14
         //curStack.widthAnchor.constraint(equalToConstant: 80).isActive = true
         curStack.translatesAutoresizingMaskIntoConstraints = false
         textfiled.leftAnchor.constraint(equalTo: curStack.leftAnchor, constant: 10).isActive = true
-        label.rightAnchor.constraint(equalTo: curStack.rightAnchor, constant: 10).isActive = true
         curStack.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return curStack
     }
     init(count: String, placeholder: String, unit: String) {
         textfiled.text = count
         label.text = unit
-        textfiled.placeholder = "Your " + placeholder
+        textfiled.placeholder = placeholder
         textfiled.font = UIFont(name: ".default", size: 25)
         label.font = UIFont(name: ".default", size: 25)
-        textfiled.layer.contentsGravity = .center
         label.translatesAutoresizingMaskIntoConstraints = false
         textfiled.translatesAutoresizingMaskIntoConstraints = false
-//        label.widthAnchor.constraint(equalToConstant: 60).isActive = true
-//        textfiled.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        textfiled.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        textfiled.textAlignment = .natural
     }
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
@@ -49,10 +47,10 @@ class UserView: UIView {
     var stackForButton = UIStackView()
     var stackForTarget = UIStackView()
     var name = UITextField()
-    var age: GenetareBlock?
-    var weight: GenetareBlock?
-    var height: GenetareBlock?
-    var gender: GenetareBlock?
+    var age: GenetareBlock!
+    var weight: GenetareBlock!
+    var height: GenetareBlock!
+    var gender: GenetareBlock!
     var minus = UIButton()
     var plus = UIButton()
     var target = UILabel()
@@ -107,10 +105,10 @@ class ProfileViewController: UIViewController {
     }
     
     func settingsUserInformation() {
-        userView.stackForUserInformation1.addArrangedSubview(userView.age?.block ?? UILabel())
-        userView.stackForUserInformation1.addArrangedSubview(userView.weight?.block ?? UILabel())
-        userView.stackForUserInformation2.addArrangedSubview(userView.height?.block ?? UILabel())
-        userView.stackForUserInformation2.addArrangedSubview(userView.gender?.block ?? UILabel())
+        userView.stackForUserInformation1.addArrangedSubview(userView.age.block)
+        userView.stackForUserInformation1.addArrangedSubview(userView.weight.block)
+        userView.stackForUserInformation2.addArrangedSubview(userView.height.block)
+        userView.stackForUserInformation2.addArrangedSubview(userView.gender.block)
         userView.stack.axis = .vertical
         userView.stack.layer.cornerRadius = 16
         userView.stack.addArrangedSubview(userView.stackForUserInformation1)
@@ -119,18 +117,22 @@ class ProfileViewController: UIViewController {
         userView.stackForUserInformation1.translatesAutoresizingMaskIntoConstraints = false
         userView.stackForUserInformation2.translatesAutoresizingMaskIntoConstraints = false
         userView.stack.translatesAutoresizingMaskIntoConstraints = false
-        userView.stack.topAnchor.constraint(equalTo: userView.name.bottomAnchor, constant: 100).isActive = true
+        userView.stack.topAnchor.constraint(equalTo: userView.name.bottomAnchor, constant: 40).isActive = true
         userView.stack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
         userView.stack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30).isActive = true
         
         userView.stack.backgroundColor = CONFIG.deviderColor
+        userView.stackForUserInformation1.distribution = .fillEqually
+                userView.stackForUserInformation1.spacing = 8.0
         
-        userView.stackForUserInformation1.leftAnchor.constraint(equalTo: userView.stack.leftAnchor, constant: 30).isActive = true
-        userView.stackForUserInformation1.rightAnchor.constraint(equalTo: userView.stack.rightAnchor, constant: -30).isActive = true
+        userView.stackForUserInformation2.distribution = .fillEqually
+                userView.stackForUserInformation2.spacing = 8.0
+        userView.stack.distribution = .fillEqually
+        userView.stackForUserInformation1.layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 4, right: 8)
+        userView.stackForUserInformation1.isLayoutMarginsRelativeArrangement = true
+        userView.stackForUserInformation2.layoutMargins = UIEdgeInsets(top: 4, left: 8, bottom: 8, right: 8)
+        userView.stackForUserInformation2.isLayoutMarginsRelativeArrangement = true
         
-        userView.stackForUserInformation2.leftAnchor.constraint(equalTo: userView.stack.leftAnchor, constant: 30).isActive = true
-        userView.stackForUserInformation2.rightAnchor.constraint(equalTo: userView.stack.rightAnchor, constant: -30).isActive = true
-        userView.stackForUserInformation1.topAnchor.constraint(equalTo: userView.stack.topAnchor, constant: 10).isActive = true
         
     }
     
@@ -140,6 +142,7 @@ class ProfileViewController: UIViewController {
         labelTarget.font = UIFont(name: ".default", size: 40)
         labelTarget.textColor = CONFIG.searchFieldTextColor
         labelTarget.textAlignment = .center
+        
         userView.target.font = UIFont(name: "default", size: 40)
         userView.stackForTarget.axis = .vertical
         userView.stackForTarget.addArrangedSubview(labelTarget)
@@ -148,18 +151,15 @@ class ProfileViewController: UIViewController {
         userView.stackForTarget.translatesAutoresizingMaskIntoConstraints = false
         userView.stackForTarget.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
         userView.stackForTarget.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30).isActive = true
-        userView.stackForTarget.topAnchor.constraint(equalTo: userView.stack.bottomAnchor, constant: 90).isActive = true
+        userView.stackForTarget.topAnchor.constraint(equalTo: userView.stack.bottomAnchor, constant: 40).isActive = true
         userView.stackForTarget.backgroundColor = CONFIG.deviderColor
         userView.stackForTarget.layer.cornerRadius = 16
         userView.stackForButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        userView.stackForButton.leftAnchor.constraint(equalTo: userView.stackForTarget.leftAnchor, constant: 30).isActive = true
-        userView.stackForButton.rightAnchor.constraint(equalTo: userView.stackForTarget.rightAnchor, constant: -30).isActive = true
-
+        userView.stackForButton.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8)
+                userView.stackForButton.isLayoutMarginsRelativeArrangement = true
         
         labelTarget.translatesAutoresizingMaskIntoConstraints = false
-        labelTarget.leftAnchor.constraint(equalTo: userView.stack.leftAnchor, constant: 0).isActive = true
-        labelTarget.rightAnchor.constraint(equalTo: userView.stack.rightAnchor, constant: 0).isActive = true
+        labelTarget.topAnchor.constraint(equalTo: userView.stackForTarget.topAnchor, constant: 8).isActive = true
     }
     
     func settingsButtons() {
@@ -185,18 +185,9 @@ class ProfileViewController: UIViewController {
             but.backgroundColor = CONFIG.buttonBackgroudColor
             but.layer.cornerRadius = CONFIG.buttonCornerRadius
             but.translatesAutoresizingMaskIntoConstraints = false
-            but.widthAnchor.constraint(equalToConstant: 60).isActive = true
+            but.widthAnchor.constraint(equalToConstant: 80).isActive = true
             
         }
-//
-//        userView.minus.backgroundColor = CONFIG.buttonBackgroudColor
-//        userView.plus.backgroundColor = CONFIG.buttonBackgroudColor
-//        userView.minus.layer.borderColor = CONFIG.buttonBorderColor
-//        userView.minus.setTitleColor(CONFIG.buttonTextColor, for: .normal)
-//        userView.plus.setTitleColor(CONFIG.buttonTextColor, for: .normal)
-//        userView.plus.layer.borderColor = CONFIG.buttonBorderColor
-//        userView.minus.layer.cornerRadius = CONFIG.buttonCornerRadius
-//        userView.plus.layer.cornerRadius = CONFIG.buttonCornerRadius
         
     }
 }
