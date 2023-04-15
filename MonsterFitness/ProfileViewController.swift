@@ -21,16 +21,15 @@ class GenetareBlock {
         curStack.translatesAutoresizingMaskIntoConstraints = false
         return curStack
     }
-    init(cnt: String, placeholder: String, str: String) {
-        textfiled.text = String(cnt)
-        label.text = str
+    init(count: String, placeholder: String, unit: String) {
+        textfiled.text = count
+        label.text = unit
         textfiled.placeholder = "Your " + placeholder
         textfiled.font = UIFont(name: ".default", size: 25)
         label.font = UIFont(name: ".default", size: 25)
         textfiled.layer.contentsGravity = .center
 //        label.widthAnchor.constraint(equalToConstant: 60).isActive = true
 //        textfiled.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        print(cnt)
     }
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
@@ -57,16 +56,16 @@ class ProfileViewController: UIViewController {
     var curUser: User? {
         didSet {
             userView.name.text = curUser?.name
-            userView.age = GenetareBlock(cnt: String(curUser?.age ?? 15), placeholder: "age", str: "y.o.")
-            userView.weight = GenetareBlock(cnt: String(curUser?.weight ?? 0), placeholder: "weight", str: "kg")
-            userView.height = GenetareBlock(cnt: String(curUser?.height ?? 0), placeholder: "height", str: "cm")
+            userView.age = GenetareBlock(count: String(curUser?.age ?? 15), placeholder: "age", unit: "y.o.")
+            userView.weight = GenetareBlock(count: String(curUser?.weight ?? 0), placeholder: "weight", unit: "kg")
+            userView.height = GenetareBlock(count: String(curUser?.height ?? 0), placeholder: "height", unit: "cm")
             switch curUser?.gender {
             case .male:
-                userView.gender = GenetareBlock(cnt: "male", placeholder: "gender", str: "")
+                userView.gender = GenetareBlock(count: "male", placeholder: "gender", unit: "")
             case .female:
-                userView.gender = GenetareBlock(cnt: "female", placeholder: "gender", str: "")
+                userView.gender = GenetareBlock(count: "female", placeholder: "gender", unit: "")
             default:
-                userView.gender = GenetareBlock(cnt: "strange", placeholder: "gender", str: "")
+                userView.gender = GenetareBlock(count: "strange", placeholder: "gender", unit: "")
             }
             userView.target.text = String(curUser?.target ?? 0)
         }
