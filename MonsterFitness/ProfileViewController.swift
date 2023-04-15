@@ -86,8 +86,6 @@ class ProfileViewController: UIViewController {
         userView.target.textAlignment = .center
         userView.stackForButton.addArrangedSubview(userView.target)
         userView.stackForButton.addArrangedSubview(userView.plus)
-        userView.stack.addArrangedSubview(userView.stackForButton)
-        userView.stackForButton.centerXAnchor.constraint(equalTo: userView.stack.centerXAnchor).isActive = true
         self.settingsName()
         self.settingsUserInformation()
         self.settingsButtons()
@@ -138,20 +136,20 @@ class ProfileViewController: UIViewController {
         userView.stackForTarget.topAnchor.constraint(equalTo: userView.stack.bottomAnchor, constant: 90).isActive = true
         userView.stackForTarget.backgroundColor = CONFIG.deviderColor
         userView.stackForTarget.layer.cornerRadius = 16
+        userView.stackForButton.translatesAutoresizingMaskIntoConstraints = false
         
         userView.stackForButton.leftAnchor.constraint(equalTo: userView.stackForTarget.leftAnchor, constant: 30).isActive = true
         userView.stackForButton.rightAnchor.constraint(equalTo: userView.stackForTarget.rightAnchor, constant: -30).isActive = true
-        userView.stackForButton.bottomAnchor.constraint(equalTo: userView.stackForTarget.bottomAnchor, constant: -30).isActive = true
+        userView.stackForButton.bottomAnchor.constraint(equalTo: userView.stackForTarget.bottomAnchor, constant: 30).isActive = true
+        
+        labelTarget.translatesAutoresizingMaskIntoConstraints = false
+        labelTarget.leftAnchor.constraint(equalTo: userView.stack.leftAnchor, constant: 0).isActive = true
+        labelTarget.rightAnchor.constraint(equalTo: userView.stack.rightAnchor, constant: 0).isActive = true
     }
     
     func settingsButtons() {
         userView.minus.setTitle("-", for: .normal)
         userView.plus.setTitle("+", for: .normal)
-        userView.plus.layer.cornerRadius = 10
-        userView.minus.translatesAutoresizingMaskIntoConstraints = false
-        userView.plus.translatesAutoresizingMaskIntoConstraints = false
-        userView.plus.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        userView.minus.widthAnchor.constraint(equalToConstant: 60).isActive = true
         
         
         userView.minus.addAction(UIAction(title: "-", handler: { [weak self] _ in
@@ -171,6 +169,8 @@ class ProfileViewController: UIViewController {
             but.setTitleColor(CONFIG.buttonTextColor, for: .normal)
             but.backgroundColor = CONFIG.buttonBackgroudColor
             but.layer.cornerRadius = CONFIG.buttonCornerRadius
+            but.translatesAutoresizingMaskIntoConstraints = false
+            but.widthAnchor.constraint(equalToConstant: 60).isActive = true
             
         }
 //
