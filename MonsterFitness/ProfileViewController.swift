@@ -15,21 +15,24 @@ class GenetareBlock {
         let curStack = UIStackView()
         curStack.addArrangedSubview(textfiled)
         curStack.addArrangedSubview(label)
-        curStack.backgroundColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
+        curStack.backgroundColor = CONFIG.buttonBackgroudColor
         curStack.layer.cornerRadius = 14
-        curStack.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        //curStack.widthAnchor.constraint(equalToConstant: 80).isActive = true
         curStack.translatesAutoresizingMaskIntoConstraints = false
+        textfiled.leftAnchor.constraint(equalTo: curStack.leftAnchor, constant: 10).isActive = true
+        curStack.heightAnchor.constraint(equalToConstant: 40).isActive = true
         return curStack
     }
     init(count: String, placeholder: String, unit: String) {
         textfiled.text = count
         label.text = unit
-        textfiled.placeholder = "Your " + placeholder
-        textfiled.font = UIFont(name: ".default", size: 25)
-        label.font = UIFont(name: ".default", size: 25)
-        textfiled.layer.contentsGravity = .center
-//        label.widthAnchor.constraint(equalToConstant: 60).isActive = true
-//        textfiled.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        textfiled.placeholder = placeholder
+        textfiled.font = textfiled.font?.withSize(25)
+        label.font = label.font.withSize(25)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        textfiled.translatesAutoresizingMaskIntoConstraints = false
+        textfiled.widthAnchor.constraint(equalToConstant: 55).isActive = true
+        textfiled.textAlignment = .natural
     }
     @available(*, unavailable)
     required init?(coder _: NSCoder) {
@@ -39,13 +42,15 @@ class GenetareBlock {
 
 class UserView: UIView {
     var stack = UIStackView()
-    var stackForUserInformation = UIStackView()
+    var stackForUserInformation1 = UIStackView()
+    var stackForUserInformation2 = UIStackView()
     var stackForButton = UIStackView()
+    var stackForTarget = UIStackView()
     var name = UITextField()
-    var age: GenetareBlock?
-    var weight: GenetareBlock?
-    var height: GenetareBlock?
-    var gender: GenetareBlock?
+    var age: GenetareBlock!
+    var weight: GenetareBlock!
+    var height: GenetareBlock!
+    var gender: GenetareBlock!
     var minus = UIButton()
     var plus = UIButton()
     var target = UILabel()
@@ -71,48 +76,96 @@ class ProfileViewController: UIViewController {
         }
     }
     override func viewDidLoad() {
+        //navigationItem.
+        
         super.viewDidLoad()
+        view.overrideUserInterfaceStyle = .dark
         // Do any additional setup after loading the viewa
         currentUser = User(name: "Bob", age: 19, weight: 48, height: 198, gender: .male, target: 6600)
-        view.backgroundColor = UIColor(red: 0.45, green: 0.45, blue: 0.45, alpha: 1.00)
+        view.backgroundColor = CONFIG.backgroundColor
         userView.stack.axis = .vertical
-        userView.stackForUserInformation.addArrangedSubview(userView.age?.block ?? UILabel())
-        userView.stackForUserInformation.addArrangedSubview(userView.weight?.block ?? UILabel())
-        userView.stackForUserInformation.addArrangedSubview(userView.height?.block ?? UILabel())
-        userView.stackForUserInformation.addArrangedSubview(userView.gender?.block ?? UILabel())
-        userView.stack.axis = .vertical
-        userView.stack.addArrangedSubview(userView.name)
-        userView.stack.addArrangedSubview(userView.stackForUserInformation)
-        userView.name.font = UIFont(name: ".defaul", size: 50)
-        userView.target.font = UIFont(name: ".defaul", size: 50)
-        view.addSubview(userView.stack)
-        userView.stack.translatesAutoresizingMaskIntoConstraints = false
-        userView.stack.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        userView.stack.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -200).isActive = true
-        userView.stack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
-        let labelTarget = UILabel()
-        labelTarget.text = "Your target:"
-        labelTarget.font = UIFont(name: ".defaul", size: 50)
-        userView.stack.addArrangedSubview(labelTarget)
+    
         userView.stackForButton.addArrangedSubview(userView.minus)
         userView.target.textAlignment = .center
         userView.stackForButton.addArrangedSubview(userView.target)
         userView.stackForButton.addArrangedSubview(userView.plus)
-        userView.stack.addArrangedSubview(userView.stackForButton)
-        userView.stackForButton.centerXAnchor.constraint(equalTo: userView.stack.centerXAnchor).isActive = true
+        self.settingsName()
+        self.settingsUserInformation()
         self.settingsButtons()
+        self.settingsStackForTarget()
     }
+    
+    func settingsName() {
+        userView.name.textColor = CONFIG.searchFieldTextColor
+        userView.name.placeholder = "Your name"
+        userView.name.font = userView.name.font?.withSize(50)
+        view.addSubview(userView.name)
+        userView.name.translatesAutoresizingMaskIntoConstraints = false
+        userView.name.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
+        userView.name.topAnchor.constraint(equalTo: view.topAnchor, constant: 100).isActive = true
+    }
+    
+    func settingsUserInformation() {
+        userView.stackForUserInformation1.addArrangedSubview(userView.age.block)
+        userView.stackForUserInformation1.addArrangedSubview(userView.weight.block)
+        userView.stackForUserInformation2.addArrangedSubview(userView.height.block)
+        userView.stackForUserInformation2.addArrangedSubview(userView.gender.block)
+        userView.stack.axis = .vertical
+        userView.stack.layer.cornerRadius = 16
+        userView.stack.addArrangedSubview(userView.stackForUserInformation1)
+        userView.stack.addArrangedSubview(userView.stackForUserInformation2)
+        view.addSubview(userView.stack)
+        userView.stackForUserInformation1.translatesAutoresizingMaskIntoConstraints = false
+        userView.stackForUserInformation2.translatesAutoresizingMaskIntoConstraints = false
+        userView.stack.translatesAutoresizingMaskIntoConstraints = false
+        userView.stack.topAnchor.constraint(equalTo: userView.name.bottomAnchor, constant: 40).isActive = true
+        userView.stack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
+        userView.stack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30).isActive = true
+        
+        userView.stack.backgroundColor = CONFIG.deviderColor
+        userView.stackForUserInformation1.distribution = .fillEqually
+                userView.stackForUserInformation1.spacing = 8.0
+        
+        userView.stackForUserInformation2.distribution = .fillEqually
+                userView.stackForUserInformation2.spacing = 8.0
+        userView.stack.distribution = .fillEqually
+        userView.stackForUserInformation1.layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 4, right: 8)
+        userView.stackForUserInformation1.isLayoutMarginsRelativeArrangement = true
+        userView.stackForUserInformation2.layoutMargins = UIEdgeInsets(top: 4, left: 8, bottom: 8, right: 8)
+        userView.stackForUserInformation2.isLayoutMarginsRelativeArrangement = true
+        
+        
+    }
+    
+    func settingsStackForTarget() {
+        let labelTarget = UILabel()
+        labelTarget.text = "Your target:"
+        labelTarget.font = labelTarget.font.withSize(25)
+        labelTarget.textColor = CONFIG.searchFieldTextColor
+        labelTarget.textAlignment = .center
+        
+        userView.target.font = userView.target.font.withSize(25)
+        userView.stackForTarget.axis = .vertical
+        userView.stackForTarget.addArrangedSubview(labelTarget)
+        userView.stackForTarget.addArrangedSubview(userView.stackForButton)
+        view.addSubview(userView.stackForTarget)
+        userView.stackForTarget.translatesAutoresizingMaskIntoConstraints = false
+        userView.stackForTarget.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
+        userView.stackForTarget.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -30).isActive = true
+        userView.stackForTarget.topAnchor.constraint(equalTo: userView.stack.bottomAnchor, constant: 40).isActive = true
+        userView.stackForTarget.backgroundColor = CONFIG.deviderColor
+        userView.stackForTarget.layer.cornerRadius = 16
+        userView.stackForButton.translatesAutoresizingMaskIntoConstraints = false
+        userView.stackForButton.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8)
+                userView.stackForButton.isLayoutMarginsRelativeArrangement = true
+        
+        labelTarget.translatesAutoresizingMaskIntoConstraints = false
+        labelTarget.topAnchor.constraint(equalTo: userView.stackForTarget.topAnchor, constant: 8).isActive = true
+    }
+    
     func settingsButtons() {
         userView.minus.setTitle("-", for: .normal)
         userView.plus.setTitle("+", for: .normal)
-        userView.minus.backgroundColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
-        userView.minus.layer.cornerRadius = 10
-        userView.plus.backgroundColor = UIColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
-        userView.plus.layer.cornerRadius = 10
-        userView.minus.translatesAutoresizingMaskIntoConstraints = false
-        userView.plus.translatesAutoresizingMaskIntoConstraints = false
-        userView.plus.widthAnchor.constraint(equalToConstant: 60).isActive = true
-        userView.minus.widthAnchor.constraint(equalToConstant: 60).isActive = true
         
         
         userView.minus.addAction(UIAction(title: "-", handler: { [weak self] _ in
@@ -126,5 +179,44 @@ class ProfileViewController: UIViewController {
             cnt = min(cnt + 100, 50000)
             self?.userView.target.text = String(cnt)
                         }), for: .touchUpInside)
+        
+        let buttons = [userView.minus, userView.plus]
+        for but in buttons {
+            but.setTitleColor(CONFIG.buttonTextColor, for: .normal)
+            but.backgroundColor = CONFIG.buttonBackgroudColor
+            but.layer.cornerRadius = CONFIG.buttonCornerRadius
+            but.translatesAutoresizingMaskIntoConstraints = false
+            but.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            but.titleLabel?.font = but.titleLabel?.font.withSize(25)
+            
+        }
+        
     }
+}
+
+struct CONFIG {
+    static let backgroundColor: UIColor = UIColor(red: 13 / 255, green: 13 / 255, blue: 13 / 255, alpha: 1)
+    static let deviderColor: UIColor = UIColor(red: 40 / 255, green: 40 / 255, blue: 40 / 255, alpha: 1)
+    static let buttonBackgroudColor: UIColor = UIColor(red: 30 / 255,
+                                                       green: 30 / 255,
+                                                       blue: 30 / 255, alpha: 1)
+    static let buttonTextColor: UIColor = .white
+    static let buttonBorderColor: CGColor = CGColor(gray: 0.3, alpha: 1)
+    static let buttonBorderWidth: CGFloat = 1
+    static let buttonCornerRadius: CGFloat = 16
+    static let colorInactiveButton: CGFloat = 16
+
+    static let spacingBetweenElementsInPicker: CGFloat = 5
+    static let pikerButtonsShadowOpacity: Float = 0.6
+    static let pikerButtonsColor: CGColor = CGColor(red: 137 / 255,
+                                                    green: 143 / 255,
+                                                    blue: 85 / 255, alpha: 1)
+    static let pikerButtonTextColorInactive: UIColor = UIColor(red: 90 / 255,
+                                                    green: 90 / 255,
+                                                    blue: 90 / 255, alpha: 1)
+
+    static let segmentSelectedColor: UIColor = .systemGreen
+
+    static let searchFieldTextColor: UIColor = .white
+
 }
