@@ -21,7 +21,7 @@ class Router {
 //        openFood()
 //        openWeight()
         let homeScreenViewController = HomeScreenViewController()
-        homeScreenViewController.bus = HomeScreenViewController.Model { [weak self] in
+        homeScreenViewController.bus = .init { [weak self] in
             self?.openFood()
         }
         let loggedIn = defaults.integer(forKey: "LoggedIn")
