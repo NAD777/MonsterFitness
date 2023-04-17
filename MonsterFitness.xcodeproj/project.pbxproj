@@ -16,6 +16,7 @@
 		01F06D3429E594110012CFE7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01F06D3229E594110012CFE7 /* LaunchScreen.storyboard */; };
 		0A57670129E9872C00648944 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A57670029E9872C00648944 /* ProfileViewController.swift */; };
 		0A57670529E990F100648944 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A57670429E990F100648944 /* User.swift */; };
+		0AD16D6329ED643700432C2D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AD16D6229ED643700432C2D /* UserProfile.swift */; };
 		92C7114029E82AAF00A195E1 /* StepCountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C7113F29E82AAF00A195E1 /* StepCountModel.swift */; };
 		C3A6AE0029EAA6F900E230BF /* CalendarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A6ADFF29EAA6F900E230BF /* CalendarController.swift */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,7 @@
 		01F06D3529E594110012CFE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0A57670029E9872C00648944 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		0A57670429E990F100648944 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		0AD16D6229ED643700432C2D /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		92C7113829E6EC2C00A195E1 /* MonsterFitness.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MonsterFitness.entitlements; sourceTree = "<group>"; };
 		92C7113F29E82AAF00A195E1 /* StepCountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepCountModel.swift; sourceTree = "<group>"; };
 		C3A6ADFF29EAA6F900E230BF /* CalendarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarController.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 		01F06D2329E594100012CFE7 /* MonsterFitness */ = {
 			isa = PBXGroup;
 			children = (
+				0AD16D6129ED63F600432C2D /* Data */,
 				92C7113A29E81C4F00A195E1 /* Service */,
 				92C7113829E6EC2C00A195E1 /* MonsterFitness.entitlements */,
 				01F06D2429E594100012CFE7 /* AppDelegate.swift */,
@@ -90,6 +93,14 @@
 				0A57670429E990F100648944 /* User.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		0AD16D6129ED63F600432C2D /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				0AD16D6229ED643700432C2D /* UserProfile.swift */,
+			);
+			path = Data;
 			sourceTree = "<group>";
 		};
 		92C7113A29E81C4F00A195E1 /* Service */ = {
@@ -202,6 +213,7 @@
 			files = (
 				01F06D2929E594100012CFE7 /* RootViewController.swift in Sources */,
 				92C7114029E82AAF00A195E1 /* StepCountModel.swift in Sources */,
+				0AD16D6329ED643700432C2D /* UserProfile.swift in Sources */,
 				01F06D2529E594100012CFE7 /* AppDelegate.swift in Sources */,
 				0128BC8D29E6D92800321EF8 /* Router.swift in Sources */,
 				0A57670529E990F100648944 /* User.swift in Sources */,
