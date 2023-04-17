@@ -36,7 +36,7 @@ class Router {
 
     func openFood() {
         let foodScreenViewController: FoodViewController = .init()
-        foodScreenViewController.bus = .init() { [weak self] in
+        foodScreenViewController.bus = .init { [weak self] in
             print(foodScreenViewController.bus?.output ?? "NONE")
             self?.rootViewController.popViewController(animated: true)
         }

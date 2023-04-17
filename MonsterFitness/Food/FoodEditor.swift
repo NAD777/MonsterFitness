@@ -120,7 +120,9 @@ class FoodEditor: UIViewController {
         favButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         favButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         let starFillConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .bold, scale: .large)
-        let starFill = UIImage(systemName: "star.fill", withConfiguration: starFillConfig)?.withTintColor(BrandConfig.segmentSelectedColor, renderingMode: .alwaysOriginal)
+        let starFill = UIImage(systemName: "star.fill", withConfiguration:
+                                starFillConfig)?.withTintColor(BrandConfig.segmentSelectedColor,
+                                                               renderingMode: .alwaysOriginal)
 
         favButton.setImage(starFill, for: .normal)
 //        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
@@ -143,12 +145,13 @@ class FoodEditor: UIViewController {
 
     // search field adder
     func setUpWeightPicker() {
-        var weightFieldHolder = UIView()
+        let weightFieldHolder = UIView()
         view.addSubview(weightFieldHolder)
         weightFieldHolder.translatesAutoresizingMaskIntoConstraints = false
         weightFieldHolder.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
         weightFieldHolder.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        weightFieldHolder.topAnchor.constraint(equalTo: mealPartSeparetedControl.bottomAnchor, constant: 15).isActive = true
+        weightFieldHolder.topAnchor.constraint(equalTo: mealPartSeparetedControl.bottomAnchor,
+                                               constant: 15).isActive = true
         weightFieldHolder.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
         weightFieldHolder.backgroundColor = BrandConfig.secondaryBackgroudColor
         weightFieldHolder.layer.borderWidth = BrandConfig.borderWidth
@@ -181,7 +184,7 @@ class FoodEditor: UIViewController {
             [NSAttributedString.Key.foregroundColor: UIColor.white,
                 NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Light", size: 20)!]
         navigationController?.navigationBar.prefersLargeTitles = true
-        
+
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
         navigationItem.rightBarButtonItem = addButton
         navigationItem.rightBarButtonItem?.tintColor = BrandConfig.segmentSelectedColor
@@ -222,8 +225,7 @@ extension FoodEditor: UITextFieldDelegate {
         if textField === weightField {
             textField.endEditing(true)
             let weightEnter = WeightEnterViewController()
-            weightEnter.bus = WeightEnterViewController.Model.init(weight: textField.text ?? "0") {
-                [weak self] value in
+            weightEnter.bus = .init(weight: textField.text ?? "0") { [weak self] value in
                 self?.weightField.text = "\(value)"
                 self?.bus?.output?.weight = Int(value)
                 self?.navigationController?.popViewController(animated: true)
@@ -254,7 +256,7 @@ class InfoCell: UITableViewCell {
 //        stackHolder.backgroundColor = BrandConfig.backgroundColor
 //        stackHolder.layer.borderColor = BrandConfig.borderColor
 //        stackHolder.layer.borderWidth = BrandConfig.borderWidth
-        
+
         NSLayoutConstraint.activate([
             stackHolder.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             stackHolder.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
@@ -281,7 +283,7 @@ class InfoCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
-    
+
     func setDishInfo (_ dishInfo: FoodEditor.DishInfo) {
         title.text = dishInfo.name
         detailsLabel.text = "\(dishInfo.value) g"
