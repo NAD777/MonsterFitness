@@ -12,7 +12,7 @@ class RootViewController: UIViewController, Routable {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the viewa
-        view.backgroundColor = .red
+        view.backgroundColor = .green
     }
 
 }
