@@ -7,12 +7,12 @@
 
 import Foundation
 
-class Dish {
-    var title: String
-    var kcal: Double
-    var prot: Double
-    var fat: Double
-    var carb: Double
+struct Dish {
+    let title: String
+    let kcal: Double
+    let prot: Double
+    let fat: Double
+    let carb: Double
 
     init(title: String, kcal: Double, prot: Double, fat: Double, carb: Double) {
         self.title = title
@@ -20,9 +20,5 @@ class Dish {
         self.prot = prot
         self.fat = fat
         self.carb = carb
-    }
-
-    convenience init(title: String, kcal: Double) {
-        self.init(title: title, kcal: kcal, prot: 0, fat: 0, carb: 0)
     }
 }

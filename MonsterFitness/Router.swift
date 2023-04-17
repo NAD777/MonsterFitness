@@ -8,17 +8,18 @@
 import Foundation
 import UIKit
 
-
 class Router {
     let defaults = UserDefaults.standard
 
-    var rootViewController: RootViewController
+    let rootViewController: RootViewController
 
     init(rootViewController: RootViewController) {
         self.rootViewController = rootViewController
     }
 
     func start() {
+//        openFood()
+//        openWeight()
         let homeScreenViewController = HomeScreenViewController()
         homeScreenViewController.bus = HomeScreenViewController.Model { [weak self] in
             self?.openFood()
@@ -34,11 +35,20 @@ class Router {
     }
 
     func openFood() {
-        let foodScreenViewController = FoodViewController()
-        foodScreenViewController.bus = FoodViewController.Model { [weak self] in
+        let foodScreenViewController: FoodViewController = .init()
+        foodScreenViewController.bus = .init() { [weak self] in
             print(foodScreenViewController.bus?.output ?? "NONE")
             self?.rootViewController.popViewController(animated: true)
         }
+        rootViewController.pushViewController(foodScreenViewController, animated: true)
+    }
+
+    func openWeight() {
+        let foodScreenViewController = WeightEnterViewController()
+//        foodScreenViewController.bus = FoodViewController.Model { [weak self] in
+//            print(foodScreenViewController.bus?.output ?? "NONE")
+//            self?.rootViewController.popViewController(animated: true)
+//        }
         rootViewController.pushViewController(foodScreenViewController, animated: true)
     }
 }

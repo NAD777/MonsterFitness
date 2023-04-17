@@ -8,13 +8,14 @@
 import UIKit
 
 // Configutaions for colors and text
-private struct CONFIG {
-    static let backgroundColor: UIColor = UIColor(red: 13 / 255, green: 13 / 255, blue: 13 / 255, alpha: 1)
-    static let deviderColor: UIColor = UIColor(red: 40 / 255, green: 40 / 255, blue: 40 / 255, alpha: 1)
+public struct BrandConfig {
+    static let backgroundColor = UIColor(red: 13 / 255, green: 13 / 255, blue: 13 / 255, alpha: 1)
+
+    static let deviderColor = UIColor(red: 40 / 255, green: 40 / 255, blue: 40 / 255, alpha: 1)
     static let secondaryBackgroudColor: UIColor = UIColor(red: 30 / 255,
                                                           green: 30 / 255,
                                                           blue: 30 / 255, alpha: 1)
-    static let borderColor: CGColor = CGColor(gray: 0.3, alpha: 1)
+    static let borderColor = CGColor(gray: 0.3, alpha: 1)
     static let borderWidth: CGFloat = 1
     static let cornerRadius: CGFloat = 16
 
@@ -23,6 +24,8 @@ private struct CONFIG {
     static let searchFieldTextColor: UIColor = .white
     static let segmentNotSelectedTextColor: UIColor = .white
     static let segmentSelectedTextColor: UIColor = .black
+    
+    static let cellTitleFontSize: CGFloat = 23
 
     static let titleFirstSegment = "Search"
     static let titleSecondSegment = "Favourites"
@@ -47,21 +50,42 @@ class FoodViewController: UIViewController {
         var onExit: () -> Void
         var output: OutputData?
     }
+    struct DishesLists {
+        var searchDishes: [Dish]?
+        var favouritesDishes: [Dish]?
+        var canDelete = false
+        var content: [Dish]? {
+            get {
+                (canDelete ? favouritesDishes: searchDishes)
+            }
+            set {
+                if canDelete {
+                    favouritesDishes = newValue
+                } else {
+                    searchDishes = newValue
+                }
+            }
+        }
+        var count: Int {
+            (canDelete ? favouritesDishes: searchDishes)?.count ?? 0
+        }
+    }
 
     var bus: Model?
-    var textField: UITextField!
-    var pickerSegmentedControl: UISegmentedControl!
-    var searchField: UITextField!
-    var tableOfContent: UITableView!
-    var devider: UIView!
-    var searchPlaceHolder: UIView!
-    var searchButton: UIButton!
+    private lazy var textField = UITextField()
+    private lazy var pickerSegmentedControl = UISegmentedControl()
+    private lazy var searchField = UITextField()
+    private lazy var tableOfContent = UITableView()
+    private lazy var         divider = UIView()
+    private lazy var searchPlaceHolder = UIView()
+    private lazy var searchButton = UIButton()
+    private lazy var dishesList = DishesLists()
 
     // MARK: sample data
     var dishes = [
-        Dish(title: "Egg", kcal: 100),
-        Dish(title: "Meat ball", kcal: 300),
-        Dish(title: "Porridge", kcal: 100)
+        Dish(title: "Egg", kcal: 100, prot: 0, fat: 0, carb: 0),
+        Dish(title: "Meat ball", kcal: 300, prot: 0, fat: 0, carb: 0),
+        Dish(title: "Porridge", kcal: 100, prot: 0, fat: 0, carb: 0)
     ]
 
     override func viewDidLoad() {
@@ -69,19 +93,33 @@ class FoodViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         setUpUI()
+        dishesList.favouritesDishes = dishes
+    }
+    
+    // creates the whole UI
+    func setUpUI () {
+        view.backgroundColor = BrandConfig.backgroundColor
+        navigationItem.title = BrandConfig.navigationTitleText
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+
+        setUpDivider()
+        setUpPicker()
+        setUpSearchField()
+        setUpSearchButton()
+        setUpTable()
     }
 
     // devider under the navigation bar text
-    func setUpDevider() {
-        devider = UIView()
-        devider.backgroundColor = CONFIG.deviderColor
-        view.addSubview(devider)
-        devider.translatesAutoresizingMaskIntoConstraints = false
-        devider.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
-        devider.heightAnchor.constraint(equalToConstant: 2).isActive = true
-        devider.layer.cornerRadius = 2
-        devider.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
-        devider.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
+    func setUpDivider() {
+        divider = UIView()
+        divider.backgroundColor = BrandConfig.deviderColor
+        view.addSubview(divider)
+        divider.translatesAutoresizingMaskIntoConstraints = false
+        divider.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
+        divider.heightAnchor.constraint(equalToConstant: 2).isActive = true
+        divider.layer.cornerRadius = 2
+        divider.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
+        divider.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
     }
 
     // buttons for pick categories
@@ -91,20 +129,20 @@ class FoodViewController: UIViewController {
         pickerSegmentedControl.translatesAutoresizingMaskIntoConstraints = false
         pickerSegmentedControl.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
         pickerSegmentedControl.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        pickerSegmentedControl.topAnchor.constraint(equalTo: devider.bottomAnchor, constant: 20).isActive = true
+        pickerSegmentedControl.topAnchor.constraint(equalTo:         divider.bottomAnchor, constant: 20).isActive = true
         pickerSegmentedControl.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
 
-        pickerSegmentedControl.insertSegment(withTitle: CONFIG.titleFirstSegment, at: 0, animated: false)
-        pickerSegmentedControl.insertSegment(withTitle: CONFIG.titleSecondSegment, at: 1, animated: false)
+        pickerSegmentedControl.insertSegment(withTitle: BrandConfig.titleFirstSegment, at: 0, animated: false)
+        pickerSegmentedControl.insertSegment(withTitle: BrandConfig.titleSecondSegment, at: 1, animated: false)
         pickerSegmentedControl.selectedSegmentIndex = 0
-        pickerSegmentedControl.selectedSegmentTintColor = CONFIG.segmentSelectedColor
-        let segmentNotSelected = [NSAttributedString.Key.foregroundColor: CONFIG.segmentNotSelectedTextColor]
+        pickerSegmentedControl.selectedSegmentTintColor = BrandConfig.segmentSelectedColor
+        let segmentNotSelected = [NSAttributedString.Key.foregroundColor: BrandConfig.segmentNotSelectedTextColor]
         pickerSegmentedControl.setTitleTextAttributes(segmentNotSelected, for: .normal)
 
-        let segmentSelected = [NSAttributedString.Key.foregroundColor: CONFIG.segmentSelectedTextColor]
+        let segmentSelected = [NSAttributedString.Key.foregroundColor: BrandConfig.segmentSelectedTextColor]
         pickerSegmentedControl.setTitleTextAttributes(segmentSelected, for: .selected)
 
-        pickerSegmentedControl.addTarget(self, action: #selector(changeColor), for: .valueChanged)
+        pickerSegmentedControl.addTarget(self, action: #selector(changeDishesList), for: .valueChanged)
     }
 
     // search field adder
@@ -116,10 +154,10 @@ class FoodViewController: UIViewController {
         searchPlaceHolder.heightAnchor.constraint(equalToConstant: 40).isActive = true
         searchPlaceHolder.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
         searchPlaceHolder.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
-        searchPlaceHolder.backgroundColor = CONFIG.secondaryBackgroudColor
-        searchPlaceHolder.layer.borderWidth = CONFIG.borderWidth
-        searchPlaceHolder.layer.borderColor = CONFIG.borderColor
-        searchPlaceHolder.layer.cornerRadius = CONFIG.cornerRadius
+        searchPlaceHolder.backgroundColor = BrandConfig.secondaryBackgroudColor
+        searchPlaceHolder.layer.borderWidth = BrandConfig.borderWidth
+        searchPlaceHolder.layer.borderColor = BrandConfig.borderColor
+        searchPlaceHolder.layer.cornerRadius = BrandConfig.cornerRadius
 
         searchField = UITextField()
         searchPlaceHolder.addSubview(searchField)
@@ -128,7 +166,8 @@ class FoodViewController: UIViewController {
         searchField.trailingAnchor.constraint(equalTo: searchPlaceHolder.trailingAnchor, constant: -10).isActive = true
         searchField.topAnchor.constraint(equalTo: searchPlaceHolder.topAnchor).isActive = true
         searchField.bottomAnchor.constraint(equalTo: searchPlaceHolder.bottomAnchor).isActive = true
-        searchField.textColor = CONFIG.searchFieldTextColor
+        searchField.textColor = BrandConfig.searchFieldTextColor
+        searchField.placeholder = "IOS "
         searchField.attributedPlaceholder = NSAttributedString(
             string: "Search",
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
@@ -144,11 +183,11 @@ class FoodViewController: UIViewController {
         searchButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         searchButton.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
         searchButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        searchButton.layer.borderWidth = CONFIG.borderWidth
-        searchButton.backgroundColor = CONFIG.secondaryBackgroudColor
-        searchButton.layer.borderColor = CONFIG.borderColor
-        searchButton.layer.cornerRadius = CONFIG.cornerRadius - 5
-        let searchIcon = UIImage(systemName: "magnifyingglass", compatibleWith: .current)?.withTintColor(CONFIG.segmentSelectedColor, renderingMode: .alwaysOriginal)
+        searchButton.layer.borderWidth = BrandConfig.borderWidth
+        searchButton.backgroundColor = BrandConfig.secondaryBackgroudColor
+        searchButton.layer.borderColor = BrandConfig.borderColor
+        searchButton.layer.cornerRadius = BrandConfig.cornerRadius - 5
+        let searchIcon = UIImage(systemName: "magnifyingglass", compatibleWith: .current)?.withTintColor(BrandConfig.segmentSelectedColor, renderingMode: .alwaysOriginal)
         searchButton.setImage(searchIcon, for: .normal)
         searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
     }
@@ -167,99 +206,46 @@ class FoodViewController: UIViewController {
         tableOfContent.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         tableOfContent.topAnchor.constraint(equalTo: searchPlaceHolder.bottomAnchor, constant: 15).isActive = true
         tableOfContent.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 15).isActive = true
-        tableOfContent.backgroundColor = CONFIG.secondaryBackgroudColor
-        tableOfContent.layer.cornerRadius = CONFIG.cornerRadius
+        tableOfContent.backgroundColor = BrandConfig.secondaryBackgroudColor
+        tableOfContent.layer.cornerRadius = BrandConfig.cornerRadius
         tableOfContent.estimatedRowHeight = 80
         tableOfContent.rowHeight = UITableView.automaticDimension
     }
 
-    // creates the whole UI
-    func setUpUI () {
-        view.backgroundColor = CONFIG.backgroundColor
-        navigationItem.title = CONFIG.navigationTitleText
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-
-        setUpDevider()
-        setUpPicker()
-        setUpSearchField()
-        setUpSearchButton()
-        setUpTable()
-    }
-
     // function that executes on search button click
-    @objc func findForFood(_ sender: UIButton) {
+    @objc func findForFood() {
         guard let text = searchField.text else {
             return
         }
-        if text.isEmpty {
-            searchField.attributedPlaceholder = NSAttributedString(
-                string: CONFIG.searchPlaceHolderTextOnEmpty,
-                attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
-            )
-            return
+//        if text.isEmpty {
+//
+////            searchField.placeholder
+//            searchField.attributedPlaceholder = NSAttributedString(
+//                string: BrandConfig.searchPlaceHolderTextOnEmpty,
+//                attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
+//            )
+//            return
+//        }
+
+        Edamam.shared.retriveDishes(name: text) { [weak self] dishes in
+            self?.dishesList.content = dishes
+            DispatchQueue.main.async {
+                self?.tableOfContent.reloadData()
+            }
         }
 
     }
 
-    @objc func changeColor(sender: UISegmentedControl) {
-        print(sender.selectedSegmentIndex)
-    }
-
-    @objc func buttonAction() {
-        bus?.output = FoodViewController.Model.OutputData(userText: textField.text)
-        bus?.onExit()
-    }
-}
-
-// Custom cell for table
-class FoodTableViewCell: UITableViewCell {
-    let title = UILabel()
-    let detailsLabel = UILabel()
-
-    func setDish(dish: Dish) {
-        title.text = dish.title
-        detailsLabel.text = "\(dish.kcal) kcal per 100 g"
-    }
-
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-            super.init(style: style, reuseIdentifier: reuseIdentifier)
-        title.translatesAutoresizingMaskIntoConstraints = false
-        detailsLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        contentView.addSubview(title)
-        contentView.addSubview(detailsLabel)
-
-        title.numberOfLines = 0
-        title.textColor = .white
-        title.font = title.font.withSize(23)
-
-        NSLayoutConstraint.activate([
-            title.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
-            title.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            title.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            title.bottomAnchor.constraint(equalTo: detailsLabel.topAnchor),
-
-            detailsLabel.topAnchor.constraint(equalTo: title.bottomAnchor),
-            detailsLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            detailsLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            detailsLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
-        detailsLabel.textColor = CONFIG.segmentSelectedColor
-
-        self.backgroundColor = CONFIG.secondaryBackgroudColor
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
+    @objc func changeDishesList(sender: UISegmentedControl) {
+        self.dishesList.canDelete.toggle()
+        self.tableOfContent.reloadData()
     }
 }
 
 extension FoodViewController: UITableViewDelegate {
-
+//    func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+//        false
+//    }
 }
 
 extension FoodViewController: UITableViewDataSource {
@@ -267,17 +253,16 @@ extension FoodViewController: UITableViewDataSource {
         _ tableView: UITableView,
         numberOfRowsInSection section: Int
     ) -> Int {
-        dishes.count
+        dishesList.count
     }
 
     func tableView (
         _ tableView: UITableView,
         cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "FoodCell", for: indexPath) as! FoodTableViewCell
-
-        cell.setDish(dish: dishes[indexPath.row])
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: FoodTableViewCell.identifier, for: indexPath) as! FoodTableViewCell
+        cell.setDish(dish: dishesList.content![indexPath.row])
+        
         return cell
     }
 
@@ -286,17 +271,28 @@ extension FoodViewController: UITableViewDataSource {
         didSelectRowAt indexPath: IndexPath
     ) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let foodEditor = FoodEditor()
+        foodEditor.bus = FoodEditor.Model(data: .init(dish: dishesList.content![indexPath.row])) {
+            print(1)
+        }
+        print(1)
+        navigationController?.pushViewController(foodEditor, animated: true)
     }
 
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        UITableView.automaticDimension
+    func tableView(
+        _ tableView: UITableView,
+        canEditRowAt indexPath: IndexPath
+    ) -> Bool {
+        return dishesList.canDelete
     }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.layoutIfNeeded()
+    
+    func tableView (
+        _ tableView: UITableView,
+        commit editingStyle: UITableViewCell.EditingStyle,
+        forRowAt indexPath: IndexPath
+    ) {
+        if editingStyle == .delete {
+          print("Deleted")
+        }
     }
 }
