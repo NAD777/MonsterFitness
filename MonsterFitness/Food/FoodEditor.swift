@@ -178,6 +178,7 @@ class FoodEditor: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeDescriptions()
+        view.overrideUserInterfaceStyle = .dark
         view.backgroundColor = BrandConfig.backgroundColor
         navigationItem.title = bus?.data?.dish.title
         navigationController?.navigationBar.tintColor = BrandConfig.segmentSelectedColor
@@ -185,7 +186,6 @@ class FoodEditor: UIViewController {
         navigationController?.navigationBar.titleTextAttributes =
             [NSAttributedString.Key.foregroundColor: UIColor.white,
                 NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Light", size: 20)!]
-        navigationController?.navigationBar.prefersLargeTitles = true
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
         navigationItem.rightBarButtonItem = addButton
