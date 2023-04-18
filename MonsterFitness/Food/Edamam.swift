@@ -45,9 +45,11 @@ enum Category: String, Codable {
 
 // MARK: - Nutrients
 struct Nutrients: Codable {
-    let enercKcal: Int
-    let procnt, fat, chocdf: Double
-    let fibtg: Int
+    let enercKcal: Double
+    let procnt: Double
+    let fat: Double
+    let chocdf: Double
+    let fibtg: Double
 
     enum CodingKeys: String, CodingKey {
         case enercKcal = "ENERC_KCAL"
