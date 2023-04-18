@@ -15,7 +15,7 @@ final class CalorieIndicatorView: UIView, Updatable {
     private let calorieLabel = UILabel()
     
     public func getNewCalorieValue(calories: Double) {
-        self.calorieLabel.text = String(calories)
+        self.calorieLabel.text = String(Int(calories))
     }
     
     override func layoutSubviews() {
@@ -46,5 +46,6 @@ final class CalorieIndicatorView: UIView, Updatable {
         self.layer.cornerRadius = 10
         self.layer.borderWidth = 3
         self.calorieLabel.font = UIFont(descriptor: .preferredFontDescriptor(withTextStyle: .title1), size: 20)
+        self.calorieLabel.font = .systemFont(ofSize: 20.0, weight: .medium)
     }
 }

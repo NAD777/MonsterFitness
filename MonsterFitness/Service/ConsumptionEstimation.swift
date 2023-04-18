@@ -13,7 +13,7 @@ protocol CalorieEstimator {
     func calculatePhysicalCalorieExpandature(user: User, closure: @escaping (Double) -> Void)
 }
 
-class ConsumptionEstimation: CalorieEstimator {
+final class ConsumptionEstimation: CalorieEstimator {
     enum Errors: Error {
         case ageNotSpecified
         case genderNotSpecified

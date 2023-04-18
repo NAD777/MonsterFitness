@@ -18,14 +18,14 @@ final class CalorieSummaryView: UIView {
         super.init(frame: frame)
         setupImages()
         addSubviews()
+        setupStyles()
     }
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        setupStyles()
         setupConstraints()
         drawSeparator()
-        self.backgroundColor = .gray
+        self.backgroundColor = UIColor(named: "accentGray")
     }
     
     required init?(coder: NSCoder) {
@@ -42,7 +42,7 @@ final class CalorieSummaryView: UIView {
         
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = path.cgPath
-        shapeLayer.strokeColor = UIColor.green.cgColor
+        shapeLayer.strokeColor = UIColor(named: "acidicGreen")?.cgColor
         shapeLayer.lineWidth = 3
         shapeLayer.lineCap = .round
         shapeLayer.shadowRadius = 30
@@ -109,14 +109,18 @@ final class CalorieSummaryView: UIView {
     }
     
     private func setupStyles() {
-        self.layer.cornerRadius = 10
-        self.layer.shadowRadius = 10
-        self.layer.shadowOpacity = 0.4
+        self.layer.cornerRadius = 16
+//        self.layer.shadowRadius = 1
+//        self.layer.shadowOpacity = 0.7
+//        self.layer.shadowOffset = CGSize(width: 10, height: 10)
+//        self.layer.shadowColor = UIColor.white.cgColor
+        self.layer.borderColor = UIColor(named: "outline")?.cgColor
+        self.layer.borderWidth = 1
         
     }
     
     public func setData(burned: Double, consumed: Double) {
-        burnedLabel.text = String(burned)
-        consumedLabel.text = String(consumed)
+        burnedLabel.text = String(Int(burned))
+        consumedLabel.text = String(Int(consumed))
     }
 }
