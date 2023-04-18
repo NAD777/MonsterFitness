@@ -99,7 +99,7 @@ class ProfileViewController: UIViewController {
         view.backgroundColor = BrandConfig.backgroundColor
         navigationItem.title = "Profile"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-        navigationItem.rightBarButtonItem = .init(title: "Save", style: .done, target: self, action: #selector(onButtonTapped))g
+        navigationItem.rightBarButtonItem = .init(title: "Save", style: .done, target: self, action: #selector(onButtonTapped))
     }
 
     @objc func onButtonTapped() {
