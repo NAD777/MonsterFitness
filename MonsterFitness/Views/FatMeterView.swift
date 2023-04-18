@@ -58,8 +58,10 @@ final class FatMeterView: UIView {
         } else if coeff < -1 {
             coeff = -1
         }
-        UIView.animate(withDuration: 2, delay: 0, usingSpringWithDamping: 0.3, initialSpringVelocity: 4) { [weak self] in
-            self?.arrow.layer.setAffineTransform(CGAffineTransform(rotationAngle: (self?.degToRad(deg: (coeff*130)-90))!))
+        UIView.animate(withDuration: 2, delay: 6, usingSpringWithDamping: 0.3, initialSpringVelocity: 4) { [weak self] in
+            DispatchQueue.main.async {
+                self?.arrow.layer.setAffineTransform(CGAffineTransform(rotationAngle: (self?.degToRad(deg: (coeff*130)-90))!))
+            }
         }
     }
 
