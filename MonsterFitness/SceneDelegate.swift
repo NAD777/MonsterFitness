@@ -16,10 +16,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             guard let windowScene = (scene as? UIWindowScene) else { return }
 
             let window = UIWindow(windowScene: windowScene)
-            let mainController = MainScreen()
             let vc = RootViewController()
-//            router = Router(rootViewController: vc)
-            window.rootViewController = mainController
+            router = Router(rootViewController: vc)
+            window.rootViewController = vc
             self.window = window
             router?.start()
             window.makeKeyAndVisible()

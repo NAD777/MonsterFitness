@@ -57,6 +57,8 @@ class UserView: UIView {
 }
 
 class ProfileViewController: UIViewController {
+    var onProfieChanged: (() -> Void)?
+
     private var userView = UserView()
     var currentUser: User? {
         didSet {
@@ -92,7 +94,16 @@ class ProfileViewController: UIViewController {
         self.settingsName()
         self.settingsUserInformation()
         self.settingsButtons()
-        self.settingsStackForTarget()
+        settingsStackForTarget()
+
+        view.backgroundColor = BrandConfig.backgroundColor
+        navigationItem.title = "Profile"
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationItem.rightBarButtonItem = .init(title: "Save", style: .done, target: self, action: #selector(onButtonTapped))g
+    }
+
+    @objc func onButtonTapped() {
+        onProfieChanged?()
     }
     
     func settingsName() {
