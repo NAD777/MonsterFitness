@@ -48,6 +48,7 @@ class FoodViewController: UIViewController {
         }
         var data: InputData?
         var onExit: () -> Void
+        var onFoodSelected: (Dish) -> Void
         var output: OutputData?
     }
     struct DishesLists {
@@ -167,11 +168,11 @@ class FoodViewController: UIViewController {
         searchField.topAnchor.constraint(equalTo: searchPlaceHolder.topAnchor).isActive = true
         searchField.bottomAnchor.constraint(equalTo: searchPlaceHolder.bottomAnchor).isActive = true
         searchField.textColor = BrandConfig.searchFieldTextColor
-        searchField.placeholder = "IOS "
         searchField.attributedPlaceholder = NSAttributedString(
             string: "Search",
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
         )
+        searchField.delegate = self
     }
 
     // creates search button
@@ -217,15 +218,6 @@ class FoodViewController: UIViewController {
         guard let text = searchField.text else {
             return
         }
-//        if text.isEmpty {
-//
-////            searchField.placeholder
-//            searchField.attributedPlaceholder = NSAttributedString(
-//                string: BrandConfig.searchPlaceHolderTextOnEmpty,
-//                attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
-//            )
-//            return
-//        }
 
         Edamam.shared.retriveDishes(name: text) { [weak self] dishes in
             self?.dishesList.content = dishes
@@ -262,7 +254,7 @@ extension FoodViewController: UITableViewDataSource {
     ) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: FoodTableViewCell.identifier, for: indexPath) as! FoodTableViewCell
         cell.setDish(dish: dishesList.content![indexPath.row])
-        
+
         return cell
     }
 
@@ -271,12 +263,11 @@ extension FoodViewController: UITableViewDataSource {
         didSelectRowAt indexPath: IndexPath
     ) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let foodEditor = FoodEditor()
-        foodEditor.bus = FoodEditor.Model(data: .init(dish: dishesList.content![indexPath.row])) {
-            print(1)
+
+        if let selectedDish = dishesList.content?[indexPath.row] {
+            print(selectedDish)
+            bus?.onFoodSelected(selectedDish)
         }
-        print(1)
-        navigationController?.pushViewController(foodEditor, animated: true)
     }
 
     func tableView(
@@ -294,5 +285,43 @@ extension FoodViewController: UITableViewDataSource {
         if editingStyle == .delete {
           print("Deleted")
         }
+    }
+}
+
+extension FoodViewController: UITextFieldDelegate {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
+        let oldText = textField.text!
+        let stringRange = Range(range, in: oldText)!
+        let newText = oldText.replacingCharacters(
+            in: stringRange,
+            with: string)
+        print(newText)
+
+        Edamam.shared.retriveDishes(name: newText) { [weak self] dishes in
+            DispatchQueue.main.async {
+                if self?.textField.text != newText {
+                    print(self?.textField.text != newText, self?.textField.text, newText)
+                    self?.dishesList.canDelete = false
+                    self?.pickerSegmentedControl.selectedSegmentIndex = 0
+                    self?.dishesList.content = dishes
+                    self?.tableOfContent.reloadData()
+                }
+            }
+        }
+        return true
+    }
+    
+    func textFieldShouldBeginEditing(
+        _ textField: UITextField
+    ) -> Bool {
+        if textField === searchField {
+            self.dishesList.canDelete = false
+            self.pickerSegmentedControl.selectedSegmentIndex = 0
+        }
+        return true
     }
 }
