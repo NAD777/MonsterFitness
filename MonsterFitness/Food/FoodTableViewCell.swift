@@ -15,7 +15,7 @@ class FoodTableViewCell: UITableViewCell {
 
     func setDish(dish: Dish) {
         title.text = dish.title
-        detailsLabel.text = "\(dish.kcal) kcal per 100 g"
+        detailsLabel.text = "\(round(dish.kcal * 100) / 100) kcal per 100 g"
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

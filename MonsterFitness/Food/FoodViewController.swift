@@ -130,7 +130,9 @@ class FoodViewController: UIViewController {
         pickerSegmentedControl.translatesAutoresizingMaskIntoConstraints = false
         pickerSegmentedControl.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
         pickerSegmentedControl.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        pickerSegmentedControl.topAnchor.constraint(equalTo:         divider.bottomAnchor, constant: 20).isActive = true
+        pickerSegmentedControl.topAnchor.constraint(
+            equalTo: divider.bottomAnchor, constant: 20
+        ).isActive = true
         pickerSegmentedControl.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
 
         pickerSegmentedControl.insertSegment(withTitle: BrandConfig.titleFirstSegment, at: 0, animated: false)
@@ -319,8 +321,9 @@ extension FoodViewController: UITextFieldDelegate {
         _ textField: UITextField
     ) -> Bool {
         if textField === searchField {
-            self.dishesList.canDelete = false
-            self.pickerSegmentedControl.selectedSegmentIndex = 0
+            dishesList.canDelete = false
+            pickerSegmentedControl.selectedSegmentIndex = 0
+            tableOfContent.reloadData()
         }
         return true
     }
