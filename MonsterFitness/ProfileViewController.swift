@@ -34,10 +34,6 @@ class GenetareBlock {
         textfiled.widthAnchor.constraint(equalToConstant: 55).isActive = true
         textfiled.textAlignment = .natural
     }
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError()
-    }
 }
 
 class UserView: UIView {
@@ -62,19 +58,7 @@ class ProfileViewController: UIViewController {
     private var userView = UserView()
     var currentUser: User? {
         didSet {
-            userView.name.text = currentUser?.name
-            userView.age = GenetareBlock(count: String(currentUser?.age ?? 15), placeholder: "age", unit: "y.o.")
-            userView.weight = GenetareBlock(count: String(currentUser?.weight ?? 0), placeholder: "weight", unit: "kg")
-            userView.height = GenetareBlock(count: String(currentUser?.height ?? 0), placeholder: "height", unit: "cm")
-            switch currentUser?.gender {
-            case .male:
-                userView.gender = GenetareBlock(count: "male", placeholder: "gender", unit: "")
-            case .female:
-                userView.gender = GenetareBlock(count: "female", placeholder: "gender", unit: "")
-            default:
-                userView.gender = GenetareBlock(count: "strange", placeholder: "gender", unit: "")
-            }
-            userView.target.text = String(currentUser?.target ?? 0)
+            update()
         }
     }
     override func viewDidLoad() {
@@ -99,7 +83,7 @@ class ProfileViewController: UIViewController {
         view.backgroundColor = BrandConfig.backgroundColor
         navigationItem.title = "Profile"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
-        navigationItem.rightBarButtonItem = .init(title: "Save", style: .done, target: self, action: #selector(onButtonTapped))
+        navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(onButtonTapped))
     }
 
     @objc func onButtonTapped() {
@@ -109,11 +93,13 @@ class ProfileViewController: UIViewController {
     func settingsName() {
         userView.name.textColor = CONFIG.searchFieldTextColor
         userView.name.placeholder = "Your name"
-        userView.name.font = userView.name.font?.withSize(50)
+        userView.name.font = userView.name.font?.withSize(30)
         view.addSubview(userView.name)
         userView.name.translatesAutoresizingMaskIntoConstraints = false
-        userView.name.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 30).isActive = true
-        userView.name.topAnchor.constraint(equalTo: view.topAnchor, constant: 100).isActive = true
+        userView.name.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        userView.name.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+        userView.name.topAnchor.constraint(equalTo: view.topAnchor, constant: 110).isActive = true
+        userView.name.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
     
     func settingsUserInformation() {
@@ -202,6 +188,22 @@ class ProfileViewController: UIViewController {
             
         }
         
+    }
+    
+    func update() {
+        userView.name.text = currentUser?.name
+        userView.age = GenetareBlock(count: String(currentUser?.age ?? 15), placeholder: "age", unit: "y.o.")
+        userView.weight = GenetareBlock(count: String(currentUser?.weight ?? 0), placeholder: "weight", unit: "kg")
+        userView.height = GenetareBlock(count: String(currentUser?.height ?? 0), placeholder: "height", unit: "cm")
+        switch currentUser?.gender {
+        case .male:
+            userView.gender = GenetareBlock(count: "male", placeholder: "gender", unit: "")
+        case .female:
+            userView.gender = GenetareBlock(count: "female", placeholder: "gender", unit: "")
+        default:
+            userView.gender = GenetareBlock(count: "strange", placeholder: "gender", unit: "")
+        }
+        userView.target.text = String(currentUser?.target ?? 0)
     }
 }
 
