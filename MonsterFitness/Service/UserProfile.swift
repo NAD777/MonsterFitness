@@ -15,7 +15,7 @@ final class UserProfile {
         }
     }
     init() {
-        let name = defaults.string(forKey: "name") ?? "Unknow"
+        let name = defaults.string(forKey: "name") ?? "Unknown"
         let age = defaults.integer(forKey: "age")
         let weight = defaults.integer(forKey: "weight")
         let height = defaults.integer(forKey: "height")
