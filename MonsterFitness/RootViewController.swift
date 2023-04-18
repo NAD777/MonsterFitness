@@ -7,12 +7,11 @@
 
 import UIKit
 
-class RootViewController: UIViewController, Routable {
+class RootViewController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the viewa
-        view.backgroundColor = .red
     }
 
 }

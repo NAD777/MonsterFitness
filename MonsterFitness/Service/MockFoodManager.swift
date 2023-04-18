@@ -7,21 +7,21 @@
 
 import Foundation
 
-enum DayPart: String {
-    case breakfast = "Завтрак"
-    case lunch = "Обед"
-    case dinner = "Ужин"
-    case unspecified = "Не указан"
-}
-
-struct Dish {
-    let title: String
-    let calories: Double
-    let carbs: Double
-    let fat: Double
-}
-
 struct Portion {
+    enum DayPart: String {
+        case breakfast = "Завтрак"
+        case lunch = "Обед"
+        case dinner = "Ужин"
+        case unspecified = "Не указан"
+    }
+
+    struct Dish {
+        let title: String
+        let calories: Double
+        let carbs: Double
+        let fat: Double
+    }
+
     let weightConsumed: Double
     let dishConsumed: Dish
     let dayPart: DayPart

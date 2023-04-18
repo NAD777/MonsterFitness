@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		0128BC8D29E6D92800321EF8 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128BC8C29E6D92800321EF8 /* Router.swift */; };
+		0128BC9129E6E8B000321EF8 /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128BC9029E6E8B000321EF8 /* HomeScreenViewController.swift */; };
+		0128BC9329E6F06400321EF8 /* FoodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128BC9229E6F06400321EF8 /* FoodViewController.swift */; };
+		01472D5129E9E86300845D4E /* Edamam.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D5029E9E86300845D4E /* Edamam.swift */; };
+		01472D6729EA809E00845D4E /* Dish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6629EA809E00845D4E /* Dish.swift */; };
+		01472D6929EB046100845D4E /* FoodEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6829EB046100845D4E /* FoodEditor.swift */; };
+		01472D6B29EC63C900845D4E /* WeightEnterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6A29EC63C900845D4E /* WeightEnterViewController.swift */; };
+		01472D6D29ED57D100845D4E /* FoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6C29ED57D100845D4E /* FoodTableViewCell.swift */; };
 		01F06D2529E594100012CFE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2429E594100012CFE7 /* AppDelegate.swift */; };
 		01F06D2729E594100012CFE7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2629E594100012CFE7 /* SceneDelegate.swift */; };
 		01F06D2929E594100012CFE7 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2829E594100012CFE7 /* RootViewController.swift */; };
@@ -29,6 +36,13 @@
 
 /* Begin PBXFileReference section */
 		0128BC8C29E6D92800321EF8 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		0128BC9029E6E8B000321EF8 /* HomeScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
+		0128BC9229E6F06400321EF8 /* FoodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodViewController.swift; sourceTree = "<group>"; };
+		01472D5029E9E86300845D4E /* Edamam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Edamam.swift; sourceTree = "<group>"; };
+		01472D6629EA809E00845D4E /* Dish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dish.swift; sourceTree = "<group>"; };
+		01472D6829EB046100845D4E /* FoodEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEditor.swift; sourceTree = "<group>"; };
+		01472D6A29EC63C900845D4E /* WeightEnterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightEnterViewController.swift; sourceTree = "<group>"; };
+		01472D6C29ED57D100845D4E /* FoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTableViewCell.swift; sourceTree = "<group>"; };
 		01F06D2129E594100012CFE7 /* MonsterFitness.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MonsterFitness.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01F06D2429E594100012CFE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		01F06D2629E594100012CFE7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -62,6 +76,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01472D6529EA802000845D4E /* Food */ = {
+			isa = PBXGroup;
+			children = (
+				0128BC9229E6F06400321EF8 /* FoodViewController.swift */,
+				01472D5029E9E86300845D4E /* Edamam.swift */,
+				01472D6629EA809E00845D4E /* Dish.swift */,
+				01472D6829EB046100845D4E /* FoodEditor.swift */,
+				01472D6A29EC63C900845D4E /* WeightEnterViewController.swift */,
+				01472D6C29ED57D100845D4E /* FoodTableViewCell.swift */,
+			);
+			path = Food;
+			sourceTree = "<group>";
+		};
 		01F06D1829E594100012CFE7 = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +111,7 @@
 				92C5C0A629E97A3F0001CD34 /* Views */,
 				92C7113A29E81C4F00A195E1 /* Service */,
 				92C7113829E6EC2C00A195E1 /* MonsterFitness.entitlements */,
+				01472D6529EA802000845D4E /* Food */,
 				01F06D2429E594100012CFE7 /* AppDelegate.swift */,
 				01F06D2629E594100012CFE7 /* SceneDelegate.swift */,
 				01F06D2829E594100012CFE7 /* RootViewController.swift */,
@@ -95,6 +123,7 @@
 				01F06D2D29E594100012CFE7 /* MonsterFitness.xcdatamodeld */,
 				0128BC8C29E6D92800321EF8 /* Router.swift */,
 				0A57670029E9872C00648944 /* ProfileViewController.swift */,
+				0128BC9029E6E8B000321EF8 /* HomeScreenViewController.swift */,
 			);
 			path = MonsterFitness;
 			sourceTree = "<group>";
@@ -238,10 +267,18 @@
 				92C5C0AA29E97F1C0001CD34 /* CalorieIndicatorView.swift in Sources */,
 				9249CCF029E9E2DE0031A47A /* CalorieSummaryView.swift in Sources */,
 				0128BC8D29E6D92800321EF8 /* Router.swift in Sources */,
+				01472D6B29EC63C900845D4E /* WeightEnterViewController.swift in Sources */,
 				0A57670529E990F100648944 /* User.swift in Sources */,
 				0A57670129E9872C00648944 /* ProfileViewController.swift in Sources */,
 				01F06D2729E594100012CFE7 /* SceneDelegate.swift in Sources */,
 				C3A6AE0029EAA6F900E230BF /* CalendarController.swift in Sources */,
+				0128BC9329E6F06400321EF8 /* FoodViewController.swift in Sources */,
+				01472D6929EB046100845D4E /* FoodEditor.swift in Sources */,
+				01472D5129E9E86300845D4E /* Edamam.swift in Sources */,
+				01472D6729EA809E00845D4E /* Dish.swift in Sources */,
+				01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */,
+				0128BC9129E6E8B000321EF8 /* HomeScreenViewController.swift in Sources */,
+				01472D6D29ED57D100845D4E /* FoodTableViewCell.swift in Sources */,
 				9249CCF729EAE2EB0031A47A /* EatenProductsCell.swift in Sources */,
 				01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */,
 				9249CCEC29E999E30031A47A /* FatMeterView.swift in Sources */,
@@ -384,9 +421,11 @@
 				CODE_SIGN_ENTITLEMENTS = MonsterFitness/MonsterFitness.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 95VHSTU4WC;
+				DEVELOPMENT_TEAM = 9553YZB7F9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MonsterFitness/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Нам нужен твой степкаунт!";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Еще одно разрешение для степкаунта";
 				INFOPLIST_KEY_NSMotionUsageDescription = "We are using motion usage in order to track your step count.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -414,9 +453,11 @@
 				CODE_SIGN_ENTITLEMENTS = MonsterFitness/MonsterFitness.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 95VHSTU4WC;
+				DEVELOPMENT_TEAM = 9553YZB7F9;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MonsterFitness/Info.plist;
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Нам нужен твой степкаунт!";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Еще одно разрешение для степкаунта";
 				INFOPLIST_KEY_NSMotionUsageDescription = "We are using motion usage in order to track your step count.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
