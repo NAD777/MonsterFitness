@@ -8,14 +8,20 @@
 import Foundation
 import HealthKit
 
-final class StepCountModel {
+protocol StepAccess {
+    func getStepCountsForPreviousYear(completion: @escaping ([Date: Int]) -> Void ) throws
+    
+    func getStepCountForToday() async -> Int
+}
+
+final class StepCountModel: StepAccess {
     enum Errors: Error {
         case unknownError
     }
 
     private let healthStore = HKHealthStore()
-
-    public func getStepCountForToday(completion: @escaping (Int) -> Void) throws {
+    
+    private func getStepCountForTodayForAsync(completion: @escaping (Result<Int, Error>) -> Void) throws {
         guard let stepQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             throw Errors.unknownError
         }
@@ -28,13 +34,28 @@ final class StepCountModel {
                                       options: .cumulativeSum) { _, result, _ in
 
             guard let result = result, let sum = result.sumQuantity() else {
-                completion(0)
+                completion(.success(0))
                 return
             }
-            completion(Int(sum.doubleValue(for: HKUnit.count())))
+            completion(.success(Int(sum.doubleValue(for: HKUnit.count()))))
         }
         healthStore.execute(query)
     }
+    
+    // обертка для обратной совместимости асинка с замыканиями
+    func getStepCountForToday() async -> Int {
+        return try! await withCheckedThrowingContinuation { continuation in
+            try? getStepCountForTodayForAsync { result in
+                switch result {
+                case .success(let steps):
+                    continuation.resume(returning: steps)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
 
     // получаем данные о шагах за прошлый год
     public func getStepCountsForPreviousYear(completion: @escaping ([Date: Int]) -> Void ) throws {

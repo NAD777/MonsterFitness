@@ -18,14 +18,46 @@ final class MainScreen: UIViewController {
     private var tableView = UITableView(frame: .zero)
     
     private let mockStorage = MockFoodManager(storage: [])
-    private let mockDayData = (1350.0, 3000.0)
+    private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
+    private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, activityLevel: .moderatelyActive)
+    
+    // Тестовые кнопки перехода на какие-нибудь вьюшки
+    lazy private var toFoodButton: UIButton = {
+        let button = UIButton(frame: CGRect(x: 20, y: 50, width: 60, height: 60))
+        button.backgroundColor = .gray
+        button.layer.cornerRadius = 5
+        button.addTarget(self, action: #selector(self.toFood), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy private var toPersonButton: UIButton = {
+        let button = UIButton(frame: CGRect(x: view.bounds.width - 60 - 20, y: 50, width: 60, height: 60))
+        button.backgroundColor = .gray
+        button.layer.cornerRadius = 5
+        button.addTarget(self, action: #selector(self.toPerson), for: .touchUpInside)
+        return button
+    }()
+    
+    lazy private var toGraphButton: UIButton = {
+        let button = UIButton(frame: CGRect(x: view.bounds.width - 60 - 20, y: 120, width: 60, height: 60))
+        button.backgroundColor = .systemPink
+        button.layer.cornerRadius = 5
+        button.addTarget(self, action: #selector(self.toGraph), for: .touchUpInside)
+        return button
+    }()
+
     
     private func setDataForSubviews() {
-        fatMeter.setData(caloriesDiff: mockDayData.1-mockDayData.0)
-        summary.setData(burned: mockDayData.0, consumed: mockDayData.1)
-        caloriesBurnedView.getNewCalorieValue(calories: mockDayData.0)
-        caloriesConsumedView.getNewCalorieValue(calories: mockDayData.1)
-        
+        try? consumptionEstimator.getCalorieExpandatureForToday(user: userMock) { [weak self] calories in
+            DispatchQueue.main.async {
+                let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
+                self?.fatMeter.setData(caloriesDiff: consumed - calories)
+                self?.summary.setData(burned: calories, consumed: consumed)
+                self?.caloriesBurnedView.getNewCalorieValue(calories: calories)
+                self?.caloriesConsumedView.getNewCalorieValue(calories: consumed)
+                
+            }
+        }
     }
     
     private func setupTableView() {
@@ -105,6 +137,9 @@ final class MainScreen: UIViewController {
         view.addSubview(summary)
         view.addSubview(caloriesBurnedView)
         view.addSubview(tableView)
+        view.addSubview(toFoodButton)
+        view.addSubview(toPersonButton)
+        view.addSubview(toGraphButton)
         setupDateLabel()
         setupTableView()
         setupConstraints()
@@ -123,7 +158,18 @@ final class MainScreen: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        print(tableView.estimatedRowHeight)
+    }
+    
+    @objc func toFood() {
+        
+    }
+    
+    @objc func toPerson() {
+        
+    }
+    
+    @objc func toGraph() {
+    
     }
     
 }
@@ -162,3 +208,4 @@ extension MainScreen: UITableViewDataSource {
     }
     
 }
+

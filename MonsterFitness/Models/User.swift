@@ -21,13 +21,14 @@ enum PhysicalActivityLevel {
     case extremelyActive
 }
 
-struct User {
-     let name: String
-     var age: Int?
-     var weight: Int?
-     var height: Int?
-     var gender: Genders?
-     var target: Int = 2500
 
+struct User {
+    let name: String
+    var age: Int?
+    var weight: Int?
+    var height: Int?
+    var gender: Genders?
+    var target: Int = 2500
+    var activityLevel: PhysicalActivityLevel?
     
- }
+}
