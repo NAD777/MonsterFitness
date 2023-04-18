@@ -15,12 +15,12 @@ struct Portion {
         case unspecified = "Не указан"
     }
 
-    struct Dish {
-        let title: String
-        let calories: Double
-        let carbs: Double
-        let fat: Double
-    }
+//    struct DishMock {
+//        let title: String
+//        let calories: Double
+//        let carbs: Double
+//        let fat: Double
+//    }
 
     let weightConsumed: Double
     let dishConsumed: Dish
@@ -45,25 +45,27 @@ class MockFoodManager: FoodStorage {
         case doesNotExist
     }
     
+    
     public var storage: [Portion] = [
-        Portion(weightConsumed: 0.500, dishConsumed: Dish(title: "Пиво", calories: 30, carbs: 9, fat: 0), dayPart: .dinner),
-        Portion(weightConsumed: 0.300, dishConsumed: Dish(title: "Шницель", calories: 240, carbs: 9, fat: 0), dayPart: .lunch),
-        Portion(weightConsumed: 0.500, dishConsumed: Dish(title: "Суп", calories: 50, carbs: 9, fat: 0), dayPart: .unspecified),
-        Portion(weightConsumed: 0.400, dishConsumed: Dish(title: "Рамен", calories: 60, carbs: 9, fat: 0), dayPart: .breakfast),
-        Portion(weightConsumed: 0.090, dishConsumed: Dish(title: "Бекон", calories: 900, carbs: 9, fat: 0), dayPart: .dinner)
+        Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .breakfast)
+        
+//        Portion(weightConsumed: 0.500, dishConsumed: Dish(title: "Пиво", calories: 30, carbs: 9, fat: 0), dayPart: .dinner),
+//        Portion(weightConsumed: 0.300, dishConsumed: Dish(title: "Шницель", calories: 240, carbs: 9, fat: 0), dayPart: .lunch),
+//        Portion(weightConsumed: 0.500, dishConsumed: Dish(title: "Суп", calories: 50, carbs: 9, fat: 0), dayPart: .unspecified),
+//        Portion(weightConsumed: 0.400, dishConsumed: Dish(title: "Рамен", calories: 60, carbs: 9, fat: 0), dayPart: .breakfast),
+//        Portion(weightConsumed: 0.090, dishConsumed: Dish(title: "Бекон", calories: 900, carbs: 9, fat: 0), dayPart: .dinner)
     ]
     
     init(storage: [Portion]) {
         if storage.isEmpty != true {
             self.storage = storage
         }
-        
     }
     
     func getTotalCalorieIntake() -> Double {
         var calorieTotal: Double = 0.0
         for meal in storage {
-            calorieTotal += meal.weightConsumed*meal.dishConsumed.calories * 10
+            calorieTotal += meal.weightConsumed*meal.dishConsumed.kcal * 10
         }
         return calorieTotal
     }
