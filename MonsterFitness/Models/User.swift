@@ -13,6 +13,13 @@ enum Genders{
     case other
 }
 
+enum PhysicalActivityLevel {
+    case passive
+    case minimallyActive
+    case moderatelyActive
+    case active
+    case extremelyActive
+}
 
 struct User {
      let name: String
