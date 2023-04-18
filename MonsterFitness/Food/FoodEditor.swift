@@ -23,17 +23,20 @@ class SelfSizingTableView: UITableView {
 
 class FoodEditor: UIViewController {
     struct Model {
-        struct InputData {
+        struct Data {
             var dish: Dish
-        }
-        struct OutputData {
             var weight: Int?
         }
-        var data: InputData?
+        var data: Data?
+        var weightFieldTap: (String) -> Void
         var onExit: () -> Void
-        var output: OutputData?
+//        var output: OutputData?
     }
-    var bus: FoodEditor.Model?
+    var bus: FoodEditor.Model? {
+        didSet {
+            weightField.text = "\(bus?.data?.weight ?? 0)"
+        }
+    }
     struct DishInfo {
         var name: String
         var value: Double
@@ -76,6 +79,7 @@ class FoodEditor: UIViewController {
     }
 
     func initializeDescriptions() {
+        print(bus?.data?.dish)
         if bus?.data?.dish.kcal != nil {
             dishDescriptions.append(DishInfo(name: "Kcal", value: (bus?.data?.dish.kcal)!))
         }
@@ -113,8 +117,6 @@ class FoodEditor: UIViewController {
         let favButton = UIButton()
         view.addSubview(favButton)
         favButton.translatesAutoresizingMaskIntoConstraints = false
-//        favButton.leadingAnchor.constraint(equalTo: searchPlaceHolder.trailingAnchor, constant: 10).isActive = true
-//        favButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         favButton.topAnchor.constraint(equalTo: tableOfContent.bottomAnchor, constant: 10).isActive = true
         favButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         favButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
@@ -223,14 +225,7 @@ extension FoodEditor: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         print(1)
         if textField === weightField {
-            textField.endEditing(true)
-            let weightEnter = WeightEnterViewController()
-            weightEnter.bus = .init(weight: textField.text ?? "0") { [weak self] value in
-                self?.weightField.text = "\(value)"
-                self?.bus?.output?.weight = Int(value)
-                self?.navigationController?.popViewController(animated: true)
-            }
-            navigationController?.pushViewController(weightEnter, animated: true)
+            bus?.weightFieldTap(textField.text ?? "0")
             return false
         }
         return true
@@ -253,15 +248,11 @@ class InfoCell: UITableViewCell {
         stackHolder.axis = .horizontal
         stackHolder.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackHolder)
-//        stackHolder.backgroundColor = BrandConfig.backgroundColor
-//        stackHolder.layer.borderColor = BrandConfig.borderColor
-//        stackHolder.layer.borderWidth = BrandConfig.borderWidth
 
         NSLayoutConstraint.activate([
             stackHolder.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             stackHolder.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             stackHolder.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-//            stackHolder.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
             stackHolder.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -286,6 +277,6 @@ class InfoCell: UITableViewCell {
 
     func setDishInfo (_ dishInfo: FoodEditor.DishInfo) {
         title.text = dishInfo.name
-        detailsLabel.text = "\(dishInfo.value) g"
+        detailsLabel.text = "\(dishInfo.value)"
     }
 }

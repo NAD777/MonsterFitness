@@ -50,6 +50,7 @@ class WeightEnterViewController: UIViewController {
     @objc func doneButtonTapped(_ actor: UIButton) {
         let value = enterWeight.text ?? "0"
         bus?.onExit(value)
+//        bus?.onExit(value)
     }
 
     override func viewDidLoad() {
