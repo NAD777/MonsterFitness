@@ -20,33 +20,37 @@ final class MainScreen: UIViewController {
     private let mockStorage = MockFoodManager(storage: [])
     private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
     private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, activityLevel: .moderatelyActive)
-    
+
+    var onSearchFoodSelected: (() -> Void)?
+    var onPersonSelected: (() -> Void)?
+
     // Тестовые кнопки перехода на какие-нибудь вьюшки
     lazy private var toFoodButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: 20, y: 50, width: 60, height: 60))
+        let button = UIButton(frame: CGRect(x: 20, y: 100, width: 60, height: 60))
+        button.setTitle("Search", for: .normal)
         button.backgroundColor = .gray
         button.layer.cornerRadius = 5
-        button.addTarget(self, action: #selector(self.toFood), for: .touchUpInside)
+        button.addTarget(self, action: #selector(toFood), for: .touchUpInside)
         return button
     }()
     
     lazy private var toPersonButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: view.bounds.width - 60 - 20, y: 50, width: 60, height: 60))
+        let button = UIButton(frame: CGRect(x: view.bounds.width - 60 - 20, y: 100, width: 60, height: 60))
+        button.setTitle("Person", for: .normal)
         button.backgroundColor = .gray
         button.layer.cornerRadius = 5
-        button.addTarget(self, action: #selector(self.toPerson), for: .touchUpInside)
+        button.addTarget(self, action: #selector(toPerson), for: .touchUpInside)
         return button
     }()
     
     lazy private var toGraphButton: UIButton = {
-        let button = UIButton(frame: CGRect(x: view.bounds.width - 60 - 20, y: 120, width: 60, height: 60))
+        let button = UIButton(frame: CGRect(x: view.bounds.width - 60 - 20, y: 180, width: 60, height: 60))
         button.backgroundColor = .systemPink
         button.layer.cornerRadius = 5
         button.addTarget(self, action: #selector(self.toGraph), for: .touchUpInside)
         return button
     }()
 
-    
     private func setDataForSubviews() {
         try? consumptionEstimator.getCalorieExpandatureForToday(user: userMock) { [weak self] calories in
             DispatchQueue.main.async {
@@ -161,11 +165,11 @@ final class MainScreen: UIViewController {
     }
     
     @objc func toFood() {
-        
+        onSearchFoodSelected?()
     }
     
     @objc func toPerson() {
-        
+        onPersonSelected?()
     }
     
     @objc func toGraph() {

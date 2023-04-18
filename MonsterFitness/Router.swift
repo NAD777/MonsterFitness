@@ -18,12 +18,14 @@ class Router {
     }
 
     func start() {
-//        openFood()
-//        openWeight()
-        let homeScreenViewController = HomeScreenViewController()
-        homeScreenViewController.bus = .init { [weak self] in
+        let homeScreenViewController = MainScreen()
+        homeScreenViewController.onSearchFoodSelected = { [weak self] in
             self?.openFood()
         }
+        homeScreenViewController.onPersonSelected = { [weak self] in
+            self?.openProfile()
+        }
+
         let loggedIn = defaults.integer(forKey: "LoggedIn")
         if loggedIn == 1 {
             homeScreenViewController.view.backgroundColor = .green
@@ -50,5 +52,14 @@ class Router {
 //            self?.rootViewController.popViewController(animated: true)
 //        }
         rootViewController.pushViewController(foodScreenViewController, animated: true)
+    }
+
+    func openProfile() {
+        let profileViewController = ProfileViewController()
+        profileViewController.onProfieChanged = { [weak self] in
+            self?.rootViewController.popViewController(animated: true)
+        }
+
+        rootViewController.pushViewController(profileViewController, animated: true)
     }
 }
