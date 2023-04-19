@@ -46,6 +46,10 @@ class Router {
 
         rootViewController.pushViewController(foodScreenViewController, animated: true)
     }
+    
+    func returnThePortion(portion: UIPortion) {
+        rootViewController.popViewController(animated: true)
+    }
 
     func openFoodEditor(dish: Dish) {
         let foodEditor = FoodEditor()
@@ -54,17 +58,19 @@ class Router {
                 self.openWeightEnterViewController(value: value,
                                                    updateWeight: { newWeight in
                     foodEditor.bus?.data?.weight = Int(newWeight)
- 
                 })
             },
-            onExit: {
-                print("Exit from food Editor")
+            onExit: { [returnThePortion] portion in
+                returnThePortion(portion)
             })
         foodEditor.bus?.data = .init(dish: dish)
         rootViewController.pushViewController(foodEditor, animated: true)
     }
 
-    func openWeightEnterViewController(value: String,  updateWeight: @escaping (String) -> Void) {
+    func openWeightEnterViewController(
+        value: String,
+        updateWeight: @escaping (String) -> Void
+    ) {
         let weightEditor = WeightEnterViewController()
         weightEditor.bus = .init(
             weight: value,
@@ -73,11 +79,6 @@ class Router {
                 self?.rootViewController.popViewController(animated: true)
             })
         rootViewController.pushViewController(weightEditor, animated: true)
-    }
-
-    func openWeight() {
-        let foodScreenViewController = WeightEnterViewController()
-        rootViewController.pushViewController(foodScreenViewController, animated: true)
     }
 
     func openProfile() {
