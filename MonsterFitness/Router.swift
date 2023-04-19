@@ -28,9 +28,10 @@ class Router {
 
         let loggedIn = defaults.integer(forKey: "LoggedIn")
         if loggedIn == 1 {
-            homeScreenViewController.view.backgroundColor = .green
+            // TODO: - убрано изменение цвета, нужно придумать как прокинуть статус на экран лучше
+//            homeScreenViewController.view.backgroundColor = .green
         } else {
-            homeScreenViewController.view.backgroundColor = .red
+//            homeScreenViewController.view.backgroundColor = .red
             defaults.set(1, forKey: "LoggedIn")
         }
         rootViewController.pushViewController(homeScreenViewController, animated: false)
