@@ -14,22 +14,80 @@ struct Stacks {
     var stack = UIStackView()
     var stackForUserInformation1 = UIStackView()
     var stackForUserInformation2 = UIStackView()
-    var stackForButton = UIStackView()
+    var stackForStep = UIStackView()
     var stackForTarget = UIStackView()
     var stackForType = UIStackView()
+}
+
+class BlockWithTarget {
     var minus = UIButton(type: .system)
     var plus = UIButton(type: .system)
     var target = UILabel()
+    private var labelTarget = UILabel()
+    private var stack = UIStackView()
+    private var stackForButton = UIStackView()
+    
+    init(_ text: String) {
+        stackForButton.addArrangedSubview(minus)
+        target.textAlignment = .center
+        stackForButton.addArrangedSubview(target)
+        stackForButton.addArrangedSubview(plus)
+        labelTarget.text = text
+        labelTarget.font = labelTarget.font.withSize(25)
+        labelTarget.textColor = CONFIG.searchFieldTextColor
+        labelTarget.textAlignment = .center
+        target.font = target.font.withSize(25)
+        target.text = "1000"
+        settingButton()
+        stackForButton.translatesAutoresizingMaskIntoConstraints = false
+        stackForButton.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8)
+        stackForButton.isLayoutMarginsRelativeArrangement = true
+        
+        labelTarget.translatesAutoresizingMaskIntoConstraints = false
+        target.translatesAutoresizingMaskIntoConstraints = false
+        stackForButton.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    private func settingButton() {
+        minus.setTitle("-", for: .normal)
+        plus.setTitle("+", for: .normal)
+        for but in [minus, plus] {
+            but.setTitleColor(CONFIG.buttonTextColor, for: .normal)
+            but.backgroundColor = CONFIG.buttonBackgroudColor
+            but.layer.cornerRadius = CONFIG.buttonCornerRadius
+            but.translatesAutoresizingMaskIntoConstraints = false
+            but.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            but.titleLabel?.font = but.titleLabel?.font.withSize(25)
+            
+        }
+    }
+    
+    func getStack() -> UIStackView {
+        stack.axis = .vertical
+        stack.addArrangedSubview(labelTarget)
+        stack.addArrangedSubview(stackForButton)
+        stackForButton.translatesAutoresizingMaskIntoConstraints = false
+        stackForButton.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8)
+        stackForButton.isLayoutMarginsRelativeArrangement = true
+        
+        labelTarget.translatesAutoresizingMaskIntoConstraints = false
+        labelTarget.topAnchor.constraint(equalTo: stack.topAnchor, constant: 8).isActive = true
+        return stack
+    }
 }
 
 class ProfileViewController: UIViewController {
     var onProfieChanged: (() -> Void)?
     
-    private let distanceBetweenBlocks = 40
+    private let distanceBetweenBlocks = 20
     private var dataForPickers = [UIPickerView: [String]]()
     private var currentRow = [UIPickerView: Int]()
     private var name = UITextField()
     private var stacks = Stacks()
+    private var stackArr = [UIPickerView]()
+    var targetCalories = BlockWithTarget("Daily goal by calories:")
+    var targetSteps = BlockWithTarget("Daily goal by steps:")
+    let pickerType = UIPickerView()
     var currentUser: User? {
         didSet {
             update()
@@ -40,19 +98,16 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.overrideUserInterfaceStyle = .dark
         // Do any additional setup after loading the viewa
-        currentUser = User(name: "Bob", age: 19, weight: 48, height: 198, gender: .male, target: 6600)
+        settingPickersForUserInformation()
+        currentUser = UserProfile().currentUser
         view.backgroundColor = CONFIG.backgroundColor
         stacks.stack.axis = .vertical
-    
-        stacks.stackForButton.addArrangedSubview(stacks.minus)
-        stacks.target.textAlignment = .center
-        stacks.stackForButton.addArrangedSubview(stacks.target)
-        stacks.stackForButton.addArrangedSubview(stacks.plus)
+        
         settingsName()
-        settingPickersForUserInformation()
-        self.settingsUserInformation()
-        self.settingsButtons()
+        //settingPickersForUserInformation()
+        settingsUserInformation()
         settingsStackForTarget()
+        settingsStackForStep()
         settingType()
         view.backgroundColor = BrandConfig.backgroundColor
         navigationItem.title = "Profile"
@@ -61,6 +116,15 @@ class ProfileViewController: UIViewController {
     }
 
     @objc func onButtonTapped() {
+        var cur = UserProfile()
+        cur.currentUser  = User(name: name.text ?? "")
+        cur.currentUser?.age = (currentRow[stackArr[0]] ?? 0) + 1
+        cur.currentUser?.weight = (currentRow[stackArr[1]] ?? 0) + 20
+        cur.currentUser?.height = (currentRow[stackArr[2]] ?? 0) + 100
+        cur.currentUser?.gender = Genders(rawValue: currentRow[stackArr[3]] ?? 0)
+        cur.currentUser?.target = Int(targetCalories.target.text ?? "") ?? 0
+        cur.currentUser?.targetSteps = Int(targetSteps.target.text ?? "") ?? 0
+        cur.currentUser?.activityLevel = PhysicalActivityLevel(rawValue: currentRow[pickerType] ?? 0)
         onProfieChanged?()
     }
     
@@ -122,6 +186,11 @@ class ProfileViewController: UIViewController {
         stacks.stackForUserInformation1.addArrangedSubview(pickerWeight)
         stacks.stackForUserInformation2.addArrangedSubview(pickerHeight)
         stacks.stackForUserInformation2.addArrangedSubview(pickerGender)
+        
+        stackArr.append(pickerAge)
+        stackArr.append(pickerWeight)
+        stackArr.append(pickerHeight)
+        stackArr.append(pickerGender)
     }
     
     func settingsUserInformation() {
@@ -153,16 +222,7 @@ class ProfileViewController: UIViewController {
     }
     
     func settingsStackForTarget() {
-        let labelTarget = UILabel()
-        labelTarget.text = "Your target (kcal):"
-        labelTarget.font = labelTarget.font.withSize(25)
-        labelTarget.textColor = CONFIG.searchFieldTextColor
-        labelTarget.textAlignment = .center
-        
-        stacks.target.font = stacks.target.font.withSize(25)
-        stacks.stackForTarget.axis = .vertical
-        stacks.stackForTarget.addArrangedSubview(labelTarget)
-        stacks.stackForTarget.addArrangedSubview(stacks.stackForButton)
+        stacks.stackForTarget = targetCalories.getStack()
         view.addSubview(stacks.stackForTarget)
         stacks.stackForTarget.translatesAutoresizingMaskIntoConstraints = false
         stacks.stackForTarget.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
@@ -171,41 +231,40 @@ class ProfileViewController: UIViewController {
         stacks.stackForTarget.backgroundColor = CONFIG.deviderColor
         stacks.stackForTarget.layer.cornerRadius = 16
         stacks.stackForTarget.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        stacks.stackForButton.translatesAutoresizingMaskIntoConstraints = false
-        stacks.stackForButton.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8)
-        stacks.stackForButton.isLayoutMarginsRelativeArrangement = true
+        targetCalories.minus.addAction(UIAction(title: "-", handler: { [weak self] _ in
+            var cnt = Int(self?.targetCalories.target.text ?? "0") ?? 0
+            cnt = max(cnt - 100, 0)
+            self?.targetCalories.target.text = String(cnt)
+                        }), for: .touchUpInside)
         
-        labelTarget.translatesAutoresizingMaskIntoConstraints = false
-        labelTarget.topAnchor.constraint(equalTo: stacks.stackForTarget.topAnchor, constant: 8).isActive = true
+        targetCalories.plus.addAction(UIAction(title: "-", handler: { [weak self] _ in
+            var cnt = Int(self?.targetCalories.target.text ?? "0") ?? 0
+            cnt = min(cnt + 100, 50000)
+            self?.targetCalories.target.text = String(cnt)
+                        }), for: .touchUpInside)
     }
     
-    func settingsButtons() {
-        stacks.minus.setTitle("-", for: .normal)
-        stacks.plus.setTitle("+", for: .normal)
-        
-        
-        stacks.minus.addAction(UIAction(title: "-", handler: { [weak self] _ in
-            var cnt = Int(self?.stacks.target.text ?? "0") ?? 0
+    func settingsStackForStep() {
+        stacks.stackForStep = targetSteps.getStack()
+        view.addSubview(stacks.stackForStep)
+        stacks.stackForStep.translatesAutoresizingMaskIntoConstraints = false
+        stacks.stackForStep.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
+        stacks.stackForStep.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
+        stacks.stackForStep.topAnchor.constraint(equalTo: stacks.stackForTarget.bottomAnchor, constant: CGFloat(distanceBetweenBlocks)).isActive = true
+        stacks.stackForStep.backgroundColor = CONFIG.deviderColor
+        stacks.stackForStep.layer.cornerRadius = 16
+        stacks.stackForStep.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        targetSteps.minus.addAction(UIAction(title: "-", handler: { [weak self] _ in
+            var cnt = Int(self?.targetSteps.target.text ?? "0") ?? 0
             cnt = max(cnt - 100, 0)
-            self?.stacks.target.text = String(cnt)
+            self?.targetSteps.target.text = String(cnt)
                         }), for: .touchUpInside)
         
-        stacks.plus.addAction(UIAction(title: "-", handler: { [weak self] _ in
-            var cnt = Int(self?.stacks.target.text ?? "0") ?? 0
+        targetSteps.plus.addAction(UIAction(title: "-", handler: { [weak self] _ in
+            var cnt = Int(self?.targetSteps.target.text ?? "0") ?? 0
             cnt = min(cnt + 100, 50000)
-            self?.stacks.target.text = String(cnt)
+            self?.targetSteps.target.text = String(cnt)
                         }), for: .touchUpInside)
-        
-        for but in [stacks.minus, stacks.plus] {
-            but.setTitleColor(CONFIG.buttonTextColor, for: .normal)
-            but.backgroundColor = CONFIG.buttonBackgroudColor
-            but.layer.cornerRadius = CONFIG.buttonCornerRadius
-            but.translatesAutoresizingMaskIntoConstraints = false
-            but.widthAnchor.constraint(equalToConstant: 80).isActive = true
-            but.titleLabel?.font = but.titleLabel?.font.withSize(25)
-            
-        }
-        
     }
     
     func settingType() {
@@ -214,14 +273,13 @@ class ProfileViewController: UIViewController {
         labelTarget.font = labelTarget.font.withSize(25)
         labelTarget.textColor = CONFIG.searchFieldTextColor
         labelTarget.textAlignment = .center
-        
-        let pickerType = UIPickerView()
+    
         pickerType.dataSource = self
         pickerType.delegate = self
         let data = ["Passive type", "Minimally active type", "Moderately active type", "Active type", "Overly active type"]
         dataForPickers[pickerType] = data
         pickerType.translatesAutoresizingMaskIntoConstraints = false
-        pickerType.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        pickerType.heightAnchor.constraint(equalToConstant: 90).isActive = true
         stacks.stackForType.axis = .vertical
         stacks.stackForType.addArrangedSubview(labelTarget)
         stacks.stackForType.addArrangedSubview(pickerType)
@@ -229,7 +287,7 @@ class ProfileViewController: UIViewController {
         stacks.stackForType.backgroundColor = CONFIG.deviderColor
         stacks.stackForType.layer.cornerRadius = 16
         stacks.stackForType.translatesAutoresizingMaskIntoConstraints = false
-        stacks.stackForType.topAnchor.constraint(equalTo: stacks.stackForTarget.bottomAnchor, constant: CGFloat(distanceBetweenBlocks)).isActive = true
+        stacks.stackForType.topAnchor.constraint(equalTo: stacks.stackForStep.bottomAnchor, constant: CGFloat(distanceBetweenBlocks)).isActive = true
         stacks.stackForType.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         stacks.stackForType.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         labelTarget.translatesAutoresizingMaskIntoConstraints = false
@@ -238,19 +296,14 @@ class ProfileViewController: UIViewController {
     
     func update() {
         // TODO
-       name.text = currentUser?.name
-//        userView.age = GenetareBlock(count: String(currentUser?.age ?? 15), placeholder: "age", unit: "y.o.")
-//        userView.weight = GenetareBlock(count: String(currentUser?.weight ?? 0), placeholder: "weight", unit: "kg")
-//        userView.height = GenetareBlock(count: String(currentUser?.height ?? 0), placeholder: "height", unit: "cm")
-//        switch currentUser?.gender {
-//        case .male:
-//            userView.gender = GenetareBlock(count: "male", placeholder: "gender", unit: "")
-//        case .female:
-//            userView.gender = GenetareBlock(count: "female", placeholder: "gender", unit: "")
-//        default:
-//            userView.gender = GenetareBlock(count: "strange", placeholder: "gender", unit: "")
-//        }
-        stacks.target.text = String(currentUser?.target ?? 0)
+        name.text = currentUser?.name
+        targetCalories.target.text = String(currentUser?.target ?? 0)
+        targetSteps.target.text = String(currentUser?.targetSteps ?? 0)
+        stackArr[0].selectRow((currentUser?.age ?? 1) - 1, inComponent: 0, animated: true)
+        stackArr[1].selectRow((currentUser?.weight ?? 20) - 20, inComponent: 0, animated: true)
+        stackArr[2].selectRow((currentUser?.height ?? 100) - 100, inComponent: 0, animated: true)
+        stackArr[3].selectRow(currentUser?.gender?.rawValue ?? 0, inComponent: 0, animated: true)
+        pickerType.selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
     }
 }
 

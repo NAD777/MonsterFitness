@@ -17,7 +17,7 @@ final class MainScreen: UIViewController {
     
     private let mockStorage: FoodStorage
     private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
-    private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, activityLevel: .moderatelyActive)
+    private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, targetSteps: 6000, activityLevel: .moderatelyActive)
 
     var date: Date { mockStorage.date }
 

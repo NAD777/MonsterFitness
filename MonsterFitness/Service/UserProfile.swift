@@ -20,9 +20,10 @@ final class UserProfile {
         let weight = defaults.integer(forKey: "weight")
         let height = defaults.integer(forKey: "height")
         let target = defaults.integer(forKey: "target")
+        let targetSteps = defaults.integer(forKey: "targetSteps")
         let genders = ["male": Genders.male, "female": Genders.female, "other": Genders.other]
         let currentGender = genders[defaults.string(forKey: "gender") ?? "other"]
-        currentUser = User(name: name, age: age, weight: weight, height: height, gender: currentGender, target: target)
+        currentUser = User(name: name, age: age, weight: weight, height: height, gender: currentGender, target: target, targetSteps: targetSteps)
     }
     
     func update() {
@@ -31,6 +32,7 @@ final class UserProfile {
         defaults.set(currentUser?.weight, forKey: "weight")
         defaults.set(currentUser?.height, forKey: "height")
         defaults.set(currentUser?.target, forKey: "target")
+        defaults.set(currentUser?.targetSteps, forKey: "targetSteps")
         let genders = [Genders.male: "male", Genders.female: "female", Genders.other: "other"]
         defaults.set(genders[currentUser?.gender ?? .other], forKey: "gender")
     }
