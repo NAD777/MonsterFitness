@@ -18,13 +18,17 @@ class Router {
     }
 
     func start() {
-        let coreStorage = CoreFoodManager(context: stoage.persistentContainer.viewContext)
+        let today = Calendar.current.startOfDay(for: Date())
+        let coreStorage = CoreFoodManager(date: today, context: stoage.persistentContainer.viewContext)
         let homeScreenViewController = MainScreen(storage: coreStorage)
         homeScreenViewController.onSearchFoodSelected = { [weak self] in
             self?.openFood()
         }
         homeScreenViewController.onPersonSelected = { [weak self] in
             self?.openProfile()
+        }
+        homeScreenViewController.onGraphSelected = { [weak self] in
+            self?.openCalendar()
         }
 
         let loggedIn = defaults.integer(forKey: "LoggedIn")
@@ -50,7 +54,11 @@ class Router {
     }
     
     func returnThePortion(portion: UIPortion) {
-        stoage.savePortion(portion)
+        guard let date = topMainScreen?.date else {
+            assertionFailure("main screen not found")
+            return
+        }
+        stoage.savePortion(portion, date: date)
         rootViewController.popViewController(animated: true)
     }
 
@@ -91,5 +99,17 @@ class Router {
         }
 
         rootViewController.pushViewController(profileViewController, animated: true)
+    }
+
+    func openCalendar() {
+        let calendarViewController = CalendarController()
+        rootViewController.pushViewController(calendarViewController, animated: true)
+    }
+
+    var topMainScreen: MainScreen? {
+        let mainScreens = rootViewController.viewControllers.compactMap {
+            $0 as? MainScreen
+        }
+        return mainScreens.last
     }
 }
