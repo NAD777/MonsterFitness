@@ -49,6 +49,7 @@ class FoodViewController: UIViewController {
         var data: InputData?
         var onExit: () -> Void
         var onFoodSelected: (Dish) -> Void
+        var onDeleteFromFavourite: (Dish) -> Void
         var output: OutputData?
     }
     struct DishesLists {
@@ -77,7 +78,7 @@ class FoodViewController: UIViewController {
     private lazy var pickerSegmentedControl = UISegmentedControl()
     private lazy var searchField = UITextField()
     private lazy var tableOfContent = UITableView()
-    private lazy var         divider = UIView()
+    private lazy var divider = UIView()
     private lazy var searchPlaceHolder = UIView()
     private lazy var searchButton = UIButton()
     private lazy var dishesList = DishesLists()
@@ -285,7 +286,12 @@ extension FoodViewController: UITableViewDataSource {
         forRowAt indexPath: IndexPath
     ) {
         if editingStyle == .delete {
-          print("Deleted")
+            if let deletedDish = dishesList.content?[indexPath.row] {
+                bus?.onDeleteFromFavourite(deletedDish)
+                dishesList.content?.remove(at: indexPath.row)
+                let indexPaths = [indexPath]
+                tableView.deleteRows(at: indexPaths, with: .automatic)
+            }
         }
     }
 }
