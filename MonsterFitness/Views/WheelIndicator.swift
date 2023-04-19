@@ -11,7 +11,13 @@ final class WheelIndicator: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.addSubview(activityLabel)
+        self.addSubview(calorieLabel)
         drawWheel()
+        activityLabel.text = "Осталось шагов: 3000"
+        calorieLabel.text =  "Нажор: 300/2000"
+        setupLabels()
+        
     }
     
     required init?(coder: NSCoder) {
@@ -23,6 +29,24 @@ final class WheelIndicator: UIView {
     
     private let trackLayerInner = CAShapeLayer()
     private let shapeLayerInner = CAShapeLayer()
+    
+    private let activityLabel = UILabel()
+    private let calorieLabel = UILabel()
+    
+    private func setupLabels() {
+        calorieLabel.translatesAutoresizingMaskIntoConstraints = false
+        activityLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            self.centerXAnchor.constraint(equalTo: calorieLabel.centerXAnchor),
+            self.centerXAnchor.constraint(equalTo: activityLabel.centerXAnchor),
+            
+            self.centerYAnchor.constraint(equalTo: calorieLabel.centerYAnchor, constant: -10),
+            self.centerYAnchor.constraint(equalTo: activityLabel.centerYAnchor, constant: 10),
+        ])
+        
+        
+    }
     
     private func drawWheel() {
         let center = self.center
@@ -68,14 +92,33 @@ final class WheelIndicator: UIView {
     }
     
     // число в диапазоне [0, 1]
-    public func setCalories(fillValue: Double) {
-        shapeLayerOuter.add(animationHelper(fillValue: fillValue), forKey: "")
+    public func setCalories(desired: Double, actual: Double) {
+        setTextForCalories(desired, actual)
+        shapeLayerOuter.add(animationHelper(fillValue: actual/desired), forKey: "")
     }
     
     // число в диапазоне [0, 1]
-    public func setActivity(fillValue: Double) {
-        shapeLayerInner.add(animationHelper(fillValue: fillValue), forKey: "")
+    public func setActivity(desired: Double, actual: Double) {
+        setTextForActivity(desired, actual)
+        shapeLayerInner.add(animationHelper(fillValue: actual/desired), forKey: "")
     }
+    
+    private func setTextForActivity(_ desired: Double, _ actual: Double) {
+        if desired > actual {
+            activityLabel.text = "Осталось \(Int(desired - actual)) шагов"
+        } else {
+            activityLabel.text = "Цель выполнена!"
+        }
+    }
+    
+    private func setTextForCalories(_ desired: Double, _ actual: Double) {
+        if desired > actual {
+            calorieLabel.text = "Осталось \(Int(desired - actual)) ккал"
+        } else {
+            calorieLabel.text = "Пережрал на \(Int(actual - desired))"
+        }
+    }
+    
     
     private func animationHelper(fillValue: Double) -> CABasicAnimation {
         let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")

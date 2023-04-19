@@ -9,11 +9,8 @@ import UIKit
 
 final class MainScreen: UIViewController {
     private let todayDateLabel: UILabel = UILabel(frame: .zero)
-    private let caloriesConsumedView = CalorieIndicatorView(frame: .zero)
-    private let caloriesBurnedView = CalorieIndicatorView(frame: .zero)
-
     // тут костыль, размер задается через фрейм и констрейнты одновременно
-    private let circleIndicator = WheelIndicator(frame: CGRect(x: 0, y: 0, width: 180, height: 180))
+    private let circleIndicator = WheelIndicator(frame: CGRect(x: 0, y: 0, width: 260, height: 260))
     private let summary = CalorieSummaryView(frame: .zero)
     
     private var tableView = UITableView(frame: .zero)
@@ -29,11 +26,9 @@ final class MainScreen: UIViewController {
         try? consumptionEstimator.getCalorieExpandatureForToday(user: userMock) { [weak self] calories in
             DispatchQueue.main.async {
                 let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
-                self?.circleIndicator.setActivity(fillValue: 0.3)
-                self?.circleIndicator.setCalories(fillValue: Double(self?.userMock.target ?? 0) / calories)
+                self?.circleIndicator.setActivity(desired: 1000, actual: 300)
+                self?.circleIndicator.setCalories(desired: Double(self?.userMock.target ?? 0), actual: calories)
                 self?.summary.setData(burned: calories, consumed: consumed)
-                self?.caloriesBurnedView.getNewCalorieValue(calories: calories)
-                self?.caloriesConsumedView.getNewCalorieValue(calories: consumed)
                 
             }
         }
@@ -52,8 +47,8 @@ final class MainScreen: UIViewController {
     }
     
     private func setupConstraints() {
-        caloriesConsumedView.translatesAutoresizingMaskIntoConstraints = false
-        caloriesBurnedView.translatesAutoresizingMaskIntoConstraints = false
+//        caloriesConsumedView.translatesAutoresizingMaskIntoConstraints = false
+//        caloriesBurnedView.translatesAutoresizingMaskIntoConstraints = false
         circleIndicator.translatesAutoresizingMaskIntoConstraints = false
         summary.translatesAutoresizingMaskIntoConstraints = false
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -61,21 +56,13 @@ final class MainScreen: UIViewController {
         NSLayoutConstraint.activate([
             view.centerXAnchor.constraint(equalTo: circleIndicator.centerXAnchor),
             
-            // констрейнты по горизонтали для блока потрачено-жирометр-съедено
-            view.safeAreaLayoutGuide.leftAnchor.constraint(equalTo: caloriesBurnedView.leftAnchor, constant: 0),
-            caloriesBurnedView.rightAnchor.constraint(equalTo: circleIndicator.leftAnchor, constant: 10),
-            circleIndicator.rightAnchor.constraint(equalTo: caloriesConsumedView.leftAnchor, constant: 10),
-            caloriesConsumedView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: 10),
+            circleIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             
             // привязываем жирометр к верхушке
             view.safeAreaLayoutGuide.topAnchor.constraint(equalTo: circleIndicator.topAnchor, constant: -40),
             
-            // привязываем элементы по вертикали
-            caloriesConsumedView.centerYAnchor.constraint(equalTo: circleIndicator.centerYAnchor),
-            caloriesBurnedView.centerYAnchor.constraint(equalTo: circleIndicator.centerYAnchor),
-            
-            circleIndicator.widthAnchor.constraint(equalToConstant: 180),
-            circleIndicator.heightAnchor.constraint(equalToConstant: 180)
+            circleIndicator.widthAnchor.constraint(equalToConstant: 260),
+            circleIndicator.heightAnchor.constraint(equalToConstant: 260)
         ])
         
         NSLayoutConstraint.activate([
@@ -114,10 +101,8 @@ final class MainScreen: UIViewController {
     
     override func loadView() {
         super.loadView()
-        view.addSubview(caloriesConsumedView)
         view.addSubview(circleIndicator)
         view.addSubview(summary)
-        view.addSubview(caloriesBurnedView)
         view.addSubview(tableView)
         setupDateLabel()
         setupTableView()
@@ -138,7 +123,6 @@ final class MainScreen: UIViewController {
         charts.addTarget(self, action: #selector(toGraph), for: .touchUpInside)
         charts.tintColor = .white
         let chartsButton = UIBarButtonItem(customView: charts)
-        
         
         navigationItem.rightBarButtonItems = [rightbarButtonItem, chartsButton]
         let search: UIButton = UIButton(type: UIButton.ButtonType.custom)
@@ -179,9 +163,7 @@ final class MainScreen: UIViewController {
     }
     
     @objc func toGraph() {
-
-//        fatMeter.setCalories(fillValue: 0.5)
-
+        
     }
     
 }
