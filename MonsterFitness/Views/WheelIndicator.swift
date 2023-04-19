@@ -11,8 +11,8 @@ final class WheelIndicator: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.addSubview(activityLabel)
-        self.addSubview(calorieLabel)
+        addSubview(activityLabel)
+        addSubview(calorieLabel)
         drawWheel()
         activityLabel.text = "Осталось шагов: 3000"
         calorieLabel.text =  "Нажор: 300/2000"
@@ -38,18 +38,18 @@ final class WheelIndicator: UIView {
         activityLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            self.centerXAnchor.constraint(equalTo: calorieLabel.centerXAnchor),
-            self.centerXAnchor.constraint(equalTo: activityLabel.centerXAnchor),
+            centerXAnchor.constraint(equalTo: calorieLabel.centerXAnchor),
+            centerXAnchor.constraint(equalTo: activityLabel.centerXAnchor),
             
-            self.centerYAnchor.constraint(equalTo: calorieLabel.centerYAnchor, constant: -10),
-            self.centerYAnchor.constraint(equalTo: activityLabel.centerYAnchor, constant: 10),
+            centerYAnchor.constraint(equalTo: calorieLabel.centerYAnchor, constant: -10),
+            centerYAnchor.constraint(equalTo: activityLabel.centerYAnchor, constant: 10),
         ])
         
         
     }
     
     private func drawWheel() {
-        let center = self.center
+        let center = center
         let circularOuterPath = UIBezierPath(arcCenter: center, radius: frame.width/2,
                                         startAngle: -CGFloat.pi / 2, endAngle: 2 * CGFloat.pi, clockwise: true)
         trackLayerOuter.path = circularOuterPath.cgPath
@@ -58,7 +58,7 @@ final class WheelIndicator: UIView {
         trackLayerOuter.lineWidth = 15
         trackLayerOuter.fillColor = UIColor.clear.cgColor
         trackLayerOuter.lineCap = CAShapeLayerLineCap.round
-        self.layer.addSublayer(trackLayerOuter)
+        layer.addSublayer(trackLayerOuter)
         
         shapeLayerOuter.path = circularOuterPath.cgPath
         shapeLayerOuter.strokeColor = UIColor(named: "circleMagenta")?.cgColor
@@ -68,7 +68,7 @@ final class WheelIndicator: UIView {
         
         shapeLayerOuter.strokeEnd = 0
         
-        self.layer.addSublayer(shapeLayerOuter)
+        layer.addSublayer(shapeLayerOuter)
 
         let circularInnerPath = UIBezierPath(arcCenter: center, radius: frame.width/2 - 18,
                                         startAngle: -CGFloat.pi / 2, endAngle: 2 * CGFloat.pi, clockwise: true)
@@ -78,7 +78,7 @@ final class WheelIndicator: UIView {
         trackLayerInner.lineWidth = 14
         trackLayerInner.fillColor = UIColor.clear.cgColor
         trackLayerInner.lineCap = CAShapeLayerLineCap.round
-        self.layer.addSublayer(trackLayerInner)
+        layer.addSublayer(trackLayerInner)
         
         shapeLayerInner.path = circularInnerPath.cgPath
         shapeLayerInner.strokeColor = UIColor(named: "circleGreen")?.cgColor
@@ -88,7 +88,7 @@ final class WheelIndicator: UIView {
         
         shapeLayerInner.strokeEnd = 0
         
-        self.layer.addSublayer(shapeLayerInner)
+        layer.addSublayer(shapeLayerInner)
     }
     
     // число в диапазоне [0, 1]
