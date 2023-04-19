@@ -15,12 +15,21 @@ final class MainScreen: UIViewController {
     
     private var tableView = UITableView(frame: .zero)
     
-    private let mockStorage = MockFoodManager(storage: [])
+    private let mockStorage: FoodStorage
     private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
     private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, activityLevel: .moderatelyActive)
 
     var onSearchFoodSelected: (() -> Void)?
     var onPersonSelected: (() -> Void)?
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    init(storage: FoodStorage) {
+        self.mockStorage = storage
+        super.init(nibName: nil, bundle: nil)
+    }
 
     private func setDataForSubviews() {
         try? consumptionEstimator.getCalorieExpandatureForToday(user: userMock) { [weak self] calories in

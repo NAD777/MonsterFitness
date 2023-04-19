@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="21G419" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CoreDish" representedClassName="CoreDish" syncable="YES" codeGenerationType="class">
+        <attribute name="energyKcal" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="portion" maxCount="1" deletionRule="Nullify" destinationEntity="CorePortion" inverseName="dish" inverseEntity="CorePortion"/>
+    </entity>
+    <entity name="CoreMenu" representedClassName="CoreMenu" syncable="YES" codeGenerationType="class">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="breakfast" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion"/>
+    </entity>
+    <entity name="CorePortion" representedClassName="CorePortion" syncable="YES" codeGenerationType="class">
+        <attribute name="weight" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="dish" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDish" inverseName="portion" inverseEntity="CoreDish"/>
+    </entity>
 </model>
