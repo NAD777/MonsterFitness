@@ -7,13 +7,13 @@
 
 import Foundation
 
-enum Genders{
+enum Genders: Int {
     case male
     case female
     case other
 }
 
-enum PhysicalActivityLevel {
+enum PhysicalActivityLevel: Int {
     case passive
     case minimallyActive
     case moderatelyActive

@@ -84,8 +84,10 @@ class ProfileViewController: UIViewController {
     private var currentRow = [UIPickerView: Int]()
     private var name = UITextField()
     private var stacks = Stacks()
+    private var stackArr = [UIPickerView]()
     var targetCalories = BlockWithTarget("Daily goal by calories:")
     var targetSteps = BlockWithTarget("Daily goal by steps:")
+    let pickerType = UIPickerView()
     var currentUser: User? {
         didSet {
             update()
@@ -96,12 +98,13 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.overrideUserInterfaceStyle = .dark
         // Do any additional setup after loading the viewa
-        currentUser = User(name: "Bob", age: 19, weight: 48, height: 198, gender: .male, target: 6600)
+        settingPickersForUserInformation()
+        currentUser = UserProfile().currentUser
         view.backgroundColor = CONFIG.backgroundColor
         stacks.stack.axis = .vertical
         
         settingsName()
-        settingPickersForUserInformation()
+        //settingPickersForUserInformation()
         settingsUserInformation()
         settingsStackForTarget()
         settingsStackForStep()
@@ -113,6 +116,15 @@ class ProfileViewController: UIViewController {
     }
 
     @objc func onButtonTapped() {
+        var cur = UserProfile()
+        cur.currentUser  = User(name: name.text ?? "")
+        cur.currentUser?.age = (currentRow[stackArr[0]] ?? 0) + 1
+        cur.currentUser?.weight = (currentRow[stackArr[1]] ?? 0) + 20
+        cur.currentUser?.height = (currentRow[stackArr[2]] ?? 0) + 100
+        cur.currentUser?.gender = Genders(rawValue: currentRow[stackArr[3]] ?? 0)
+        cur.currentUser?.target = Int(targetCalories.target.text ?? "") ?? 0
+        cur.currentUser?.targetSteps = Int(targetSteps.target.text ?? "") ?? 0
+        cur.currentUser?.activityLevel = PhysicalActivityLevel(rawValue: currentRow[pickerType] ?? 0)
         onProfieChanged?()
     }
     
@@ -174,6 +186,11 @@ class ProfileViewController: UIViewController {
         stacks.stackForUserInformation1.addArrangedSubview(pickerWeight)
         stacks.stackForUserInformation2.addArrangedSubview(pickerHeight)
         stacks.stackForUserInformation2.addArrangedSubview(pickerGender)
+        
+        stackArr.append(pickerAge)
+        stackArr.append(pickerWeight)
+        stackArr.append(pickerHeight)
+        stackArr.append(pickerGender)
     }
     
     func settingsUserInformation() {
@@ -256,8 +273,7 @@ class ProfileViewController: UIViewController {
         labelTarget.font = labelTarget.font.withSize(25)
         labelTarget.textColor = CONFIG.searchFieldTextColor
         labelTarget.textAlignment = .center
-        
-        let pickerType = UIPickerView()
+    
         pickerType.dataSource = self
         pickerType.delegate = self
         let data = ["Passive type", "Minimally active type", "Moderately active type", "Active type", "Overly active type"]
@@ -280,19 +296,14 @@ class ProfileViewController: UIViewController {
     
     func update() {
         // TODO
-       name.text = currentUser?.name
-//        userView.age = GenetareBlock(count: String(currentUser?.age ?? 15), placeholder: "age", unit: "y.o.")
-//        userView.weight = GenetareBlock(count: String(currentUser?.weight ?? 0), placeholder: "weight", unit: "kg")
-//        userView.height = GenetareBlock(count: String(currentUser?.height ?? 0), placeholder: "height", unit: "cm")
-//        switch currentUser?.gender {
-//        case .male:
-//            userView.gender = GenetareBlock(count: "male", placeholder: "gender", unit: "")
-//        case .female:
-//            userView.gender = GenetareBlock(count: "female", placeholder: "gender", unit: "")
-//        default:
-//            userView.gender = GenetareBlock(count: "strange", placeholder: "gender", unit: "")
-//        }
-        //stacks.target.text = String(currentUser?.target ?? 0)
+        name.text = currentUser?.name
+        targetCalories.target.text = String(currentUser?.target ?? 0)
+        targetSteps.target.text = String(currentUser?.targetSteps ?? 0)
+        stackArr[0].selectRow((currentUser?.age ?? 1) - 1, inComponent: 0, animated: true)
+        stackArr[1].selectRow((currentUser?.weight ?? 20) - 20, inComponent: 0, animated: true)
+        stackArr[2].selectRow((currentUser?.height ?? 100) - 100, inComponent: 0, animated: true)
+        stackArr[3].selectRow(currentUser?.gender?.rawValue ?? 0, inComponent: 0, animated: true)
+        pickerType.selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
     }
 }
 
@@ -307,7 +318,6 @@ extension ProfileViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         currentRow[pickerView] = row
-        //print(row)
         return dataForPickers[pickerView]?[row]
     }
 }
