@@ -307,7 +307,7 @@ extension ProfileViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         currentRow[pickerView] = row
-        print(row)
+        //print(row)
         return dataForPickers[pickerView]?[row]
     }
 }
