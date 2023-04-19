@@ -49,6 +49,7 @@ class FoodViewController: UIViewController {
         var data: InputData?
         var onExit: () -> Void
         var onFoodSelected: (Dish) -> Void
+        var onDeleteFromFavourite: (Dish) -> Void
         var output: OutputData?
     }
     struct DishesLists {
@@ -77,7 +78,7 @@ class FoodViewController: UIViewController {
     private lazy var pickerSegmentedControl = UISegmentedControl()
     private lazy var searchField = UITextField()
     private lazy var tableOfContent = UITableView()
-    private lazy var         divider = UIView()
+    private lazy var divider = UIView()
     private lazy var searchPlaceHolder = UIView()
     private lazy var searchButton = UIButton()
     private lazy var dishesList = DishesLists()
@@ -106,7 +107,7 @@ class FoodViewController: UIViewController {
         setUpDivider()
         setUpPicker()
         setUpSearchField()
-        setUpSearchButton()
+//        setUpSearchButton()
         setUpTable()
     }
 
@@ -153,7 +154,8 @@ class FoodViewController: UIViewController {
         searchPlaceHolder = UIView()
         view.addSubview(searchPlaceHolder)
         searchPlaceHolder.translatesAutoresizingMaskIntoConstraints = false
-        searchPlaceHolder.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.80).isActive = true
+//        searchPlaceHolder.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.80).isActive = true
+        searchPlaceHolder.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
         searchPlaceHolder.heightAnchor.constraint(equalToConstant: 40).isActive = true
         searchPlaceHolder.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
         searchPlaceHolder.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
@@ -175,24 +177,6 @@ class FoodViewController: UIViewController {
             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray]
         )
         searchField.delegate = self
-    }
-
-    // creates search button
-    func setUpSearchButton() {
-        searchButton = UIButton()
-        view.addSubview(searchButton)
-        searchButton.translatesAutoresizingMaskIntoConstraints = false
-        searchButton.leadingAnchor.constraint(equalTo: searchPlaceHolder.trailingAnchor, constant: 10).isActive = true
-        searchButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        searchButton.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
-        searchButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        searchButton.layer.borderWidth = BrandConfig.borderWidth
-        searchButton.backgroundColor = BrandConfig.secondaryBackgroudColor
-        searchButton.layer.borderColor = BrandConfig.borderColor
-        searchButton.layer.cornerRadius = BrandConfig.cornerRadius - 5
-        let searchIcon = UIImage(systemName: "magnifyingglass", compatibleWith: .current)?.withTintColor(BrandConfig.segmentSelectedColor, renderingMode: .alwaysOriginal)
-        searchButton.setImage(searchIcon, for: .normal)
-        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
     }
 
     // creates table for dishes
@@ -265,9 +249,7 @@ extension FoodViewController: UITableViewDataSource {
         didSelectRowAt indexPath: IndexPath
     ) {
         tableView.deselectRow(at: indexPath, animated: true)
-
         if let selectedDish = dishesList.content?[indexPath.row] {
-            print(selectedDish)
             bus?.onFoodSelected(selectedDish)
         }
     }
@@ -285,7 +267,12 @@ extension FoodViewController: UITableViewDataSource {
         forRowAt indexPath: IndexPath
     ) {
         if editingStyle == .delete {
-          print("Deleted")
+            if let deletedDish = dishesList.content?[indexPath.row] {
+                bus?.onDeleteFromFavourite(deletedDish)
+                dishesList.content?.remove(at: indexPath.row)
+                let indexPaths = [indexPath]
+                tableView.deleteRows(at: indexPaths, with: .automatic)
+            }
         }
     }
 }
@@ -301,12 +288,10 @@ extension FoodViewController: UITextFieldDelegate {
         let newText = oldText.replacingCharacters(
             in: stringRange,
             with: string)
-        print(newText)
 
         Edamam.shared.retriveDishes(name: newText) { [weak self] dishes in
             DispatchQueue.main.async {
                 if self?.textField.text != newText {
-                    print(self?.textField.text != newText, self?.textField.text, newText)
                     self?.dishesList.canDelete = false
                     self?.pickerSegmentedControl.selectedSegmentIndex = 0
                     self?.dishesList.content = dishes

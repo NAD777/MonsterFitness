@@ -48,7 +48,11 @@ class Router {
             onExit: { },
             onFoodSelected: { [weak self] (dish: Dish) -> Void in
                 self?.openFoodEditor(dish: dish)
-            })
+            },
+            onDeleteFromFavourite: { (dish: Dish) -> Void in
+                print("Deleted Dish: \(dish)")
+            }
+        )
 
         rootViewController.pushViewController(foodScreenViewController, animated: true)
     }
