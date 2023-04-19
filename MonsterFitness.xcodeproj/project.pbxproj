@@ -24,6 +24,8 @@
 		0A57670129E9872C00648944 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A57670029E9872C00648944 /* ProfileViewController.swift */; };
 		0A57670529E990F100648944 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A57670429E990F100648944 /* User.swift */; };
 		0A6F039B29EEB2A800356321 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A6F039A29EEB2A800356321 /* UserProfile.swift */; };
+		29B57BF329EFF11C00A1B0A7 /* CoreStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B57BF129EFF11C00A1B0A7 /* CoreStorage.swift */; };
+		29B57BF429EFF11C00A1B0A7 /* CoreFoodManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B57BF229EFF11C00A1B0A7 /* CoreFoodManager.swift */; };
 		9211713129EF3542004BF5C3 /* WheelIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9211713029EF3542004BF5C3 /* WheelIndicator.swift */; };
 		9249CCEC29E999E30031A47A /* FatMeterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9249CCEB29E999E30031A47A /* FatMeterView.swift */; };
 		9249CCF029E9E2DE0031A47A /* CalorieSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9249CCEF29E9E2DE0031A47A /* CalorieSummaryView.swift */; };
@@ -57,6 +59,8 @@
 		0A57670029E9872C00648944 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		0A57670429E990F100648944 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		0A6F039A29EEB2A800356321 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		29B57BF129EFF11C00A1B0A7 /* CoreStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreStorage.swift; sourceTree = "<group>"; };
+		29B57BF229EFF11C00A1B0A7 /* CoreFoodManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreFoodManager.swift; sourceTree = "<group>"; };
 		9211713029EF3542004BF5C3 /* WheelIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WheelIndicator.swift; sourceTree = "<group>"; };
 		9249CCEB29E999E30031A47A /* FatMeterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FatMeterView.swift; sourceTree = "<group>"; };
 		9249CCEF29E9E2DE0031A47A /* CalorieSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalorieSummaryView.swift; sourceTree = "<group>"; };
@@ -127,6 +131,7 @@
 				01F06D3229E594110012CFE7 /* LaunchScreen.storyboard */,
 				01F06D3529E594110012CFE7 /* Info.plist */,
 				01F06D2D29E594100012CFE7 /* MonsterFitness.xcdatamodeld */,
+				29B57BF029EFF11C00A1B0A7 /* Storage */,
 				0128BC8C29E6D92800321EF8 /* Router.swift */,
 				0A57670029E9872C00648944 /* ProfileViewController.swift */,
 				0128BC9029E6E8B000321EF8 /* HomeScreenViewController.swift */,
@@ -140,6 +145,15 @@
 				0A57670429E990F100648944 /* User.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		29B57BF029EFF11C00A1B0A7 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				29B57BF129EFF11C00A1B0A7 /* CoreStorage.swift */,
+				29B57BF229EFF11C00A1B0A7 /* CoreFoodManager.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 		92C5C0A629E97A3F0001CD34 /* Views */ = {
@@ -269,6 +283,7 @@
 			files = (
 				0A6F039B29EEB2A800356321 /* UserProfile.swift in Sources */,
 				01F06D2929E594100012CFE7 /* RootViewController.swift in Sources */,
+				29B57BF329EFF11C00A1B0A7 /* CoreStorage.swift in Sources */,
 				9249CCF929EAE7010031A47A /* MockFoodManager.swift in Sources */,
 				92EFD8C029ED78AB00BFFD2E /* ConsumptionEstimation.swift in Sources */,
 				92C5C0A829E97A550001CD34 /* MainScreen.swift in Sources */,
@@ -289,6 +304,7 @@
 				9211713129EF3542004BF5C3 /* WheelIndicator.swift in Sources */,
 				01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */,
 				0128BC9129E6E8B000321EF8 /* HomeScreenViewController.swift in Sources */,
+				29B57BF429EFF11C00A1B0A7 /* CoreFoodManager.swift in Sources */,
 				C38D03EA29EEB934000AED51 /* DayResult.swift in Sources */,
 				01472D6D29ED57D100845D4E /* FoodTableViewCell.swift in Sources */,
 				9249CCF729EAE2EB0031A47A /* EatenProductsCell.swift in Sources */,

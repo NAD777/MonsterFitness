@@ -9,8 +9,8 @@ import Foundation
 import UIKit
 
 class Router {
+    let stoage = CoreStorage()
     let defaults = UserDefaults.standard
-
     let rootViewController: RootViewController
 
     init(rootViewController: RootViewController) {
@@ -18,7 +18,8 @@ class Router {
     }
 
     func start() {
-        let homeScreenViewController = MainScreen()
+        let coreStorage = CoreFoodManager(context: stoage.persistentContainer.viewContext)
+        let homeScreenViewController = MainScreen(storage: coreStorage)
         homeScreenViewController.onSearchFoodSelected = { [weak self] in
             self?.openFood()
         }
@@ -49,6 +50,7 @@ class Router {
     }
     
     func returnThePortion(portion: UIPortion) {
+        stoage.savePortion(portion)
         rootViewController.popViewController(animated: true)
     }
 

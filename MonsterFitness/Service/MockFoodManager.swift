@@ -33,9 +33,7 @@ protocol FoodStorage {
     func addConsumedDish(_ model: Portion)
     
     func deleteDish(index: Int) throws
-    
-    func getAllDishes() -> [Portion]
-    
+
     func getTotalCalorieIntake() -> Double
 }
 
@@ -83,9 +81,4 @@ final class MockFoodManager: FoodStorage {
             throw Errors.doesNotExist
         }
     }
-    
-    public func getAllDishes() -> [Portion] {
-        return self.storage
-    }
-    
 }
