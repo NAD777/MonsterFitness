@@ -69,9 +69,6 @@ class BlockWithTarget {
         stackForButton.translatesAutoresizingMaskIntoConstraints = false
         stackForButton.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 8, right: 8)
         stackForButton.isLayoutMarginsRelativeArrangement = true
-        
-        labelTarget.translatesAutoresizingMaskIntoConstraints = false
-        labelTarget.topAnchor.constraint(equalTo: stack.topAnchor, constant: 8).isActive = true
         return stack
     }
 }
@@ -150,7 +147,6 @@ class ProfileViewController: UIViewController {
         pickerAge.dataSource = self
         dataForPickers[pickerAge] = dataAge
         pickerAge.translatesAutoresizingMaskIntoConstraints = false
-        pickerAge.heightAnchor.constraint(equalToConstant: 90).isActive = true
         
         let pickerWeight = UIPickerView()
         var dataWeight = [String]()
@@ -161,7 +157,6 @@ class ProfileViewController: UIViewController {
         pickerWeight.dataSource = self
         dataForPickers[pickerWeight] = dataWeight
         pickerWeight.translatesAutoresizingMaskIntoConstraints = false
-        pickerWeight.heightAnchor.constraint(equalToConstant: 90).isActive = true
         
         let pickerHeight = UIPickerView()
         var dataHeight = [String]()
@@ -172,7 +167,6 @@ class ProfileViewController: UIViewController {
         pickerHeight.dataSource = self
         dataForPickers[pickerHeight] = dataHeight
         pickerHeight.translatesAutoresizingMaskIntoConstraints = false
-        pickerHeight.heightAnchor.constraint(equalToConstant: 90).isActive = true
         
         let pickerGender = UIPickerView()
         let dataGender = ["male", "female", "other"]
@@ -180,7 +174,6 @@ class ProfileViewController: UIViewController {
         pickerGender.dataSource = self
         dataForPickers[pickerGender] = dataGender
         pickerGender.translatesAutoresizingMaskIntoConstraints = false
-        pickerGender.heightAnchor.constraint(equalToConstant: 90).isActive = true
         
         stacks.stackForUserInformation1.addArrangedSubview(pickerAge)
         stacks.stackForUserInformation1.addArrangedSubview(pickerWeight)
@@ -205,7 +198,7 @@ class ProfileViewController: UIViewController {
         stacks.stack.topAnchor.constraint(equalTo: name.bottomAnchor, constant: CGFloat(distanceBetweenBlocks)).isActive = true
         stacks.stack.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
         stacks.stack.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -10).isActive = true
-        
+        stacks.stack.heightAnchor.constraint(equalToConstant: 200).isActive = true
         stacks.stack.backgroundColor = CONFIG.deviderColor
         stacks.stackForUserInformation1.distribution = .fillEqually
         stacks.stackForUserInformation1.spacing = 8.0
@@ -273,13 +266,13 @@ class ProfileViewController: UIViewController {
         labelTarget.font = labelTarget.font.withSize(25)
         labelTarget.textColor = CONFIG.searchFieldTextColor
         labelTarget.textAlignment = .center
-    
+        labelTarget.translatesAutoresizingMaskIntoConstraints = true
         pickerType.dataSource = self
         pickerType.delegate = self
         let data = ["Passive type", "Minimally active type", "Moderately active type", "Active type", "Overly active type"]
         dataForPickers[pickerType] = data
         pickerType.translatesAutoresizingMaskIntoConstraints = false
-        pickerType.heightAnchor.constraint(equalToConstant: 90).isActive = true
+        pickerType.heightAnchor.constraint(equalToConstant: 105).isActive = true
         stacks.stackForType.axis = .vertical
         stacks.stackForType.addArrangedSubview(labelTarget)
         stacks.stackForType.addArrangedSubview(pickerType)
@@ -290,13 +283,11 @@ class ProfileViewController: UIViewController {
         stacks.stackForType.topAnchor.constraint(equalTo: stacks.stackForStep.bottomAnchor, constant: CGFloat(distanceBetweenBlocks)).isActive = true
         stacks.stackForType.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         stacks.stackForType.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        labelTarget.translatesAutoresizingMaskIntoConstraints = false
-        labelTarget.topAnchor.constraint(equalTo: stacks.stackForType.topAnchor, constant: 10).isActive = true
+        stacks.stackForType.heightAnchor.constraint(equalToConstant: 140).isActive = true
         pickerType.selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
     }
     
     func update() {
-        // TODO
         name.text = currentUser?.name
         targetCalories.target.text = String(currentUser?.target ?? 0)
         targetSteps.target.text = String(currentUser?.targetSteps ?? 0)
