@@ -107,7 +107,7 @@ class FoodViewController: UIViewController {
         setUpDivider()
         setUpPicker()
         setUpSearchField()
-        setUpSearchButton()
+//        setUpSearchButton()
         setUpTable()
     }
 
@@ -154,7 +154,8 @@ class FoodViewController: UIViewController {
         searchPlaceHolder = UIView()
         view.addSubview(searchPlaceHolder)
         searchPlaceHolder.translatesAutoresizingMaskIntoConstraints = false
-        searchPlaceHolder.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.80).isActive = true
+//        searchPlaceHolder.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.80).isActive = true
+        searchPlaceHolder.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.95).isActive = true
         searchPlaceHolder.heightAnchor.constraint(equalToConstant: 40).isActive = true
         searchPlaceHolder.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
         searchPlaceHolder.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
@@ -178,23 +179,23 @@ class FoodViewController: UIViewController {
         searchField.delegate = self
     }
 
-    // creates search button
-    func setUpSearchButton() {
-        searchButton = UIButton()
-        view.addSubview(searchButton)
-        searchButton.translatesAutoresizingMaskIntoConstraints = false
-        searchButton.leadingAnchor.constraint(equalTo: searchPlaceHolder.trailingAnchor, constant: 10).isActive = true
-        searchButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        searchButton.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
-        searchButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        searchButton.layer.borderWidth = BrandConfig.borderWidth
-        searchButton.backgroundColor = BrandConfig.secondaryBackgroudColor
-        searchButton.layer.borderColor = BrandConfig.borderColor
-        searchButton.layer.cornerRadius = BrandConfig.cornerRadius - 5
-        let searchIcon = UIImage(systemName: "magnifyingglass", compatibleWith: .current)?.withTintColor(BrandConfig.segmentSelectedColor, renderingMode: .alwaysOriginal)
-        searchButton.setImage(searchIcon, for: .normal)
-        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
-    }
+//    // creates search button
+//    func setUpSearchButton() {
+//        searchButton = UIButton()
+//        view.addSubview(searchButton)
+//        searchButton.translatesAutoresizingMaskIntoConstraints = false
+//        searchButton.leadingAnchor.constraint(equalTo: searchPlaceHolder.trailingAnchor, constant: 10).isActive = true
+//        searchButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+//        searchButton.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
+//        searchButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+//        searchButton.layer.borderWidth = BrandConfig.borderWidth
+//        searchButton.backgroundColor = BrandConfig.secondaryBackgroudColor
+//        searchButton.layer.borderColor = BrandConfig.borderColor
+//        searchButton.layer.cornerRadius = BrandConfig.cornerRadius - 5
+//        let searchIcon = UIImage(systemName: "magnifyingglass", compatibleWith: .current)?.withTintColor(BrandConfig.segmentSelectedColor, renderingMode: .alwaysOriginal)
+//        searchButton.setImage(searchIcon, for: .normal)
+//        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
+//    }
 
     // creates table for dishes
     func setUpTable() {
