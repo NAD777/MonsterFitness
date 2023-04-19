@@ -116,7 +116,7 @@ class ProfileViewController: UIViewController {
     }
 
     @objc func onButtonTapped() {
-        var cur = UserProfile()
+        let cur = UserProfile()
         cur.currentUser  = User(name: name.text ?? "")
         cur.currentUser?.age = (currentRow[stackArr[0]] ?? 0) + 1
         cur.currentUser?.weight = (currentRow[stackArr[1]] ?? 0) + 20
@@ -292,6 +292,7 @@ class ProfileViewController: UIViewController {
         stacks.stackForType.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         labelTarget.translatesAutoresizingMaskIntoConstraints = false
         labelTarget.topAnchor.constraint(equalTo: stacks.stackForType.topAnchor, constant: 10).isActive = true
+        pickerType.selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
     }
     
     func update() {
@@ -303,7 +304,6 @@ class ProfileViewController: UIViewController {
         stackArr[1].selectRow((currentUser?.weight ?? 20) - 20, inComponent: 0, animated: true)
         stackArr[2].selectRow((currentUser?.height ?? 100) - 100, inComponent: 0, animated: true)
         stackArr[3].selectRow(currentUser?.gender?.rawValue ?? 0, inComponent: 0, animated: true)
-        pickerType.selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
     }
 }
 
