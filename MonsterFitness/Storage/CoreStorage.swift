@@ -8,7 +8,7 @@
 import CoreData
 
 final class CoreStorage {
-    func savePortion(_ portion: UIPortion) {
+    func savePortion(_ portion: UIPortion, date: Date) {
         let coreDish = CoreDish(context: persistentContainer.viewContext)
         coreDish.energyKcal = portion.dish?.kcal ?? 0
         coreDish.name = portion.dish?.title ?? ""
@@ -17,11 +17,27 @@ final class CoreStorage {
         corePortion.weight = Double(portion.weight)
         corePortion.dish = coreDish
 
-        let coreMenu = CoreMenu(context: persistentContainer.viewContext)
+        let coreMenu = fetchMenu(date: date) ?? makeMenu(date: date)
         coreMenu.insertIntoBreakfast(corePortion, at: coreMenu.breakfast?.count ?? 0)
-        coreMenu.date = Date()
 
         saveContext()
+    }
+
+    func fetchMenu(date: Date) -> CoreMenu? {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: String(describing: CoreMenu.self))
+        request.predicate = NSPredicate(format: "date == %@", date as NSDate)
+        do {
+            if let results = try persistentContainer.viewContext.fetch(request) as? [CoreMenu] {
+                return results.first
+            }
+        } catch {}
+        return nil
+    }
+
+    func makeMenu(date: Date) -> CoreMenu {
+        let coreMenu = CoreMenu(context: persistentContainer.viewContext)
+        coreMenu.date = date
+        return coreMenu
     }
 
     // MARK: - Core Data stack

@@ -8,18 +8,24 @@
 import CoreData
 
 final class CoreFoodManager: FoodStorage {
-    var storage: [Portion]
+    let date: Date
 
-    init(context: NSManagedObjectContext) {
+    let allPortions: [Portion]
+
+    init(date: Date, context: NSManagedObjectContext) {
+        self.date = date
+
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: String(describing: CoreMenu.self))
+        request.predicate = NSPredicate(format: "date == %@", date as NSDate)
+
         do {
             guard let results = try context.fetch(request) as? [CoreMenu],
                 let portions = results.first?.breakfast?.array as? [CorePortion] else {
-                storage = []
+                allPortions = []
                 return
             }
 
-            storage = portions.map {
+            allPortions = portions.map {
                 Portion(
                     weightConsumed: $0.weight,
                     dishConsumed: Dish(
@@ -32,14 +38,14 @@ final class CoreFoodManager: FoodStorage {
                     dayPart: .breakfast)
             }
         } catch {
-            storage = []
+            allPortions = []
         }
     }
 
     func getTotalCalorieIntake() -> Double {
         var calorieTotal: Double = 0.0
-        for meal in storage {
-            calorieTotal += meal.weightConsumed * meal.dishConsumed.kcal * 10
+        for portion in allPortions {
+            calorieTotal += portion.weightConsumed * portion.dishConsumed.kcal * 10
         }
         return calorieTotal
     }

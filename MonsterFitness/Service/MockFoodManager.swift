@@ -15,20 +15,15 @@ struct Portion {
         case unspecified = "Не указан"
     }
 
-//    struct DishMock {
-//        let title: String
-//        let calories: Double
-//        let carbs: Double
-//        let fat: Double
-//    }
-
     let weightConsumed: Double
     let dishConsumed: Dish
     let dayPart: DayPart
 }
 
 protocol FoodStorage {
-    var storage: [Portion] { get set }
+    var date: Date { get }
+
+    var allPortions: [Portion] { get }
     
     func addConsumedDish(_ model: Portion)
     
@@ -38,22 +33,24 @@ protocol FoodStorage {
 }
 
 final class MockFoodManager: FoodStorage {
-    
     enum Errors: Error {
         case doesNotExist
     }
-    
-    
-    public var storage: [Portion] = [
+
+    private var storage: [Portion] = [
         Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .breakfast),
         Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .lunch),
         Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .dinner),
         Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .unspecified),
         Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .unspecified),
         Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .breakfast),
-        Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .breakfast),
+        Portion(weightConsumed: 0.3, dishConsumed: Dish(title: "Пиво", kcal: 30, prot: 30, fat: 30, carb: 30), dayPart: .breakfast)
 
     ]
+    
+    let date = Date()
+
+    var allPortions: [Portion] { storage }
     
     init(storage: [Portion]) {
         if storage.isEmpty != true {

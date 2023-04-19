@@ -19,8 +19,11 @@ final class MainScreen: UIViewController {
     private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
     private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, activityLevel: .moderatelyActive)
 
+    var date: Date { mockStorage.date }
+
     var onSearchFoodSelected: (() -> Void)?
     var onPersonSelected: (() -> Void)?
+    var onGraphSelected: (() -> Void)?
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -89,18 +92,12 @@ final class MainScreen: UIViewController {
             tableView.heightAnchor.constraint(equalToConstant: 450)
 
         ])
-        
     }
-    
+
     private func getDateString() -> String {
-        let date = Date()
-        let calendar = Calendar.current
-        var month = String(calendar.component(.month, from: date))
-        if Int(month) ?? 11 < 10 {
-            month = "0\(month)"
-        }
-        let todayDate = "\(calendar.component(.day, from: date)).\(month).\(calendar.component(.year, from: date))"
-        return todayDate
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        return dateFormatter.string(from: mockStorage.date)
     }
     
     private func setupDateLabel() {
@@ -172,7 +169,7 @@ final class MainScreen: UIViewController {
     }
     
     @objc func toGraph() {
-        
+        onGraphSelected?()
     }
     
 }
@@ -186,7 +183,6 @@ extension MainScreen: UITableViewDelegate {
         return 20
     }
 
-    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return translateOrderToDayPart(section: section).rawValue
     }
@@ -219,15 +215,14 @@ extension MainScreen: UITableViewDataSource {
             return .unspecified
         }
     }
-    
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
-        return  Set(mockStorage.storage.map { return $0.dayPart }).count
+        return  Set(mockStorage.allPortions.map { return $0.dayPart }).count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let currentDay = translateOrderToDayPart(section: section)
-        let amount = mockStorage.storage.filter { $0.dayPart == currentDay }.count
+        let amount = mockStorage.allPortions.filter { $0.dayPart == currentDay }.count
 
         return amount
     }
@@ -236,7 +231,7 @@ extension MainScreen: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: EatenProductsCell.identifier) as? EatenProductsCell else {
             return UITableViewCell()
         }
-        cell.setData(portion: mockStorage.storage[indexPath.row])
+        cell.setData(portion: mockStorage.allPortions[indexPath.row])
         
         return cell
     }
