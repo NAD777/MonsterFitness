@@ -179,24 +179,6 @@ class FoodViewController: UIViewController {
         searchField.delegate = self
     }
 
-//    // creates search button
-//    func setUpSearchButton() {
-//        searchButton = UIButton()
-//        view.addSubview(searchButton)
-//        searchButton.translatesAutoresizingMaskIntoConstraints = false
-//        searchButton.leadingAnchor.constraint(equalTo: searchPlaceHolder.trailingAnchor, constant: 10).isActive = true
-//        searchButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-//        searchButton.topAnchor.constraint(equalTo: pickerSegmentedControl.bottomAnchor, constant: 15).isActive = true
-//        searchButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-//        searchButton.layer.borderWidth = BrandConfig.borderWidth
-//        searchButton.backgroundColor = BrandConfig.secondaryBackgroudColor
-//        searchButton.layer.borderColor = BrandConfig.borderColor
-//        searchButton.layer.cornerRadius = BrandConfig.cornerRadius - 5
-//        let searchIcon = UIImage(systemName: "magnifyingglass", compatibleWith: .current)?.withTintColor(BrandConfig.segmentSelectedColor, renderingMode: .alwaysOriginal)
-//        searchButton.setImage(searchIcon, for: .normal)
-//        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
-//    }
-
     // creates table for dishes
     func setUpTable() {
         tableOfContent = UITableView()
@@ -267,9 +249,7 @@ extension FoodViewController: UITableViewDataSource {
         didSelectRowAt indexPath: IndexPath
     ) {
         tableView.deselectRow(at: indexPath, animated: true)
-
         if let selectedDish = dishesList.content?[indexPath.row] {
-            print(selectedDish)
             bus?.onFoodSelected(selectedDish)
         }
     }
@@ -308,12 +288,10 @@ extension FoodViewController: UITextFieldDelegate {
         let newText = oldText.replacingCharacters(
             in: stringRange,
             with: string)
-        print(newText)
 
         Edamam.shared.retriveDishes(name: newText) { [weak self] dishes in
             DispatchQueue.main.async {
                 if self?.textField.text != newText {
-                    print(self?.textField.text != newText, self?.textField.text, newText)
                     self?.dishesList.canDelete = false
                     self?.pickerSegmentedControl.selectedSegmentIndex = 0
                     self?.dishesList.content = dishes
