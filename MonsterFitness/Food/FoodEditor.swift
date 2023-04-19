@@ -21,28 +21,65 @@ class SelfSizingTableView: UITableView {
     }
 }
 
+struct UIPortion {
+    enum Preference {
+        case unmarkedDish
+        case favourite
+        
+        mutating func flip() -> Preference {
+            switch self {
+            case .favourite:
+                self = .unmarkedDish
+            case .unmarkedDish:
+                self = .favourite
+            }
+            
+            return self
+        }
+    }
+    
+    enum MealTime: Int {
+        case breakfast = 0
+        case dinner
+        case lunch
+    }
+    
+    let preference: Preference
+    let weight: Int
+    let dish: Dish?
+    let mealTime: MealTime
+}
+
 class FoodEditor: UIViewController {
     struct Model {
-        struct InputData {
+        struct Data {
             var dish: Dish
-        }
-        struct OutputData {
             var weight: Int?
         }
-        var data: InputData?
-        var onExit: () -> Void
-        var output: OutputData?
+        var data: Data?
+        var weightFieldTap: (String) -> Void
+        var onExit: (UIPortion) -> Void
     }
-    var bus: FoodEditor.Model?
+    var bus: FoodEditor.Model? {
+        didSet {
+            weightField.text = "\(bus?.data?.weight ?? 0)"
+        }
+    }
+
     struct DishInfo {
         var name: String
         var value: Double
     }
+
     private lazy var dishDescriptions = [DishInfo]()
     private lazy var divider = UIView()
     private lazy var tableOfContent = UITableView()
+    private lazy var favButton = UIButton()
     private lazy var mealPartSeparetedControl = UISegmentedControl()
     private lazy var weightField = UITextField()
+    private lazy var mealTime: UIPortion.MealTime = .breakfast
+    private lazy var preference: UIPortion.Preference = .unmarkedDish
+
     func setUpDevider() {
         divider = UIView()
         divider.backgroundColor = BrandConfig.deviderColor
@@ -54,7 +91,7 @@ class FoodEditor: UIViewController {
         divider.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         divider.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10).isActive = true
     }
-    //
+
     func setUpTable() {
         tableOfContent = SelfSizingTableView()
 
@@ -77,19 +114,23 @@ class FoodEditor: UIViewController {
 
     func initializeDescriptions() {
         if bus?.data?.dish.kcal != nil {
-            dishDescriptions.append(DishInfo(name: "Kcal", value: (bus?.data?.dish.kcal)!))
+            let roundedValue = round(100 * (bus?.data?.dish.kcal)!) / 100
+            dishDescriptions.append(DishInfo(name: "Kcal", value: roundedValue))
         }
 
         if bus?.data?.dish.prot != nil {
-            dishDescriptions.append(DishInfo(name: "Protein", value: (bus?.data?.dish.prot)!))
+            let roundedValue = round(100 * (bus?.data?.dish.prot)!) / 100
+            dishDescriptions.append(DishInfo(name: "Protein", value: roundedValue))
         }
 
         if bus?.data?.dish.carb != nil {
-            dishDescriptions.append(DishInfo(name: "Carbs", value: (bus?.data?.dish.carb)!))
+            let roundedValue = round(100 * (bus?.data?.dish.carb)!) / 100
+            dishDescriptions.append(DishInfo(name: "Carbs", value: roundedValue))
         }
 
         if bus?.data?.dish.fat != nil {
-            dishDescriptions.append(DishInfo(name: "Protein", value: (bus?.data?.dish.fat)!))
+            let roundedValue = round(100 * (bus?.data?.dish.fat)!) / 100
+            dishDescriptions.append(DishInfo(name: "Protein", value: roundedValue))
         }
     }
 
@@ -110,37 +151,75 @@ class FoodEditor: UIViewController {
         label.text = "Meal"
         label.font = label.font.withSize(20)
 
-        let favButton = UIButton()
+        favButton = UIButton()
         view.addSubview(favButton)
         favButton.translatesAutoresizingMaskIntoConstraints = false
-//        favButton.leadingAnchor.constraint(equalTo: searchPlaceHolder.trailingAnchor, constant: 10).isActive = true
-//        favButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         favButton.topAnchor.constraint(equalTo: tableOfContent.bottomAnchor, constant: 10).isActive = true
         favButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
         favButton.widthAnchor.constraint(equalToConstant: 30).isActive = true
         favButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        let starFillConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .bold, scale: .large)
-        let starFill = UIImage(systemName: "star.fill", withConfiguration:
-                                starFillConfig)?.withTintColor(BrandConfig.segmentSelectedColor,
-                                                               renderingMode: .alwaysOriginal)
+        favButton.addTarget(self, action: #selector(changePreference), for: .touchUpInside)
 
-        favButton.setImage(starFill, for: .normal)
+        let imagePreference = getImagePreference(preference: preference)
+        favButton.setImage(imagePreference, for: .normal)
+        
 //        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
 
-        mealPartSeparetedControl.insertSegment(withTitle: "Breakfast", at: 0, animated: false)
-        mealPartSeparetedControl.insertSegment(withTitle: "Lunch", at: 1, animated: false)
-        mealPartSeparetedControl.insertSegment(withTitle: "Dinner", at: 1, animated: false)
-        mealPartSeparetedControl.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 5).isActive = true
-        mealPartSeparetedControl.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
-        mealPartSeparetedControl.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
-        mealPartSeparetedControl.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        mealPartSeparetedControl.selectedSegmentIndex = 0
+        mealPartSeparetedControl.insertSegment(withTitle: "Breakfast",
+                                               at: UIPortion.MealTime.breakfast.rawValue,
+                                               animated: false)
+        mealPartSeparetedControl.insertSegment(withTitle: "Lunch",
+                                               at: UIPortion.MealTime.lunch.rawValue,
+                                               animated: false)
+        mealPartSeparetedControl.insertSegment(withTitle: "Dinner",
+                                               at: UIPortion.MealTime.dinner.rawValue,
+                                               animated: false)
+        mealPartSeparetedControl.topAnchor.constraint(
+            equalTo: label.bottomAnchor, constant: 5
+        ).isActive = true
+        mealPartSeparetedControl.leadingAnchor.constraint(
+            equalTo: view.leadingAnchor, constant: 10
+        ).isActive = true
+        mealPartSeparetedControl.trailingAnchor.constraint(
+            equalTo: view.trailingAnchor, constant: -10
+        ).isActive = true
+        mealPartSeparetedControl.heightAnchor.constraint(
+            equalToConstant: 35
+        ).isActive = true
+        mealPartSeparetedControl.selectedSegmentIndex = mealTime.rawValue
         mealPartSeparetedControl.selectedSegmentTintColor = BrandConfig.segmentSelectedColor
         let segmentNotSelected = [NSAttributedString.Key.foregroundColor: BrandConfig.segmentNotSelectedTextColor]
         mealPartSeparetedControl.setTitleTextAttributes(segmentNotSelected, for: .normal)
 
         let segmentSelected = [NSAttributedString.Key.foregroundColor: BrandConfig.segmentSelectedTextColor]
         mealPartSeparetedControl.setTitleTextAttributes(segmentSelected, for: .selected)
+        
+        mealPartSeparetedControl.addTarget(self, action: #selector(changeMealTime), for: .valueChanged)
+    }
+    
+    @objc func changeMealTime(sender: UISegmentedControl) {
+        mealTime = UIPortion.MealTime(rawValue: sender.selectedSegmentIndex)!
+    }
+    
+    @objc func changePreference(sender: UIButton) {
+        let image = getImagePreference(preference: preference.flip())
+        favButton.setImage(image, for: .normal)
+    }
+    
+    func getImagePreference(preference: UIPortion.Preference) -> UIImage {
+        let image: UIImage!
+        let starFillConfig = UIImage.SymbolConfiguration(pointSize: 30, weight: .bold, scale: .large)
+        switch preference {
+        case .unmarkedDish:
+            image = UIImage(systemName: "star", withConfiguration:
+                                starFillConfig)?.withTintColor(BrandConfig.segmentSelectedColor,
+                                                               renderingMode: .alwaysOriginal)
+        case .favourite:
+            image = UIImage(systemName: "star.fill", withConfiguration:
+                                starFillConfig)?.withTintColor(BrandConfig.segmentSelectedColor,
+                                                               renderingMode: .alwaysOriginal)
+        }
+        return image
     }
 
     // search field adder
@@ -161,8 +240,11 @@ class FoodEditor: UIViewController {
         weightField = UITextField()
         weightFieldHolder.addSubview(weightField)
         weightField.translatesAutoresizingMaskIntoConstraints = false
-        weightField.leadingAnchor.constraint(equalTo: weightFieldHolder.leadingAnchor, constant: 10).isActive = true
-        weightField.trailingAnchor.constraint(equalTo: weightFieldHolder.trailingAnchor, constant: -10).isActive = true
+        weightField.leadingAnchor.constraint(
+            equalTo: weightFieldHolder.leadingAnchor, constant: 10
+        ).isActive = true
+        weightField.trailingAnchor.constraint(equalTo: weightFieldHolder.trailingAnchor,
+                                              constant: -10).isActive = true
         weightField.topAnchor.constraint(equalTo: weightFieldHolder.topAnchor).isActive = true
         weightField.bottomAnchor.constraint(equalTo: weightFieldHolder.bottomAnchor).isActive = true
         weightField.textColor = BrandConfig.searchFieldTextColor
@@ -176,6 +258,7 @@ class FoodEditor: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initializeDescriptions()
+        view.overrideUserInterfaceStyle = .dark
         view.backgroundColor = BrandConfig.backgroundColor
         navigationItem.title = bus?.data?.dish.title
         navigationController?.navigationBar.tintColor = BrandConfig.segmentSelectedColor
@@ -183,8 +266,7 @@ class FoodEditor: UIViewController {
         navigationController?.navigationBar.titleTextAttributes =
             [NSAttributedString.Key.foregroundColor: UIColor.white,
                 NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Light", size: 20)!]
-        // 
-//        navigationController?.navigationBar.prefersLargeTitles = true
+
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
         navigationItem.rightBarButtonItem = addButton
@@ -198,8 +280,15 @@ class FoodEditor: UIViewController {
         setUpWeightPicker()
 
     }
+
     @objc func addButtonTapped() {
-        // Handle button tap
+        let weight = Int("0" + (weightField.text ?? "0"))!
+        let portion: UIPortion = .init(preference: preference,
+                                       weight: weight,
+                                       dish: bus?.data?.dish,
+                                       mealTime: mealTime
+                                    )
+        bus?.onExit(portion)
     }
 }
 
@@ -224,14 +313,7 @@ extension FoodEditor: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         print(1)
         if textField === weightField {
-            textField.endEditing(true)
-            let weightEnter = WeightEnterViewController()
-            weightEnter.bus = .init(weight: textField.text ?? "0") { [weak self] value in
-                self?.weightField.text = "\(value)"
-                self?.bus?.output?.weight = Int(value)
-                self?.navigationController?.popViewController(animated: true)
-            }
-            navigationController?.pushViewController(weightEnter, animated: true)
+            bus?.weightFieldTap(textField.text ?? "0")
             return false
         }
         return true
@@ -254,15 +336,11 @@ class InfoCell: UITableViewCell {
         stackHolder.axis = .horizontal
         stackHolder.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackHolder)
-//        stackHolder.backgroundColor = BrandConfig.backgroundColor
-//        stackHolder.layer.borderColor = BrandConfig.borderColor
-//        stackHolder.layer.borderWidth = BrandConfig.borderWidth
 
         NSLayoutConstraint.activate([
             stackHolder.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             stackHolder.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             stackHolder.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-//            stackHolder.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
             stackHolder.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
         ])
         title.translatesAutoresizingMaskIntoConstraints = false
@@ -287,6 +365,6 @@ class InfoCell: UITableViewCell {
 
     func setDishInfo (_ dishInfo: FoodEditor.DishInfo) {
         title.text = dishInfo.name
-        detailsLabel.text = "\(dishInfo.value) g"
+        detailsLabel.text = "\(dishInfo.value)"
     }
 }

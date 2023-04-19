@@ -38,21 +38,48 @@ class Router {
     }
 
     func openFood() {
-        let foodScreenViewController: FoodViewController = .init()
-        foodScreenViewController.bus = .init { [weak self] in
-            print(foodScreenViewController.bus?.output ?? "NONE")
-            self?.rootViewController.popViewController(animated: true)
-        }
+        let foodScreenViewController = FoodViewController()
+        foodScreenViewController.bus = .init(
+            onExit: { },
+            onFoodSelected: { [weak self] (dish: Dish) -> Void in
+                self?.openFoodEditor(dish: dish)
+            })
+
         rootViewController.pushViewController(foodScreenViewController, animated: true)
     }
+    
+    func returnThePortion(portion: UIPortion) {
+        rootViewController.popViewController(animated: true)
+    }
 
-    func openWeight() {
-        let foodScreenViewController = WeightEnterViewController()
-//        foodScreenViewController.bus = FoodViewController.Model { [weak self] in
-//            print(foodScreenViewController.bus?.output ?? "NONE")
-//            self?.rootViewController.popViewController(animated: true)
-//        }
-        rootViewController.pushViewController(foodScreenViewController, animated: true)
+    func openFoodEditor(dish: Dish) {
+        let foodEditor = FoodEditor()
+        foodEditor.bus = .init(
+            weightFieldTap: { value in
+                self.openWeightEnterViewController(value: value,
+                                                   updateWeight: { newWeight in
+                    foodEditor.bus?.data?.weight = Int(newWeight)
+                })
+            },
+            onExit: { [returnThePortion] portion in
+                returnThePortion(portion)
+            })
+        foodEditor.bus?.data = .init(dish: dish)
+        rootViewController.pushViewController(foodEditor, animated: true)
+    }
+
+    func openWeightEnterViewController(
+        value: String,
+        updateWeight: @escaping (String) -> Void
+    ) {
+        let weightEditor = WeightEnterViewController()
+        weightEditor.bus = .init(
+            weight: value,
+            onExit: { [updateWeight, weak self] result in
+                updateWeight(result)
+                self?.rootViewController.popViewController(animated: true)
+            })
+        rootViewController.pushViewController(weightEditor, animated: true)
     }
 
     func openProfile() {

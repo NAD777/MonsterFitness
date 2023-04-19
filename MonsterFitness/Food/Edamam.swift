@@ -11,12 +11,6 @@ struct Welcome: Codable {
     let text: String
     let parsed: [Parsed]
     let hints: [Hint]
-    let links: Links
-
-    enum CodingKeys: String, CodingKey {
-        case text, parsed, hints
-        case links = "_links"
-    }
 }
 
 // MARK: - Hint
@@ -27,20 +21,11 @@ struct Hint: Codable {
 
 // MARK: - Food
 struct Food: Codable {
-    let foodID, label, knownAs: String
+    let foodId: String
+    let label: String
+    let knownAs: String
     let nutrients: Nutrients
-    let category: Category
-    let categoryLabel: String
     let image: String?
-
-    enum CodingKeys: String, CodingKey {
-        case foodID = "foodId"
-        case label, knownAs, nutrients, category, categoryLabel, image
-    }
-}
-
-enum Category: String, Codable {
-    case genericFoods = "Generic foods"
 }
 
 // MARK: - Nutrients
@@ -65,38 +50,6 @@ struct Measure: Codable {
     let uri: String
     let label: String
     let weight: Double
-    let qualified: [Qualified]?
-}
-
-// MARK: - Qualified
-struct Qualified: Codable {
-    let qualifiers: [Qualifier]
-    let weight: Int
-}
-
-// MARK: - Qualifier
-struct Qualifier: Codable {
-    let uri: String
-    let label: Label
-}
-
-enum Label: String, Codable {
-    case boneless = "boneless"
-    case bonelessAndSkinless = "boneless and skinless"
-    case skinless = "skinless"
-    case small = "small"
-    case whole = "whole"
-}
-
-// MARK: - Links
-struct Links: Codable {
-    let next: Next
-}
-
-// MARK: - Next
-struct Next: Codable {
-    let title: String
-    let href: String
 }
 
 // MARK: - Parsed
