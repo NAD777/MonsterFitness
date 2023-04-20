@@ -8,7 +8,6 @@
 import UIKit
 
 final class MainScreen: UIViewController {
-    private let todayDateLabel: UILabel = UILabel(frame: .zero)
     // тут костыль, размер задается через фрейм и констрейнты одновременно
     private let circleIndicator = WheelIndicator(frame: CGRect(x: 0, y: 0, width: 260, height: 260))
     private let summary = CalorieSummaryView(frame: .zero)
@@ -28,8 +27,7 @@ final class MainScreen: UIViewController {
         }
         return user
     }()
-    
-    
+
     private let stepModel: StepCountModel = {
         let stepModel = StepCountModel()
         stepModel.authorizeHealthKit()
@@ -38,7 +36,7 @@ final class MainScreen: UIViewController {
 
     var onSearchFoodSelected: (() -> Void)?
     var onPersonSelected: (() -> Void)?
-    var onGraphSelected: (() -> Void)?
+    var onCalendarSelected: (() -> Void)?
     
     private let headerView = UIView(frame: .zero)
 
@@ -115,7 +113,6 @@ final class MainScreen: UIViewController {
             summary.heightAnchor.constraint(equalToConstant: 60),
             headerView.leftAnchor.constraint(equalTo: summary.leftAnchor, constant: -10),
             summary.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -10)
-            
         ])
         
         tableView.tableHeaderView = headerView
@@ -126,34 +123,28 @@ final class MainScreen: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(EatenProductsCell.self, forCellReuseIdentifier: EatenProductsCell.identifier)
-        
+
         tableView.layer.borderColor = UIColor(named: "outline")?.cgColor
 //        tableView.layer.borderWidth = 1
 //        tableView.layer.cornerRadius = 16
         tableView.sectionHeaderTopPadding = 5
     }
-    
 
     private func getDateString() -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM.yyyy"
-        return dateFormatter.string(from: mockStorage.date)
-    }
-    
-    private func setupDateLabel() {
-        todayDateLabel.text = getDateString()
-        todayDateLabel.font = UIFont(descriptor: .preferredFontDescriptor(withTextStyle: .title1), size: 30)
+        let formated = dateFormatter.string(from: mockStorage.date)
+        return "<    \(formated)    >"
     }
     
     override func loadView() {
         super.loadView()
         view.overrideUserInterfaceStyle = .dark
         view.addSubview(tableView)
-        setupDateLabel()
         setupHeader()
         tableView.frame = view.frame
         tableView.showsVerticalScrollIndicator = false
-        
+
         setupTableView()
     }
     
@@ -164,15 +155,8 @@ final class MainScreen: UIViewController {
         person.addTarget(self, action: #selector(toPerson), for: UIControl.Event.touchUpInside)
         person.tintColor = .white
         let rightbarButtonItem = UIBarButtonItem(customView: person)
-        
-        let charts: UIButton = UIButton(type: UIButton.ButtonType.custom)
-        let chartsImage = UIImage(systemName: "chart.bar")
-        charts.setImage(chartsImage, for: .normal)
-        charts.addTarget(self, action: #selector(toGraph), for: .touchUpInside)
-        charts.tintColor = .white
-        let chartsButton = UIBarButtonItem(customView: charts)
-        
-        navigationItem.rightBarButtonItems = [rightbarButtonItem, chartsButton]
+        navigationItem.rightBarButtonItem = rightbarButtonItem
+
         let search: UIButton = UIButton(type: UIButton.ButtonType.custom)
         let searchImage = UIImage(systemName: "fork.knife")
         searchImage?.withTintColor(.brown)
@@ -182,15 +166,22 @@ final class MainScreen: UIViewController {
         let leftbarButtonItem = UIBarButtonItem(customView: search)
         navigationItem.leftBarButtonItem?.tintColor = .brown
         navigationItem.leftBarButtonItem = leftbarButtonItem
+    }
+
+    private func setupBarTitle() {
+        navigationItem.backButtonTitle = "Back"
         navigationItem.title = getDateString()
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(toCalender))
+        navigationController?.navigationBar.tintColor = BrandConfig.segmentSelectedColor
+        navigationController?.navigationBar.addGestureRecognizer(tapGestureRecognizer)
         navigationController?.navigationBar.prefersLargeTitles = false
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "backgroundBlack")
-        navigationController?.navigationBar.tintColor = BrandConfig.segmentSelectedColor
         setupBarItems()
+        setupBarTitle()
     }
     
     override func viewDidLayoutSubviews() {
@@ -200,7 +191,7 @@ final class MainScreen: UIViewController {
     }
     
     private func setActivityWheel() {
-        try? stepModel.getStepCountForTodayForAsync() { [weak self] arg in
+        try? stepModel.getStepCountForTodayForAsync { [weak self] arg in
             DispatchQueue.main.async {
                 switch arg {
                 case .success(let success):
@@ -217,7 +208,7 @@ final class MainScreen: UIViewController {
         super.viewWillLayoutSubviews()
         
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateAll()
@@ -231,10 +222,9 @@ final class MainScreen: UIViewController {
         onPersonSelected?()
     }
     
-    @objc func toGraph() {
-        onGraphSelected?()
+    @objc func toCalender() {
+        onCalendarSelected?()
     }
-    
 }
 
 extension MainScreen: UITableViewDelegate {
@@ -253,9 +243,6 @@ extension MainScreen: UITableViewDelegate {
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }
-    
-    
-
 }
 
 extension MainScreen: UITableViewDataSource {
