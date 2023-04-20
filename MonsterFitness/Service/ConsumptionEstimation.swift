@@ -121,7 +121,6 @@ final class ConsumptionEstimation: CalorieEstimator {
         
         let newUser = User(name: user.name, age: age, weight: weight, height: height, gender: gender,
                            activityLevel: activityLevel)
-        
         let basalExpandature = calculateBasalConsumption(user: newUser)
         let physicalActivityExpandature = calculatePhysicalCalorieExpandature(user: newUser) { arg in
             closure(arg+basalExpandature)
@@ -143,8 +142,8 @@ final class ConsumptionEstimation: CalorieEstimator {
         // FIXME: формула сомнительная, я в математике не силен
         Task {
             let steps = await self.pedometerImpl.getStepCountForToday()
-            let caloriesSpentForAMile = 0.57 * Double(user.weight ?? 100000) * 0.453592
-            let stepLengthInMeters = Double(user.height ?? 0)/400 + 0.37
+            let caloriesSpentForAMile = 0.57 * Double(user.weight ?? 100000) * 0.453592 + 1
+            let stepLengthInMeters = Double(user.height ?? 160)/400 + 0.37
             let caloriesSpent = Double(steps) * stepLengthInMeters / caloriesSpentForAMile
             closure(caloriesSpent)
         }
