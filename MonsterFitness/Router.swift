@@ -21,27 +21,19 @@ class Router {
 
     func start() {
         let today = Calendar.current.startOfDay(for: Date())
-        let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
-        let homeScreenViewController = MainScreen(storage: coreStorage)
-        
+//        let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
+//        let homeScreenViewController = MainScreen(storage: coreStorage)
         openNewMain(date: today)
-/*
-        homeScreenViewController.onSearchFoodSelected = { [weak self] in
-            self?.openFood()
-        }
-        homeScreenViewController.onPersonSelected = { [weak self] in
-            self?.openProfile()
-        }
-        homeScreenViewController.onGraphSelected = { [weak self] in
-            self?.openCalendar(date: today)
-        }
-*/
         let loggedIn = defaults.integer(forKey: "LoggedIn")
         if loggedIn == 1 {
-            // TODO: - убрано изменение цвета, нужно придумать как прокинуть статус на экран лучше
-//            homeScreenViewController.view.backgroundColor = .green
         } else {
-//            homeScreenViewController.view.backgroundColor = .red
+            let profileViewController = ProfileViewController()
+            profileViewController.onProfieChanged = { [weak self] in
+                self?.rootViewController.popViewController(animated: true)
+            }
+            rootViewController.pushViewController(profileViewController, animated: false)
+            profileViewController.navigationItem.setHidesBackButton(true, animated: false)
+            
             defaults.set(1, forKey: "LoggedIn")
         }
         //rootViewController.pushViewController(homeScreenViewController, animated: false)
