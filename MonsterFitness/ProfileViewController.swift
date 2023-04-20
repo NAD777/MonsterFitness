@@ -78,13 +78,11 @@ class ProfileViewController: UIViewController {
     
     private let distanceBetweenBlocks = 20
     private var dataForPickers = [UIPickerView: [String]]()
-    private var currentRow = [UIPickerView: Int]()
     private var name = UITextField()
     private var stacks = Stacks()
     private var stackArr = [UIPickerView]()
     var targetCalories = BlockWithTarget("Daily goal by calories:")
     var targetSteps = BlockWithTarget("Daily goal by steps:")
-    let pickerType = UIPickerView()
     var currentUser: User? {
         didSet {
             update()
@@ -115,13 +113,13 @@ class ProfileViewController: UIViewController {
     @objc func onButtonTapped() {
         let cur = UserProfile()
         cur.currentUser  = User(name: name.text ?? "")
-        cur.currentUser?.age = (currentRow[stackArr[0]] ?? 0) + 1
-        cur.currentUser?.weight = (currentRow[stackArr[1]] ?? 0) + 20
-        cur.currentUser?.height = (currentRow[stackArr[2]] ?? 0) + 100
-        cur.currentUser?.gender = Genders(rawValue: currentRow[stackArr[3]] ?? 0)
+        cur.currentUser?.age = (stackArr[0].selectedRow(inComponent: 0)) + 1
+        cur.currentUser?.weight = (stackArr[1].selectedRow(inComponent: 0)) + 20
+        cur.currentUser?.height = (stackArr[2].selectedRow(inComponent: 0)) + 100
+        cur.currentUser?.gender = Genders(rawValue: stackArr[3].selectedRow(inComponent: 0))
         cur.currentUser?.target = Int(targetCalories.target.text ?? "") ?? 0
         cur.currentUser?.targetSteps = Int(targetSteps.target.text ?? "") ?? 0
-        cur.currentUser?.activityLevel = PhysicalActivityLevel(rawValue: currentRow[pickerType] ?? 0)
+        cur.currentUser?.activityLevel = PhysicalActivityLevel(rawValue: stackArr[4].selectedRow(inComponent: 0))
         onProfieChanged?()
     }
     
@@ -267,6 +265,7 @@ class ProfileViewController: UIViewController {
         labelTarget.textColor = CONFIG.searchFieldTextColor
         labelTarget.textAlignment = .center
         labelTarget.translatesAutoresizingMaskIntoConstraints = true
+        let pickerType = UIPickerView()
         pickerType.dataSource = self
         pickerType.delegate = self
         let data = ["Passive type", "Minimally active type", "Moderately active type", "Active type", "Overly active type"]
@@ -284,7 +283,7 @@ class ProfileViewController: UIViewController {
         stacks.stackForType.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
         stacks.stackForType.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         stacks.stackForType.heightAnchor.constraint(equalToConstant: 140).isActive = true
-        pickerType.selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
+        stackArr.append(pickerType)
     }
     
     func update() {
@@ -295,6 +294,7 @@ class ProfileViewController: UIViewController {
         stackArr[1].selectRow((currentUser?.weight ?? 20) - 20, inComponent: 0, animated: true)
         stackArr[2].selectRow((currentUser?.height ?? 100) - 100, inComponent: 0, animated: true)
         stackArr[3].selectRow(currentUser?.gender?.rawValue ?? 0, inComponent: 0, animated: true)
+        stackArr[4].selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
     }
 }
 
@@ -308,7 +308,6 @@ extension ProfileViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        currentRow[pickerView] = row
         return dataForPickers[pickerView]?[row]
     }
 }
