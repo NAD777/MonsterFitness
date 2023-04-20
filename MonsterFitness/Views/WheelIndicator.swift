@@ -100,23 +100,28 @@ final class WheelIndicator: UIView {
     
     // число в диапазоне [0, 1]
     public func setActivity(desired: Double, actual: Double) {
+        
         setTextForActivity(desired, actual)
         shapeLayerInner.add(animationHelper(fillValue: actual/desired), forKey: "")
     }
     
     private func setTextForActivity(_ desired: Double, _ actual: Double) {
-        if desired > actual {
-            activityLabel.text = "\(Int(desired - actual)) steps remaining"
-        } else {
-            activityLabel.text = "Goal is reached!"
+        DispatchQueue.main.async { [weak self] in
+            if desired > actual {
+                self?.activityLabel.text = "\(Int(desired - actual)) steps remaining"
+            } else {
+                self?.activityLabel.text = "Goal is reached!"
+            }
         }
     }
     
     private func setTextForCalories(_ desired: Double, _ actual: Double) {
-        if desired > actual {
-            calorieLabel.text = "\(Int(desired - actual)) calories left"
-        } else {
-            calorieLabel.text = "Overconsumed \(Int(actual - desired))"
+        DispatchQueue.main.async { [weak self] in
+            if desired > actual {
+                self?.calorieLabel.text = "\(Int(desired - actual)) calories left"
+            } else {
+                self?.calorieLabel.text = "Overconsumed \(Int(actual - desired))"
+            }
         }
     }
     
