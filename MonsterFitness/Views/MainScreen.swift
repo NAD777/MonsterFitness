@@ -21,8 +21,7 @@ final class MainScreen: UIViewController {
 
     var date: Date { mockStorage.date }
     
-    var defaultsUser: User = {
-        
+    var defaultsUser: User =  {
         let user = UserProfile().currentUser
         guard let user = user else {
             print("defaults is unavailable")
@@ -42,6 +41,24 @@ final class MainScreen: UIViewController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func updateUser() {
+        let newUser = UserProfile().currentUser
+        guard let newUser = newUser else {
+            print("update is unavailable")
+            return
+        }
+        defaultsUser = newUser
+        try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
+            DispatchQueue.main.async {
+                // оно не работает, но скоро будет
+                let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
+                self?.circleIndicator.setCalories(desired: Double(newUser.target), actual: consumed)
+                self?.summary.setData(burned: calories, consumed: consumed)
+                
+            }
+        }
     }
     
     
