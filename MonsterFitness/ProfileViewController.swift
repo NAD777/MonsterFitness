@@ -96,7 +96,6 @@ class ProfileViewController: UIViewController {
         view.overrideUserInterfaceStyle = .dark
         // Do any additional setup after loading the viewa
         settingPickersForUserInformation()
-        currentUser = UserProfile().currentUser
         view.backgroundColor = CONFIG.backgroundColor
         stacks.stack.axis = .vertical
         
@@ -110,6 +109,7 @@ class ProfileViewController: UIViewController {
         navigationItem.title = "Profile"
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(onButtonTapped))
+        currentUser = UserProfile().currentUser
     }
 
     @objc func onButtonTapped() {
