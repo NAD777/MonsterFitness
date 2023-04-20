@@ -113,7 +113,7 @@ final class MainScreen: UIViewController {
     
     override func loadView() {
         super.loadView()
-        tableView.backgroundColor = .red
+        view.overrideUserInterfaceStyle = .dark
         view.addSubview(tableView)
         setupDateLabel()
         setupHeader()
@@ -162,6 +162,25 @@ final class MainScreen: UIViewController {
         super.viewDidLayoutSubviews()
         setDataForSubviews()
         setActivityWheel()
+    }
+    
+    // дерни эту ссылку чтобы обновить мою таблицу
+    public func updateTable() {
+        DispatchQueue.main.async { [weak self] in
+            self?.mockStorage.updateStorage()
+            // нет метода, который из кордаты обновляеяет allPortions
+            self?.tableView.reloadData()
+        }
+        
+        try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
+            DispatchQueue.main.async {
+                let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
+                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed)
+                self?.summary.setData(burned: calories, consumed: consumed)
+                
+            }
+        }
+        
     }
     
     private func setActivityWheel() {
