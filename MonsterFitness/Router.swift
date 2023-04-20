@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class Router {
-    let stoage = CoreStorage()
+    let storage = CoreStorage()
     let defaults = UserDefaults.standard
     let rootViewController: RootViewController
     lazy var coreStorage = CoreFoodManager(date: Calendar.current.startOfDay(for: Date()), context: stoage.persistentContainer.viewContext)
@@ -20,6 +20,10 @@ class Router {
     }
 
     func start() {
+        let today = Calendar.current.startOfDay(for: Date())
+        let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
+        let homeScreenViewController = MainScreen(storage: coreStorage)
+
         homeScreenViewController.onSearchFoodSelected = { [weak self] in
             self?.openFood()
         }
@@ -27,7 +31,7 @@ class Router {
             self?.openProfile()
         }
         homeScreenViewController.onGraphSelected = { [weak self] in
-            self?.openCalendar()
+            self?.openCalendar(date: today)
         }
 
         let loggedIn = defaults.integer(forKey: "LoggedIn")
@@ -61,8 +65,9 @@ class Router {
             assertionFailure("main screen not found")
             return
         }
-        stoage.savePortion(portion, date: date)
-        topMainScreen?.updateTable()
+        storage.savePortion(portion, date: date)
+        storage.saveDayResult(date)
+
         rootViewController.popViewController(animated: true)
     }
 
@@ -105,8 +110,9 @@ class Router {
         rootViewController.pushViewController(profileViewController, animated: true)
     }
 
-    func openCalendar() {
-        let calendarViewController = CalendarController()
+    func openCalendar(date: Date) {
+        let manager = DayResultManager(day: date, context: storage.persistentContainer.viewContext)
+        let calendarViewController = CalendarController(storage: manager)
         rootViewController.pushViewController(calendarViewController, animated: true)
     }
 
