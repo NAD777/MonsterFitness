@@ -45,8 +45,8 @@ class EatenProductsCell: UITableViewCell {
     public func setData(portion: Portion) {
             
         foodTitle.text = portion.dishConsumed.title
-        caloriesLabel.text = "\(portion.weightConsumed * portion.dishConsumed.kcal) kcal."
-        foodWeightLabel.text = "\(portion.weightConsumed) g."
+        caloriesLabel.text = "\(Int(portion.weightConsumed * portion.dishConsumed.kcal / 100)) kcal."
+        foodWeightLabel.text = "\(Int(portion.weightConsumed)) g."
     }
     
     private func setupConstraints() {
