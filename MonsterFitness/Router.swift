@@ -12,6 +12,8 @@ class Router {
     let storage = CoreStorage()
     let defaults = UserDefaults.standard
     let rootViewController: RootViewController
+    lazy var coreStorage = CoreFoodManager(date: Calendar.current.startOfDay(for: Date()), context: stoage.persistentContainer.viewContext)
+    lazy var homeScreenViewController = MainScreen(storage: coreStorage)
 
     init(rootViewController: RootViewController) {
         self.rootViewController = rootViewController
@@ -21,6 +23,7 @@ class Router {
         let today = Calendar.current.startOfDay(for: Date())
         let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
         let homeScreenViewController = MainScreen(storage: coreStorage)
+
         homeScreenViewController.onSearchFoodSelected = { [weak self] in
             self?.openFood()
         }
@@ -64,6 +67,7 @@ class Router {
         }
         storage.savePortion(portion, date: date)
         storage.saveDayResult(date)
+
         rootViewController.popViewController(animated: true)
     }
 
