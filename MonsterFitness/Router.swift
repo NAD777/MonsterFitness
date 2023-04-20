@@ -33,10 +33,8 @@ class Router {
             }
             rootViewController.pushViewController(profileViewController, animated: false)
             profileViewController.navigationItem.setHidesBackButton(true, animated: false)
-            
             defaults.set(1, forKey: "LoggedIn")
         }
-        //rootViewController.pushViewController(homeScreenViewController, animated: false)
     }
 
     func openFood() {
