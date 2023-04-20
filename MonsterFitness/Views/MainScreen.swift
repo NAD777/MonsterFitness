@@ -72,8 +72,8 @@ final class MainScreen: UIViewController {
         try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
             DispatchQueue.main.async {
                 let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
-                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed)
-                self?.summary.setData(burned: calories, consumed: consumed)
+                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed / 100)
+                self?.summary.setData(burned: calories, consumed: consumed / 100)
             }
         }
     }
@@ -87,8 +87,8 @@ final class MainScreen: UIViewController {
         try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
             DispatchQueue.main.async {
                 let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
-                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed)
-                self?.summary.setData(burned: calories, consumed: consumed)
+                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed / 100)
+                self?.summary.setData(burned: calories, consumed: consumed / 100)
                 
             }
         }
@@ -119,7 +119,7 @@ final class MainScreen: UIViewController {
     }
     
     private func setupTableView() {
-        tableView.backgroundColor = UIColor(named: "accentGray")
+        tableView.backgroundColor = UIColor(named: "backgroundBlack")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(EatenProductsCell.self, forCellReuseIdentifier: EatenProductsCell.identifier)
@@ -153,7 +153,7 @@ final class MainScreen: UIViewController {
         let personImage = UIImage(systemName: "person")
         person.setImage(personImage, for: .normal)
         person.addTarget(self, action: #selector(toPerson), for: UIControl.Event.touchUpInside)
-        person.tintColor = .white
+        person.tintColor = .systemGreen
         let rightbarButtonItem = UIBarButtonItem(customView: person)
         navigationItem.rightBarButtonItem = rightbarButtonItem
 
@@ -161,7 +161,7 @@ final class MainScreen: UIViewController {
         let searchImage = UIImage(systemName: "fork.knife")
         searchImage?.withTintColor(.brown)
         search.setImage(searchImage, for: .normal)
-        search.tintColor = .white
+        search.tintColor = .systemGreen
         search.addTarget(self, action: #selector(toFood), for: UIControl.Event.touchUpInside)
         let leftbarButtonItem = UIBarButtonItem(customView: search)
         navigationItem.leftBarButtonItem?.tintColor = .brown
