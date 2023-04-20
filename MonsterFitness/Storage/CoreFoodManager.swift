@@ -31,9 +31,9 @@ final class CoreFoodManager: FoodStorage {
                     dishConsumed: Dish(
                         title: $0.dish?.name ?? "",
                         kcal: $0.dish?.energyKcal ?? 0,
-                        prot: 30,
-                        fat: 30,
-                        carb: 30
+                        prot: $0.dish?.proteinG ?? 0,
+                        fat: $0.dish?.fatG ?? 0,
+                        carb: $0.dish?.carbsG ?? 0
                     ),
                     dayPart: .breakfast)
             }
@@ -57,4 +57,8 @@ final class CoreFoodManager: FoodStorage {
     public func deleteDish(index: Int) throws {
         assertionFailure("not implemented")
     }
+    
+//    public func deleteDishFromFavourite(index: Int) throws {
+//        assertionFailure("delete from favaurite does not implemented")
+//    }
 }

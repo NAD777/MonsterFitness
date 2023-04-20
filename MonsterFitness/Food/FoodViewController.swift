@@ -46,22 +46,29 @@ class FoodViewController: UIViewController {
         struct OutputData {
             var userText: String?
         }
+        var favouriteDishes: [Dish]
         var data: InputData?
         var onExit: () -> Void
-        var onFoodSelected: (Dish) -> Void
+        var onFoodSelected: (Dish, DishesLists.ListType) -> Void
         var onDeleteFromFavourite: (Dish) -> Void
         var output: OutputData?
+        var refreshFavouriteDishes: () -> [Dish]
     }
     struct DishesLists {
         var searchDishes: [Dish]?
         var favouritesDishes: [Dish]?
-        var canDelete = false
+        enum ListType: Int {
+            case search = 0
+            case favourite
+        }
+        
+        var type: DishesLists.ListType = .favourite
         var content: [Dish]? {
             get {
-                (canDelete ? favouritesDishes: searchDishes)
+                (type == .favourite ? favouritesDishes: searchDishes)
             }
             set {
-                if canDelete {
+                if type == .favourite {
                     favouritesDishes = newValue
                 } else {
                     searchDishes = newValue
@@ -69,12 +76,12 @@ class FoodViewController: UIViewController {
             }
         }
         var count: Int {
-            (canDelete ? favouritesDishes: searchDishes)?.count ?? 0
+            (type == .favourite ? favouritesDishes: searchDishes)?.count ?? 0
         }
     }
 
     var bus: Model?
-    private lazy var textField = UITextField()
+//    private lazy var textField = UITextField()
     private lazy var pickerSegmentedControl = UISegmentedControl()
     private lazy var searchField = UITextField()
     private lazy var tableOfContent = UITableView()
@@ -83,26 +90,19 @@ class FoodViewController: UIViewController {
     private lazy var searchButton = UIButton()
     private lazy var dishesList = DishesLists()
 
-    // MARK: sample data
-    var dishes = [
-        Dish(title: "Egg", kcal: 100, prot: 0, fat: 0, carb: 0),
-        Dish(title: "Meat ball", kcal: 300, prot: 0, fat: 0, carb: 0),
-        Dish(title: "Porridge", kcal: 100, prot: 0, fat: 0, carb: 0)
-    ]
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
         setUpUI()
-        dishesList.favouritesDishes = dishes
+        dishesList.favouritesDishes = bus?.favouriteDishes
     }
     
     // creates the whole UI
     func setUpUI () {
         view.backgroundColor = BrandConfig.backgroundColor
         navigationItem.title = BrandConfig.navigationTitleText
-        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+//        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
 
         setUpDivider()
         setUpPicker()
@@ -138,7 +138,7 @@ class FoodViewController: UIViewController {
 
         pickerSegmentedControl.insertSegment(withTitle: BrandConfig.titleFirstSegment, at: 0, animated: false)
         pickerSegmentedControl.insertSegment(withTitle: BrandConfig.titleSecondSegment, at: 1, animated: false)
-        pickerSegmentedControl.selectedSegmentIndex = 0
+        pickerSegmentedControl.selectedSegmentIndex = DishesLists.ListType.favourite.rawValue
         pickerSegmentedControl.selectedSegmentTintColor = BrandConfig.segmentSelectedColor
         let segmentNotSelected = [NSAttributedString.Key.foregroundColor: BrandConfig.segmentNotSelectedTextColor]
         pickerSegmentedControl.setTitleTextAttributes(segmentNotSelected, for: .normal)
@@ -197,6 +197,13 @@ class FoodViewController: UIViewController {
         tableOfContent.layer.cornerRadius = BrandConfig.cornerRadius
         tableOfContent.estimatedRowHeight = 80
         tableOfContent.rowHeight = UITableView.automaticDimension
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(managedObjectContextObjectsDidChange), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: nil)
+    }
+    
+    @objc func managedObjectContextObjectsDidChange() {
+        dishesList.favouritesDishes = bus?.refreshFavouriteDishes()
+        tableOfContent.reloadData()
     }
 
     // function that executes on search button click
@@ -211,12 +218,21 @@ class FoodViewController: UIViewController {
                 self?.tableOfContent.reloadData()
             }
         }
-
     }
 
     @objc func changeDishesList(sender: UISegmentedControl) {
-        self.dishesList.canDelete.toggle()
-        self.tableOfContent.reloadData()
+        searchField.text = ""
+        self.dishesList.type = (dishesList.type == .favourite ? .search : .favourite)
+//        print(searchField.text)
+        if let textFieldText = searchField.text {
+            if dishesList.type == .favourite {
+                dishesList.content = applyFilter(filerText: textFieldText, dishes: dishesList.content ?? [])
+                tableOfContent.reloadData()
+            } else if dishesList.type == .search {
+                APICallAndUpdate(requestedText: textFieldText)
+//                tableOfContent.reloadData()
+            }
+        }
     }
 }
 
@@ -250,7 +266,7 @@ extension FoodViewController: UITableViewDataSource {
     ) {
         tableView.deselectRow(at: indexPath, animated: true)
         if let selectedDish = dishesList.content?[indexPath.row] {
-            bus?.onFoodSelected(selectedDish)
+            bus?.onFoodSelected(selectedDish, dishesList.type)
         }
     }
 
@@ -258,7 +274,7 @@ extension FoodViewController: UITableViewDataSource {
         _ tableView: UITableView,
         canEditRowAt indexPath: IndexPath
     ) -> Bool {
-        return dishesList.canDelete
+        return dishesList.type == .favourite
     }
     
     func tableView (
@@ -269,9 +285,8 @@ extension FoodViewController: UITableViewDataSource {
         if editingStyle == .delete {
             if let deletedDish = dishesList.content?[indexPath.row] {
                 bus?.onDeleteFromFavourite(deletedDish)
-                dishesList.content?.remove(at: indexPath.row)
-                let indexPaths = [indexPath]
-                tableView.deleteRows(at: indexPaths, with: .automatic)
+                dishesList.content = bus?.refreshFavouriteDishes()
+                tableOfContent.reloadData()
             }
         }
     }
@@ -288,28 +303,48 @@ extension FoodViewController: UITextFieldDelegate {
         let newText = oldText.replacingCharacters(
             in: stringRange,
             with: string)
-
-        Edamam.shared.retriveDishes(name: newText) { [weak self] dishes in
-            DispatchQueue.main.async {
-                if self?.textField.text != newText {
-                    self?.dishesList.canDelete = false
-                    self?.pickerSegmentedControl.selectedSegmentIndex = 0
-                    self?.dishesList.content = dishes
-                    self?.tableOfContent.reloadData()
-                }
-            }
-        }
-        return true
-    }
-    
-    func textFieldShouldBeginEditing(
-        _ textField: UITextField
-    ) -> Bool {
-        if textField === searchField {
-            dishesList.canDelete = false
-            pickerSegmentedControl.selectedSegmentIndex = 0
+        if dishesList.type == .search {
+            APICallAndUpdate(requestedText: newText)
+        } else if dishesList.type == .favourite {
+            dishesList.favouritesDishes = bus?.refreshFavouriteDishes()
+            dishesList.favouritesDishes = applyFilter(filerText: newText, dishes: dishesList.content ?? [])
             tableOfContent.reloadData()
         }
         return true
     }
+    
+    func applyFilter(filerText: String, dishes: [Dish]) -> [Dish] {
+        var newList: [Dish] = .init()
+        for currentDish in dishes {
+            let currentDishTitleLower = currentDish.title.lowercased()
+            let filterTextLower = filerText.lowercased()
+            if currentDishTitleLower.hasPrefix(filterTextLower) {
+                newList.append(currentDish)
+            }
+        }
+        return newList
+    }
+    
+    func APICallAndUpdate(requestedText: String) {
+        Edamam.shared.retriveDishes(name: requestedText) { [weak self] dishes in
+            DispatchQueue.main.async {
+//                if self?.searchField.text != requestedText {
+                self?.pickerSegmentedControl.selectedSegmentIndex = 0
+                self?.dishesList.content = dishes
+                self?.tableOfContent.reloadData()
+//                }
+            }
+        }
+    }
+//
+//    func textFieldShouldBeginEditing(
+//        _ textField: UITextField
+//    ) -> Bool {
+//        if textField === searchField {
+//            dishesList.canDelete = false
+//            pickerSegmentedControl.selectedSegmentIndex = 0
+//            tableOfContent.reloadData()
+//        }
+//        return true
+//    }
 }

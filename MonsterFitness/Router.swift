@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 class Router {
-    let stoage = CoreStorage()
+    let storage = CoreStorage()
     let defaults = UserDefaults.standard
     let rootViewController: RootViewController
 
@@ -19,7 +19,7 @@ class Router {
 
     func start() {
         let today = Calendar.current.startOfDay(for: Date())
-        let coreStorage = CoreFoodManager(date: today, context: stoage.persistentContainer.viewContext)
+        let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
         let homeScreenViewController = MainScreen(storage: coreStorage)
         homeScreenViewController.onSearchFoodSelected = { [weak self] in
             self?.openFood()
@@ -44,17 +44,23 @@ class Router {
 
     func openFood() {
         let foodScreenViewController = FoodViewController()
+        let favStorage = CoreFavouritesDishManager(context: storage.persistentContainer.viewContext)
         foodScreenViewController.bus = .init(
+            favouriteDishes: favStorage.allDishes,
             onExit: { },
-            onFoodSelected: { [weak self] (dish: Dish) -> Void in
-                self?.openFoodEditor(dish: dish)
+            onFoodSelected: { [weak self] (dish: Dish, preference) -> Void in
+                self?.openFoodEditor(dish: dish, preference: preference)
             },
-            onDeleteFromFavourite: { (dish: Dish) -> Void in
-                print("Deleted Dish: \(dish)")
+            onDeleteFromFavourite: { [storage] (dish: Dish) -> Void in
+                storage.deleteFavouriteDish(dish)
+            },
+            refreshFavouriteDishes: { [favStorage]
+                return favStorage.refresh()
             }
         )
 
-        rootViewController.pushViewController(foodScreenViewController, animated: true)
+        rootViewController.pushViewController(foodScreenViewController,
+                                              animated: true)
     }
     
     func returnThePortion(portion: UIPortion) {
@@ -62,11 +68,11 @@ class Router {
             assertionFailure("main screen not found")
             return
         }
-        stoage.savePortion(portion, date: date)
+        storage.savePortion(portion, date: date)
         rootViewController.popViewController(animated: true)
     }
 
-    func openFoodEditor(dish: Dish) {
+    func openFoodEditor(dish: Dish, preference: FoodViewController.DishesLists.ListType) {
         let foodEditor = FoodEditor()
         foodEditor.bus = .init(
             weightFieldTap: { value in
@@ -77,8 +83,15 @@ class Router {
             },
             onExit: { [returnThePortion] portion in
                 returnThePortion(portion)
-            })
-        foodEditor.bus?.data = .init(dish: dish)
+            },
+            onFavouriteAdd: { [storage] dish in
+                storage.saveFavouriteDish(dish)
+            },
+            onFavouriteDelete: { [storage] dish in
+                storage.deleteFavouriteDish(dish)
+            }
+        )
+        foodEditor.bus?.data = .init(dish: dish, preference: preference)
         rootViewController.pushViewController(foodEditor, animated: true)
     }
 

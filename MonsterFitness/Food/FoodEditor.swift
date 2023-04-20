@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class SelfSizingTableView: UITableView {
     override var contentSize: CGSize {
@@ -38,10 +39,11 @@ struct UIPortion {
         }
     }
     
-    enum MealTime: Int {
+    enum MealTime: Int, Codable {
         case breakfast = 0
-        case dinner
         case lunch
+        case dinner
+        case other
     }
     
     let preference: Preference
@@ -55,10 +57,13 @@ class FoodEditor: UIViewController {
         struct Data {
             var dish: Dish
             var weight: Int?
+            var preference: FoodViewController.DishesLists.ListType
         }
         var data: Data?
         var weightFieldTap: (String) -> Void
         var onExit: (UIPortion) -> Void
+        var onFavouriteAdd: (Dish) -> Void
+        var onFavouriteDelete: (Dish) -> Void
     }
     var bus: FoodEditor.Model? {
         didSet {
@@ -78,7 +83,7 @@ class FoodEditor: UIViewController {
     private lazy var mealPartSeparetedControl = UISegmentedControl()
     private lazy var weightField = UITextField()
     private lazy var mealTime: UIPortion.MealTime = .breakfast
-    private lazy var preference: UIPortion.Preference = .unmarkedDish
+    lazy var preference: UIPortion.Preference = (bus?.data?.preference == .favourite ? UIPortion.Preference.favourite : UIPortion.Preference.unmarkedDish)
 
     func setUpDevider() {
         divider = UIView()
@@ -110,8 +115,14 @@ class FoodEditor: UIViewController {
         tableOfContent.estimatedRowHeight = 80
         tableOfContent.rowHeight = UITableView.automaticDimension
         tableOfContent.isScrollEnabled = false
+        
+//        NotificationCenter.default.addObserver(self, selector: #selector(managedObjectContextObjectsDidChange), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: nil)
     }
 
+//    @objc func managedObjectContextObjectsDidChange() {
+//
+//    }
+    
     func initializeDescriptions() {
         if bus?.data?.dish.kcal != nil {
             let roundedValue = round(100 * (bus?.data?.dish.kcal)!) / 100
@@ -130,7 +141,7 @@ class FoodEditor: UIViewController {
 
         if bus?.data?.dish.fat != nil {
             let roundedValue = round(100 * (bus?.data?.dish.fat)!) / 100
-            dishDescriptions.append(DishInfo(name: "Protein", value: roundedValue))
+            dishDescriptions.append(DishInfo(name: "Fat", value: roundedValue))
         }
     }
 
@@ -160,7 +171,7 @@ class FoodEditor: UIViewController {
         favButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         favButton.addTarget(self, action: #selector(changePreference), for: .touchUpInside)
 
-        let imagePreference = getImagePreference(preference: preference)
+        let imagePreference = getImagePreference(preference: preference ?? .unmarkedDish)
         favButton.setImage(imagePreference, for: .normal)
         
 //        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
@@ -173,6 +184,9 @@ class FoodEditor: UIViewController {
                                                animated: false)
         mealPartSeparetedControl.insertSegment(withTitle: "Dinner",
                                                at: UIPortion.MealTime.dinner.rawValue,
+                                               animated: false)
+        mealPartSeparetedControl.insertSegment(withTitle: "Other",
+                                               at: UIPortion.MealTime.other.rawValue,
                                                animated: false)
         mealPartSeparetedControl.topAnchor.constraint(
             equalTo: label.bottomAnchor, constant: 5
@@ -204,6 +218,14 @@ class FoodEditor: UIViewController {
     @objc func changePreference(sender: UIButton) {
         let image = getImagePreference(preference: preference.flip())
         favButton.setImage(image, for: .normal)
+        if let dish = bus?.data?.dish {
+            switch preference {
+            case .favourite:
+                bus?.onFavouriteAdd(dish)
+            case .unmarkedDish:
+                bus?.onFavouriteDelete(dish)
+            }
+        }
     }
     
     func getImagePreference(preference: UIPortion.Preference) -> UIImage {
@@ -266,7 +288,6 @@ class FoodEditor: UIViewController {
         navigationController?.navigationBar.titleTextAttributes =
             [NSAttributedString.Key.foregroundColor: UIColor.white,
                 NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Light", size: 20)!]
-
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addButtonTapped))
         navigationItem.rightBarButtonItem = addButton

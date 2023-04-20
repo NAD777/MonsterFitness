@@ -15,6 +15,7 @@
 		01472D6929EB046100845D4E /* FoodEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6829EB046100845D4E /* FoodEditor.swift */; };
 		01472D6B29EC63C900845D4E /* WeightEnterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6A29EC63C900845D4E /* WeightEnterViewController.swift */; };
 		01472D6D29ED57D100845D4E /* FoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6C29ED57D100845D4E /* FoodTableViewCell.swift */; };
+		01C5BE4129F1576200A9087A /* CoreFavouritesDishManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C5BE4029F1576200A9087A /* CoreFavouritesDishManager.swift */; };
 		01F06D2529E594100012CFE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2429E594100012CFE7 /* AppDelegate.swift */; };
 		01F06D2729E594100012CFE7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2629E594100012CFE7 /* SceneDelegate.swift */; };
 		01F06D2929E594100012CFE7 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2829E594100012CFE7 /* RootViewController.swift */; };
@@ -48,6 +49,7 @@
 		01472D6829EB046100845D4E /* FoodEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEditor.swift; sourceTree = "<group>"; };
 		01472D6A29EC63C900845D4E /* WeightEnterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightEnterViewController.swift; sourceTree = "<group>"; };
 		01472D6C29ED57D100845D4E /* FoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTableViewCell.swift; sourceTree = "<group>"; };
+		01C5BE4029F1576200A9087A /* CoreFavouritesDishManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreFavouritesDishManager.swift; sourceTree = "<group>"; };
 		01F06D2129E594100012CFE7 /* MonsterFitness.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MonsterFitness.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01F06D2429E594100012CFE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		01F06D2629E594100012CFE7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 			children = (
 				29B57BF129EFF11C00A1B0A7 /* CoreStorage.swift */,
 				29B57BF229EFF11C00A1B0A7 /* CoreFoodManager.swift */,
+				01C5BE4029F1576200A9087A /* CoreFavouritesDishManager.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -309,6 +312,7 @@
 				01472D6D29ED57D100845D4E /* FoodTableViewCell.swift in Sources */,
 				9249CCF729EAE2EB0031A47A /* EatenProductsCell.swift in Sources */,
 				01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */,
+				01C5BE4129F1576200A9087A /* CoreFavouritesDishManager.swift in Sources */,
 				9249CCEC29E999E30031A47A /* FatMeterView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

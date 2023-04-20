@@ -8,14 +8,62 @@
 import CoreData
 
 final class CoreStorage {
+    func saveFavouriteDish(_ dish: Dish) {
+        let coreDish = CoreDish(context: persistentContainer.viewContext)
+        coreDish.carbsG = dish.carb
+        coreDish.energyKcal = dish.kcal
+        coreDish.fatG = dish.fat
+        coreDish.proteinG = dish.prot
+        coreDish.name = dish.title
+        
+        let coreFavourite = fetchFavourite() ?? makeFavourites()
+        coreFavourite.insertIntoDish(coreDish, at: coreFavourite.dish?.count ?? 0)
+        saveContext()
+    }
+    
+    func makeFavourites() -> CoreFavourites {
+        let coreFavourites = CoreFavourites(context: persistentContainer.viewContext)
+        
+        return coreFavourites
+    }
+    
+    func fetchFavourite() -> CoreFavourites? {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: String(describing: CoreFavourites.self))
+        do {
+            if let results = try persistentContainer.viewContext.fetch(request) as? [CoreFavourites] {
+                return results.first
+            }
+        } catch {}
+        return nil
+    }
+    
+    func deleteFavouriteDish(_ dish: Dish) {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: String(describing: CoreDish.self))
+        request.predicate = NSPredicate(format: "name == %@", dish.title)
+        do {
+            if let results = try persistentContainer.viewContext.fetch(request) as? [CoreDish] {
+                for result in results {
+                    if result.favorites != nil {
+                        persistentContainer.viewContext.delete(result)
+                    }
+                }
+            }
+        } catch {}
+        saveContext()
+    }
+    
     func savePortion(_ portion: UIPortion, date: Date) {
         let coreDish = CoreDish(context: persistentContainer.viewContext)
         coreDish.energyKcal = portion.dish?.kcal ?? 0
+        coreDish.proteinG = portion.dish?.prot ?? 0
+        coreDish.carbsG = portion.dish?.carb ?? 0
+        coreDish.fatG = portion.dish?.fat ?? 0
         coreDish.name = portion.dish?.title ?? ""
 
         let corePortion = CorePortion(context: persistentContainer.viewContext)
         corePortion.weight = Double(portion.weight)
         corePortion.dish = coreDish
+        corePortion.dayPart = Int32(portion.mealTime.rawValue)
 
         let coreMenu = fetchMenu(date: date) ?? makeMenu(date: date)
         coreMenu.insertIntoBreakfast(corePortion, at: coreMenu.breakfast?.count ?? 0)

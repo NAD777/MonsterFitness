@@ -44,19 +44,21 @@ class WeightEnterViewController: UIViewController {
             self?.topEnterWeightConstraint.isActive = true
             self?.view.layoutIfNeeded()
         }
-//        enterWeight.becomeFirstResponder()
     }
 
     @objc func doneButtonTapped(_ actor: UIButton) {
         let value = enterWeight.text ?? "0"
         bus?.onExit(value)
-//        bus?.onExit(value)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = BrandConfig.backgroundColor
+        view.overrideUserInterfaceStyle = .dark
         setUpViews()
-        // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        enterWeight.becomeFirstResponder()
     }
 }
