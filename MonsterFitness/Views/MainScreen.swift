@@ -202,6 +202,7 @@ final class MainScreen: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "backgroundBlack")
+        navigationController?.navigationBar.tintColor = BrandConfig.segmentSelectedColor
         setupBarItems()
     }
     

@@ -105,6 +105,7 @@ class ProfileViewController: UIViewController {
         settingType()
         view.backgroundColor = BrandConfig.backgroundColor
         navigationItem.title = "Profile"
+        navigationController?.navigationBar.tintColor = BrandConfig.segmentSelectedColor
         navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         navigationItem.rightBarButtonItem = .init(title: "Done", style: .done, target: self, action: #selector(onButtonTapped))
         currentUser = UserProfile().currentUser
