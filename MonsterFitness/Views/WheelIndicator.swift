@@ -93,6 +93,7 @@ final class WheelIndicator: UIView {
     
     // число в диапазоне [0, 1]
     public func setCalories(desired: Double, actual: Double) {
+        print(desired)
         setTextForCalories(desired, actual)
         shapeLayerOuter.add(animationHelper(fillValue: actual/desired), forKey: "")
     }

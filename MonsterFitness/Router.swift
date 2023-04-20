@@ -12,7 +12,7 @@ class Router {
     let storage = CoreStorage()
     let defaults = UserDefaults.standard
     let rootViewController: RootViewController
-    lazy var coreStorage = CoreFoodManager(date: Calendar.current.startOfDay(for: Date()), context: stoage.persistentContainer.viewContext)
+    lazy var coreStorage = CoreFoodManager(date: Calendar.current.startOfDay(for: Date()), context: storage.persistentContainer.viewContext)
     lazy var homeScreenViewController = MainScreen(storage: coreStorage)
 
     init(rootViewController: RootViewController) {
@@ -67,7 +67,8 @@ class Router {
         }
         storage.savePortion(portion, date: date)
         storage.saveDayResult(date)
-
+        topMainScreen?.updateAll()
+//        topMainScreen?.updateUser()
         rootViewController.popViewController(animated: true)
     }
 
@@ -105,7 +106,9 @@ class Router {
         let profileViewController = ProfileViewController()
         profileViewController.onProfieChanged = { [weak self] in
             self?.rootViewController.popViewController(animated: true)
-            self?.homeScreenViewController.updateUser()
+            print("onprofilechanged")
+//            self?.homeScreenViewController.updateUser()
+            self?.homeScreenViewController.updateAll()
         }
 
         rootViewController.pushViewController(profileViewController, animated: true)
