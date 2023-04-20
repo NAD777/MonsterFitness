@@ -105,17 +105,17 @@ final class WheelIndicator: UIView {
     
     private func setTextForActivity(_ desired: Double, _ actual: Double) {
         if desired > actual {
-            activityLabel.text = "Осталось \(Int(desired - actual)) шагов"
+            activityLabel.text = "\(Int(desired - actual)) steps remaining"
         } else {
-            activityLabel.text = "Цель выполнена!"
+            activityLabel.text = "Goal is reached!"
         }
     }
     
     private func setTextForCalories(_ desired: Double, _ actual: Double) {
         if desired > actual {
-            calorieLabel.text = "Осталось \(Int(desired - actual)) ккал"
+            calorieLabel.text = "\(Int(desired - actual)) calories left"
         } else {
-            calorieLabel.text = "Пережрал на \(Int(actual - desired))"
+            calorieLabel.text = "Overconsumed \(Int(actual - desired))"
         }
     }
     

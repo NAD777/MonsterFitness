@@ -105,6 +105,7 @@ class Router {
         let profileViewController = ProfileViewController()
         profileViewController.onProfieChanged = { [weak self] in
             self?.rootViewController.popViewController(animated: true)
+            self?.homeScreenViewController.updateUser()
         }
 
         rootViewController.pushViewController(profileViewController, animated: true)
