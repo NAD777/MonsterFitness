@@ -251,9 +251,9 @@ extension MainScreen: UITableViewDataSource {
         case 0:
             return .breakfast
         case 1:
-            return .lunch
-        case 2:
             return .dinner
+        case 2:
+            return .lunch
         case 3:
             return .unspecified
         default:
