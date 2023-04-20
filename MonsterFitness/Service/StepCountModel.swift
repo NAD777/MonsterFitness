@@ -21,7 +21,7 @@ final class StepCountModel: StepAccess {
 
     private let healthStore = HKHealthStore()
     
-    private func getStepCountForTodayForAsync(completion: @escaping (Result<Int, Error>) -> Void) throws {
+    public func getStepCountForTodayForAsync(completion: @escaping (Result<Int, Error>) -> Void) throws {
         guard let stepQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             throw Errors.unknownError
         }
