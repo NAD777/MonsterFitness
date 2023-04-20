@@ -22,6 +22,7 @@ class EatenProductsCell: UITableViewCell {
         mockData()
         addAllToView()
         setupConstraints()
+        backgroundColor = UIColor(named: "accentGray")
     }
     
     required init?(coder: NSCoder) {

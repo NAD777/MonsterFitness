@@ -119,7 +119,7 @@ final class MainScreen: UIViewController {
     }
     
     private func setupTableView() {
-        tableView.backgroundColor = UIColor(named: "accentGray")
+        tableView.backgroundColor = UIColor(named: "backgroundBlack")
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(EatenProductsCell.self, forCellReuseIdentifier: EatenProductsCell.identifier)
