@@ -115,13 +115,7 @@ class FoodEditor: UIViewController {
         tableOfContent.estimatedRowHeight = 80
         tableOfContent.rowHeight = UITableView.automaticDimension
         tableOfContent.isScrollEnabled = false
-        
-//        NotificationCenter.default.addObserver(self, selector: #selector(managedObjectContextObjectsDidChange), name: NSNotification.Name.NSManagedObjectContextObjectsDidChange, object: nil)
     }
-
-//    @objc func managedObjectContextObjectsDidChange() {
-//
-//    }
     
     func initializeDescriptions() {
         if bus?.data?.dish.kcal != nil {
@@ -171,19 +165,17 @@ class FoodEditor: UIViewController {
         favButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
         favButton.addTarget(self, action: #selector(changePreference), for: .touchUpInside)
 
-        let imagePreference = getImagePreference(preference: preference ?? .unmarkedDish)
+        let imagePreference = getImagePreference(preference: preference)
         favButton.setImage(imagePreference, for: .normal)
         
-//        searchButton.addTarget(self, action: #selector(findForFood), for: .touchUpInside)
-
         mealPartSeparetedControl.insertSegment(withTitle: "Breakfast",
                                                at: UIPortion.MealTime.breakfast.rawValue,
                                                animated: false)
-        mealPartSeparetedControl.insertSegment(withTitle: "Lunch",
-                                               at: UIPortion.MealTime.lunch.rawValue,
-                                               animated: false)
         mealPartSeparetedControl.insertSegment(withTitle: "Dinner",
                                                at: UIPortion.MealTime.dinner.rawValue,
+                                               animated: false)
+        mealPartSeparetedControl.insertSegment(withTitle: "Lunch",
+                                               at: UIPortion.MealTime.lunch.rawValue,
                                                animated: false)
         mealPartSeparetedControl.insertSegment(withTitle: "Other",
                                                at: UIPortion.MealTime.other.rawValue,
