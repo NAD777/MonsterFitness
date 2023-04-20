@@ -44,24 +44,24 @@ final class ConsumptionEstimation: CalorieEstimator {
     internal func calculateBasalConsumption(user: User) -> Double {
         guard let age = user.age else {
             return 0
-//            throw Errors.ageNotSpecified
+            //            throw Errors.ageNotSpecified
         }
         guard let gender = user.gender else {
             return 0
-//            throw Errors.genderNotSpecified
+            //            throw Errors.genderNotSpecified
         }
         guard let weight = user.weight else {
             return 0
-//            throw Errors.weightNotSpecified
+            //            throw Errors.weightNotSpecified
         }
         guard let height = user.height else {
             return 0
-//            throw Errors.heightNotSpecified
+            //            throw Errors.heightNotSpecified
         }
         guard let activityLevel = user.activityLevel else {
             return 0
-//            throw Errors.activityLevelNotSpecified
-         }
+            //            throw Errors.activityLevelNotSpecified
+        }
         let activityModifier = applyActivityModifier(user: user)
         
         switch gender {
@@ -75,6 +75,31 @@ final class ConsumptionEstimation: CalorieEstimator {
             let otherCalories: Double = 66.5 + 11.75 * Double(weight) + 3 * Double(height) - 5.5 * Double(age) * activityModifier
             return otherCalories
         }
+    }
+    
+    public func getCalorieExpandatureForGivenSteps(user: User, steps: Int) throws -> Double {
+        guard let age = user.age else {
+            throw Errors.ageNotSpecified
+        }
+        guard let gender = user.gender else {
+            throw Errors.genderNotSpecified
+        }
+        guard let weight = user.weight else {
+            throw Errors.weightNotSpecified
+        }
+        guard let height = user.height else {
+            throw Errors.heightNotSpecified
+        }
+        guard let activityLevel = user.activityLevel else {
+            throw Errors.activityLevelNotSpecified
+        }
+        
+        let newUser = User(name: user.name, age: age, weight: weight, height: height, gender: gender,
+                           activityLevel: activityLevel)
+        
+        let basalExpandature = calculateBasalConsumption(user: newUser)
+        let physicalActivityExpandature = calculatePhysicalCalorieExpandatureForGivenSteps(user: newUser, steps: steps)
+        return physicalActivityExpandature+basalExpandature
     }
     
     public func getCalorieExpandatureForToday(user: User, closure: @escaping (Double)->Void) throws {
@@ -101,6 +126,16 @@ final class ConsumptionEstimation: CalorieEstimator {
         let physicalActivityExpandature = calculatePhysicalCalorieExpandature(user: newUser) { arg in
             closure(arg+basalExpandature)
         }
+    }
+    
+    
+    internal func calculatePhysicalCalorieExpandatureForGivenSteps(user: User, steps: Int) -> Double {
+        // FIXME: формула сомнительная, я в математике не силен
+        let steps = steps
+        let caloriesSpentForAMile = 0.57 * Double(user.weight ?? 100000) * 0.453592
+        let stepLengthInMeters = Double(user.height ?? 0)/400 + 0.37
+        let caloriesSpent = Double(steps) * stepLengthInMeters / caloriesSpentForAMile
+        return caloriesSpent
     }
     
     
