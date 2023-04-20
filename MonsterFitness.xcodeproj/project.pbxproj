@@ -36,6 +36,7 @@
 		92C7114029E82AAF00A195E1 /* StepCountModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C7113F29E82AAF00A195E1 /* StepCountModel.swift */; };
 		92EFD8C029ED78AB00BFFD2E /* ConsumptionEstimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EFD8BF29ED78AB00BFFD2E /* ConsumptionEstimation.swift */; };
 		C38D03EA29EEB934000AED51 /* DayResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38D03E929EEB934000AED51 /* DayResult.swift */; };
+		C38D046329F131DB000AED51 /* DayResultManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38D046229F131DB000AED51 /* DayResultManager.swift */; };
 		C3A6AE0029EAA6F900E230BF /* CalendarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A6ADFF29EAA6F900E230BF /* CalendarController.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +73,7 @@
 		92C7113F29E82AAF00A195E1 /* StepCountModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepCountModel.swift; sourceTree = "<group>"; };
 		92EFD8BF29ED78AB00BFFD2E /* ConsumptionEstimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsumptionEstimation.swift; sourceTree = "<group>"; };
 		C38D03E929EEB934000AED51 /* DayResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayResult.swift; sourceTree = "<group>"; };
+		C38D046229F131DB000AED51 /* DayResultManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayResultManager.swift; sourceTree = "<group>"; };
 		C3A6ADFF29EAA6F900E230BF /* CalendarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,6 +154,7 @@
 			children = (
 				29B57BF129EFF11C00A1B0A7 /* CoreStorage.swift */,
 				29B57BF229EFF11C00A1B0A7 /* CoreFoodManager.swift */,
+				C38D046229F131DB000AED51 /* DayResultManager.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				92EFD8C029ED78AB00BFFD2E /* ConsumptionEstimation.swift in Sources */,
 				92C5C0A829E97A550001CD34 /* MainScreen.swift in Sources */,
 				92C7114029E82AAF00A195E1 /* StepCountModel.swift in Sources */,
+				C38D046329F131DB000AED51 /* DayResultManager.swift in Sources */,
 				01F06D2529E594100012CFE7 /* AppDelegate.swift in Sources */,
 				92C5C0AA29E97F1C0001CD34 /* CalorieIndicatorView.swift in Sources */,
 				9249CCF029E9E2DE0031A47A /* CalorieSummaryView.swift in Sources */,
