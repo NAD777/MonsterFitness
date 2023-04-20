@@ -17,7 +17,6 @@ final class MainScreen: UIViewController {
     
     private let mockStorage: FoodStorage
     private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
-//    private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, targetSteps: 6000, activityLevel: .moderatelyActive)
 
     var date: Date { mockStorage.date }
     
@@ -31,7 +30,11 @@ final class MainScreen: UIViewController {
     }()
     
     
-    private let stepModel = StepCountModel()
+    private let stepModel: StepCountModel = {
+        let stepModel = StepCountModel()
+        stepModel.authorizeHealthKit()
+        return stepModel
+    }()
 
     var onSearchFoodSelected: (() -> Void)?
     var onPersonSelected: (() -> Void)?
@@ -43,28 +46,6 @@ final class MainScreen: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    public func updateUser() {
-//        let newUser = UserProfile().currentUser
-//        guard let newUser = newUser else {
-//            print("update is unavailable")
-//            return
-//        }
-//        print("trying to update")
-//        defaultsUser = newUser
-//        print(newUser.target)
-//        try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
-//            DispatchQueue.main.async {
-//                // оно не работает, но скоро будет
-//                print("q")
-////                sleep(2)
-//                let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
-//                self?.circleIndicator.setCalories(desired: Double(newUser.target), actual: consumed)
-////                self?.summary.setData(burned: calories, consumed: consumed)
-//
-//            }
-//        }
-//    }
-    
     // дерни эту ссылку чтобы обновить мою таблицу
     public func updateAll() {
         let newUser = UserProfile().currentUser
@@ -72,14 +53,22 @@ final class MainScreen: UIViewController {
             print("update is unavailable")
             return
         }
-//        print("trying to update")
         defaultsUser = newUser
-        
+        // FIXME: - не обновляется юзер
+        print(defaultsUser.targetSteps)
         DispatchQueue.main.async { [weak self] in
             self?.mockStorage.updateStorage()
-//            print(self?.mockStorage.allPortions)
-            // нет метода, который из кордаты обновляеяет allPortions
             self?.tableView.reloadData()
+        }
+        
+        try? stepModel.getStepCountForTodayForAsync() { arg in
+            switch arg {
+            case .success(let success):
+                self.circleIndicator.setActivity(desired: Double(self.defaultsUser.targetSteps ?? 5000), actual: Double(success))
+            case .failure(let failure):
+                print(failure.localizedDescription)
+                return
+            }
         }
         
         try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
@@ -87,10 +76,8 @@ final class MainScreen: UIViewController {
                 let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
                 self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed)
                 self?.summary.setData(burned: calories, consumed: consumed)
-                
             }
         }
-        
     }
 
     init(storage: FoodStorage) {
@@ -232,6 +219,7 @@ final class MainScreen: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateAll()
     }
     
     @objc func toFood() {
