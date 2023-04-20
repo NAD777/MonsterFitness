@@ -20,6 +20,8 @@ final class MainScreen: UIViewController {
     private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, targetSteps: 6000, activityLevel: .moderatelyActive)
 
     var date: Date { mockStorage.date }
+    
+    private let stepModel = StepCountModel()
 
     var onSearchFoodSelected: (() -> Void)?
     var onPersonSelected: (() -> Void)?
@@ -42,8 +44,7 @@ final class MainScreen: UIViewController {
         try? consumptionEstimator.getCalorieExpandatureForToday(user: userMock) { [weak self] calories in
             DispatchQueue.main.async {
                 let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
-                self?.circleIndicator.setActivity(desired: 1000, actual: 300)
-                self?.circleIndicator.setCalories(desired: Double(self?.userMock.target ?? 0), actual: calories)
+                self?.circleIndicator.setCalories(desired: Double(self?.userMock.target ?? 0), actual: consumed)
                 self?.summary.setData(burned: calories, consumed: consumed)
                 
             }
@@ -111,18 +112,6 @@ final class MainScreen: UIViewController {
         setupTableView()
     }
     
-//    private func setupConstraintsForTable() {
-//        tableView.translatesAutoresizingMaskIntoConstraints = false
-//
-//        NSLayoutConstraint.activate([
-//            view.centerXAnchor.constraint(equalTo: tableView.centerXAnchor),
-//            view.topAnchor.constraint(equalTo: tableView.topAnchor, constant: 10),
-//            view.bottomAnchor.constraint(equalTo: tableView.bottomAnchor, constant: -10)
-//        ])
-//    }
-    
-    
-    
     private func setupBarItems() {
         let person: UIButton = UIButton(type: UIButton.ButtonType.custom)
         let personImage = UIImage(systemName: "person")
@@ -161,6 +150,21 @@ final class MainScreen: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         setDataForSubviews()
+        setActivityWheel()
+    }
+    
+    private func setActivityWheel() {
+        try? stepModel.getStepCountForTodayForAsync() { [weak self] arg in
+            DispatchQueue.main.async {
+                switch arg {
+                case .success(let success):
+                    self?.circleIndicator.setActivity(desired: Double(self?.userMock.targetSteps ?? 300), actual: Double(success))
+                case .failure(let failure):
+                    print("failure")
+                    return
+                }
+            }
+        }
     }
     
     override func viewWillLayoutSubviews() {

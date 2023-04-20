@@ -96,7 +96,7 @@ class ProfileViewController: UIViewController {
         view.overrideUserInterfaceStyle = .dark
         // Do any additional setup after loading the viewa
         settingPickersForUserInformation()
-        currentUser = UserProfile().currentUser
+//        currentUser = UserProfile().currentUser
         view.backgroundColor = CONFIG.backgroundColor
         stacks.stack.axis = .vertical
         
