@@ -12,6 +12,8 @@ class Router {
     let storage = CoreStorage()
     let defaults = UserDefaults.standard
     let rootViewController: RootViewController
+    lazy var coreStorage = CoreFoodManager(date: Calendar.current.startOfDay(for: Date()), context: storage.persistentContainer.viewContext)
+    lazy var homeScreenViewController = MainScreen(storage: coreStorage)
 
     init(rootViewController: RootViewController) {
         self.rootViewController = rootViewController
@@ -19,27 +21,20 @@ class Router {
 
     func start() {
         let today = Calendar.current.startOfDay(for: Date())
-        let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
-        let homeScreenViewController = MainScreen(storage: coreStorage)
-        homeScreenViewController.onSearchFoodSelected = { [weak self] in
-            self?.openFood()
-        }
-        homeScreenViewController.onPersonSelected = { [weak self] in
-            self?.openProfile()
-        }
-        homeScreenViewController.onGraphSelected = { [weak self] in
-            self?.openCalendar()
-        }
-
+//        let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
+//        let homeScreenViewController = MainScreen(storage: coreStorage)
+        openNewMain(date: today)
         let loggedIn = defaults.integer(forKey: "LoggedIn")
         if loggedIn == 1 {
-            // TODO: - убрано изменение цвета, нужно придумать как прокинуть статус на экран лучше
-//            homeScreenViewController.view.backgroundColor = .green
         } else {
-//            homeScreenViewController.view.backgroundColor = .red
+            let profileViewController = ProfileViewController()
+            profileViewController.onProfieChanged = { [weak self] in
+                self?.rootViewController.popViewController(animated: true)
+            }
+            rootViewController.pushViewController(profileViewController, animated: false)
+            profileViewController.navigationItem.setHidesBackButton(true, animated: false)
             defaults.set(1, forKey: "LoggedIn")
         }
-        rootViewController.pushViewController(homeScreenViewController, animated: false)
     }
 
     func openFood() {
@@ -69,6 +64,9 @@ class Router {
             return
         }
         storage.savePortion(portion, date: date)
+        storage.saveDayResult(date)
+        topMainScreen?.updateAll()
+//        topMainScreen?.updateUser()
         rootViewController.popViewController(animated: true)
     }
 
@@ -113,14 +111,36 @@ class Router {
         let profileViewController = ProfileViewController()
         profileViewController.onProfieChanged = { [weak self] in
             self?.rootViewController.popViewController(animated: true)
+            print("onprofilechanged")
+//            self?.homeScreenViewController.updateUser()
+            self?.homeScreenViewController.updateAll()
         }
 
         rootViewController.pushViewController(profileViewController, animated: true)
     }
 
-    func openCalendar() {
-        let calendarViewController = CalendarController()
+    func openCalendar(date: Date) {
+        let manager = DayResultManager(day: date, context: storage.persistentContainer.viewContext)
+        let calendarViewController = CalendarController(storage: manager)
+        calendarViewController.onButtonDetails = { [weak self] in
+            self?.openNewMain(date: calendarViewController.date)
+        }
         rootViewController.pushViewController(calendarViewController, animated: true)
+    }
+    
+    func openNewMain(date: Date) {
+        let newMain = MainScreen(storage: CoreFoodManager(date: date, context: storage.persistentContainer.viewContext))
+        
+        newMain.onSearchFoodSelected = { [weak self] in
+            self?.openFood()
+        }
+        newMain.onPersonSelected = { [weak self] in
+            self?.openProfile()
+        }
+        newMain.onGraphSelected = { [weak self] in
+            self?.openCalendar(date: date)
+        }
+        rootViewController.pushViewController(newMain, animated: true)
     }
 
     var topMainScreen: MainScreen? {

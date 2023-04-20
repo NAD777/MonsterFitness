@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22C65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="21G526" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CoreDayResult" representedClassName="CoreDayResult" syncable="YES" codeGenerationType="class">
+        <attribute name="burnt" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="consumed" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+    </entity>
     <entity name="CoreDish" representedClassName="CoreDish" syncable="YES" codeGenerationType="class">
         <attribute name="carbsG" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="energyKcal" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -13,11 +18,12 @@
     </entity>
     <entity name="CoreMenu" representedClassName="CoreMenu" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="breakfast" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion"/>
+        <relationship name="breakfast" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion" inverseName="menu" inverseEntity="CorePortion"/>
     </entity>
     <entity name="CorePortion" representedClassName="CorePortion" syncable="YES" codeGenerationType="class">
         <attribute name="dayPart" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="weight" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="dish" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDish"/>
+        <relationship name="dish" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDish" inverseName="portion" inverseEntity="CoreDish"/>
+        <relationship name="menu" maxCount="1" deletionRule="Nullify" destinationEntity="CoreMenu" inverseName="breakfast" inverseEntity="CoreMenu"/>
     </entity>
 </model>

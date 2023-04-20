@@ -18,10 +18,18 @@ final class StepCountModel: StepAccess {
     enum Errors: Error {
         case unknownError
     }
+    
+    /// This function provides to authorize the _HealthKit_.
+    public func authorizeHealthKit() {
+        let healthKitTypes: Set = [ HKObjectType.quantityType(forIdentifier: HKQuantityTypeIdentifier.stepCount)! ] // We want to access the step count.
+        healthStore.requestAuthorization(toShare: healthKitTypes, read: healthKitTypes) { (success, error) in  // We will check the authorization.
+            if success {} // Authorization is successful.
+        }
+    }
 
     private let healthStore = HKHealthStore()
     
-    private func getStepCountForTodayForAsync(completion: @escaping (Result<Int, Error>) -> Void) throws {
+    public func getStepCountForTodayForAsync(completion: @escaping (Result<Int, Error>) -> Void) throws {
         guard let stepQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             throw Errors.unknownError
         }

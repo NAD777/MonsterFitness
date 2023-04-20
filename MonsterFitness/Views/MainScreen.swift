@@ -17,16 +17,67 @@ final class MainScreen: UIViewController {
     
     private let mockStorage: FoodStorage
     private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
-    private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, activityLevel: .moderatelyActive)
 
     var date: Date { mockStorage.date }
+    
+    var defaultsUser: User =  {
+        let user = UserProfile().currentUser
+        guard let user = user else {
+            print("defaults is unavailable")
+            return User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, targetSteps: 6000, activityLevel: .moderatelyActive)
+        }
+        return user
+    }()
+    
+    
+    private let stepModel: StepCountModel = {
+        let stepModel = StepCountModel()
+        stepModel.authorizeHealthKit()
+        return stepModel
+    }()
 
     var onSearchFoodSelected: (() -> Void)?
     var onPersonSelected: (() -> Void)?
     var onGraphSelected: (() -> Void)?
+    
+    private let headerView = UIView(frame: .zero)
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // дерни эту ссылку чтобы обновить мою таблицу
+    public func updateAll() {
+        let newUser = UserProfile().currentUser
+        guard let newUser = newUser else {
+            print("update is unavailable")
+            return
+        }
+        defaultsUser = newUser
+        // FIXME: - не обновляется юзер
+        print(defaultsUser.targetSteps)
+        DispatchQueue.main.async { [weak self] in
+            self?.mockStorage.updateStorage()
+            self?.tableView.reloadData()
+        }
+        
+        try? stepModel.getStepCountForTodayForAsync() { arg in
+            switch arg {
+            case .success(let success):
+                self.circleIndicator.setActivity(desired: Double(self.defaultsUser.targetSteps ?? 5000), actual: Double(success))
+            case .failure(let failure):
+                print(failure.localizedDescription)
+                return
+            }
+        }
+        
+        try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
+            DispatchQueue.main.async {
+                let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
+                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed)
+                self?.summary.setData(burned: calories, consumed: consumed)
+            }
+        }
     }
 
     init(storage: FoodStorage) {
@@ -35,15 +86,39 @@ final class MainScreen: UIViewController {
     }
 
     private func setDataForSubviews() {
-        try? consumptionEstimator.getCalorieExpandatureForToday(user: userMock) { [weak self] calories in
+        try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
             DispatchQueue.main.async {
                 let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
-                self?.circleIndicator.setActivity(desired: 1000, actual: 300)
-                self?.circleIndicator.setCalories(desired: Double(self?.userMock.target ?? 0), actual: calories)
+                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed)
                 self?.summary.setData(burned: calories, consumed: consumed)
                 
             }
         }
+    }
+    
+    private func setupHeader() {
+        headerView.frame = CGRect(x: 0, y: 0, width: 0, height: 390)
+        headerView.addSubview(circleIndicator)
+        headerView.addSubview(summary)
+        
+        circleIndicator.translatesAutoresizingMaskIntoConstraints = false
+        summary.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            headerView.centerXAnchor.constraint(equalTo: circleIndicator.centerXAnchor),
+            headerView.topAnchor.constraint(equalTo: circleIndicator.topAnchor, constant: -20),
+            
+            circleIndicator.widthAnchor.constraint(equalToConstant: 260),
+            circleIndicator.heightAnchor.constraint(equalToConstant: 260),
+            
+            circleIndicator.bottomAnchor.constraint(equalTo: summary.topAnchor, constant: -40),
+            summary.heightAnchor.constraint(equalToConstant: 60),
+            headerView.leftAnchor.constraint(equalTo: summary.leftAnchor, constant: -10),
+            summary.rightAnchor.constraint(equalTo: headerView.rightAnchor, constant: -10)
+            
+        ])
+        
+        tableView.tableHeaderView = headerView
     }
     
     private func setupTableView() {
@@ -53,46 +128,11 @@ final class MainScreen: UIViewController {
         tableView.register(EatenProductsCell.self, forCellReuseIdentifier: EatenProductsCell.identifier)
         
         tableView.layer.borderColor = UIColor(named: "outline")?.cgColor
-        tableView.layer.borderWidth = 1
-        tableView.layer.cornerRadius = 16
+//        tableView.layer.borderWidth = 1
+//        tableView.layer.cornerRadius = 16
         tableView.sectionHeaderTopPadding = 5
     }
     
-    private func setupConstraints() {
-//        caloriesConsumedView.translatesAutoresizingMaskIntoConstraints = false
-//        caloriesBurnedView.translatesAutoresizingMaskIntoConstraints = false
-        circleIndicator.translatesAutoresizingMaskIntoConstraints = false
-        summary.translatesAutoresizingMaskIntoConstraints = false
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            view.centerXAnchor.constraint(equalTo: circleIndicator.centerXAnchor),
-            
-            circleIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            
-            // привязываем жирометр к верхушке
-            view.safeAreaLayoutGuide.topAnchor.constraint(equalTo: circleIndicator.topAnchor, constant: -40),
-            
-            circleIndicator.widthAnchor.constraint(equalToConstant: 260),
-            circleIndicator.heightAnchor.constraint(equalToConstant: 260)
-        ])
-        
-        NSLayoutConstraint.activate([
-            summary.widthAnchor.constraint(equalToConstant: view.frame.width - 40),
-            summary.heightAnchor.constraint(equalToConstant: 60),
-            
-            view.centerXAnchor.constraint(equalTo: summary.centerXAnchor),
-            circleIndicator.bottomAnchor.constraint(equalTo: summary.topAnchor, constant: -30)
-        ])
-        
-        NSLayoutConstraint.activate([
-            view.leftAnchor.constraint(equalTo: tableView.leftAnchor, constant: -20),
-            tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20),
-            tableView.topAnchor.constraint(equalTo: summary.bottomAnchor, constant: 40),
-            tableView.heightAnchor.constraint(equalToConstant: 450)
-
-        ])
-    }
 
     private func getDateString() -> String {
         let dateFormatter = DateFormatter()
@@ -107,12 +147,14 @@ final class MainScreen: UIViewController {
     
     override func loadView() {
         super.loadView()
-        view.addSubview(circleIndicator)
-        view.addSubview(summary)
+        view.overrideUserInterfaceStyle = .dark
         view.addSubview(tableView)
         setupDateLabel()
+        setupHeader()
+        tableView.frame = view.frame
+        tableView.showsVerticalScrollIndicator = false
+        
         setupTableView()
-        setupConstraints()
     }
     
     private func setupBarItems() {
@@ -142,22 +184,43 @@ final class MainScreen: UIViewController {
         navigationItem.leftBarButtonItem = leftbarButtonItem
         navigationItem.title = getDateString()
         navigationController?.navigationBar.prefersLargeTitles = false
-        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(named: "backgroundBlack")
+        navigationController?.navigationBar.tintColor = BrandConfig.segmentSelectedColor
         setupBarItems()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         setDataForSubviews()
+        setActivityWheel()
+    }
+    
+    private func setActivityWheel() {
+        try? stepModel.getStepCountForTodayForAsync() { [weak self] arg in
+            DispatchQueue.main.async {
+                switch arg {
+                case .success(let success):
+                    self?.circleIndicator.setActivity(desired: Double(self?.defaultsUser.targetSteps ?? 300), actual: Double(success))
+                case .failure(let failure):
+                    print("failure")
+                    return
+                }
+            }
+        }
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        updateAll()
     }
     
     @objc func toFood() {
@@ -191,11 +254,7 @@ extension MainScreen: UITableViewDelegate {
         return false
     }
     
-//    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-//        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
-//        header.textLabel?.font = UIFont(name: "Helvetica", size: 14.0)
-//        header.textLabel?.textAlignment = NSTextAlignment.left
-//    }
+    
 
 }
 
@@ -223,7 +282,6 @@ extension MainScreen: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let currentDay = translateOrderToDayPart(section: section)
         let amount = mockStorage.allPortions.filter { $0.dayPart == currentDay }.count
-
         return amount
     }
     
@@ -234,5 +292,13 @@ extension MainScreen: UITableViewDataSource {
         cell.setData(portion: mockStorage.allPortions[indexPath.row])
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
+            print(indexPath)
+            
+        }
+        return UISwipeActionsConfiguration(actions: [action])
     }
 }

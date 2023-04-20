@@ -303,7 +303,7 @@ class FoodEditor: UIViewController {
     }
 
     @objc func addButtonTapped() {
-        let weight = Int("0" + (weightField.text ?? "0"))!
+        let weight = Int("0" + (weightField.text ?? "0")) ?? 0
         let portion: UIPortion = .init(preference: preference,
                                        weight: weight,
                                        dish: bus?.data?.dish,

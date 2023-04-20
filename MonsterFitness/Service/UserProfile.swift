@@ -8,21 +8,26 @@
 import Foundation
 
 final class UserProfile {
-    let defaults = UserDefaults.standard
+    private let defaults = UserDefaults.standard
     var currentUser: User? {
         didSet {
             update()
         }
     }
     init() {
-        let name = defaults.string(forKey: "name") ?? "Unknown"
+        let name = defaults.string(forKey: "name") ?? ""
         let age = defaults.integer(forKey: "age")
         let weight = defaults.integer(forKey: "weight")
         let height = defaults.integer(forKey: "height")
-        let target = defaults.integer(forKey: "target")
-        let genders = ["male": Genders.male, "female": Genders.female, "other": Genders.other]
-        let currentGender = genders[defaults.string(forKey: "gender") ?? "other"]
-        currentUser = User(name: name, age: age, weight: weight, height: height, gender: currentGender, target: target)
+        var target = defaults.integer(forKey: "target")
+        var targetSteps = defaults.integer(forKey: "targetSteps")
+        if name.isEmpty {
+            target = 2200
+            targetSteps = 6000
+        }
+        let gender = Genders(rawValue: defaults.integer(forKey: "gender"))
+        let type = PhysicalActivityLevel(rawValue: defaults.integer(forKey: "type"))
+        currentUser = User(name: name, age: age, weight: weight, height: height, gender: gender, target: target, targetSteps: targetSteps, activityLevel: type)
     }
     
     func update() {
@@ -31,7 +36,8 @@ final class UserProfile {
         defaults.set(currentUser?.weight, forKey: "weight")
         defaults.set(currentUser?.height, forKey: "height")
         defaults.set(currentUser?.target, forKey: "target")
-        let genders = [Genders.male: "male", Genders.female: "female", Genders.other: "other"]
-        defaults.set(genders[currentUser?.gender ?? .other], forKey: "gender")
+        defaults.set(currentUser?.targetSteps, forKey: "targetSteps")
+        defaults.set(currentUser?.gender?.rawValue, forKey: "gender")
+        defaults.set(currentUser?.activityLevel?.rawValue, forKey: "type")
     }
 }

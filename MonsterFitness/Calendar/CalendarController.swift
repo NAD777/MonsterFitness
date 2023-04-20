@@ -9,32 +9,12 @@ import UIKit
 import SwiftUI
 import Charts
 
-// MARK: это удалить
-let sample: [dayResult] = [
-    .init(day: Date("2023-04-02"), consumed: 100.0),
-    .init(day: Date("2023-04-03"), consumed: -120.0),
-    .init(day: Date("2023-04-04"), consumed: 120.0),
-    .init(day: Date("2023-04-05"), consumed: 100.0),
-    .init(day: Date("2023-04-06"), consumed: -120.0),
-    .init(day: Date("2023-04-07"), consumed: 450.0),
-    .init(day: Date("2023-04-08"), consumed: 120.0),
-    ]
-let sample1: [dayResult] = [
-    .init(day: Date("2023-04-09"), consumed: -120.0),
-    .init(day: Date("2023-04-10"), consumed: -100.0),
-    .init(day: Date("2023-04-11"), consumed: 120.0),
-    .init(day: Date("2023-04-12"), consumed: -120.0),
-    .init(day: Date("2023-04-13"), consumed: -100.0),
-    .init(day: Date("2023-04-14"), consumed: 120.0),
-    .init(day: Date("2023-04-15"), consumed: -400.0),
-    ]
-
 struct BarChart: View {
-    @State var data: [dayResult]
+    @State var data: [DayResult]
     var dateFormatter = DateFormatter()
-    init(_ sample: [dayResult]) {
+    init(_ sample: [DayResult]) {
         data = sample
-        dateFormatter.dateFormat = "MMM d"
+        dateFormatter.dateFormat = "d.MM"
     }
     var body: some View {
         AnimatedChart()
@@ -42,23 +22,21 @@ struct BarChart: View {
     
     @ViewBuilder
     func AnimatedChart() -> some View {
-        let maxData = data.max { lhs, rhs in
-            return lhs.consumed - lhs.burnt < rhs.consumed - rhs.burnt
-        }
-        let max = (maxData?.consumed ?? 0.0) - (maxData?.burnt ?? 0.0) < 0.0 ? 0.0 : (maxData?.consumed ?? 0.0) - (maxData?.burnt ?? 0.0)
+        let max = max( data.max { lhs, rhs in
+            return lhs.diff < rhs.diff
+        }?.diff ?? 0.0, 0.0)
         
-        let minData = data.max { lhs, rhs in
-            return lhs.consumed - lhs.burnt > rhs.consumed - rhs.burnt
-        }
-        let min = (minData?.consumed ?? 0.0) - (minData?.burnt ?? 0.0) > 0.0 ? 0.0 : (minData?.consumed ?? 0.0) - (minData?.burnt ?? 0.0)
+        let min = min( data.min { lhs, rhs in
+            return lhs.diff < rhs.diff
+        }?.diff ?? 0.0, 0.0)
         Chart {
             ForEach(data) { oneday in
                 if (oneday.consumed - oneday.burnt) > 0 {
-                    BarMark(x: .value("Date", dateFormatter.string(from: oneday.day)), y: .value("y", oneday.animated ? oneday.consumed - oneday.burnt : 1.0))
+                    BarMark(x: .value("Date", dateFormatter.string(from: oneday.day)), y: .value("y", oneday.animated ? oneday.diff : 1.0))
                         .foregroundStyle(by: .value("color", "Green"))
                         .cornerRadius(8)
                 } else {
-                    BarMark(x: .value("Date", dateFormatter.string(from: oneday.day)), y: .value("y", oneday.animated ? oneday.consumed - oneday.burnt : -1.0))
+                    BarMark(x: .value("Date", dateFormatter.string(from: oneday.day)), y: .value("y", oneday.animated ? oneday.diff : -1.0))
                         .foregroundStyle(by: .value("color", "Red"))
                         .cornerRadius(8)
                 }
@@ -90,21 +68,35 @@ struct BarChart: View {
     }
 }
 
-
 final class CalendarController: UIViewController {
+    private var storage: DayResultManager
     private var calendar = UIDatePicker()
     private var dateText = UILabel()
     private var button = UIButton(type: .system)
+    var date: Date {
+        calendar.date
+    }
+    var onButtonDetails: (() -> Void)?
     private var graphicRollerNext = UIButton(type: .system)
     private var graphicRollerPrev = UIButton(type: .system)
     private static var dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateFormat = "MMM d, y"
+        df.locale = Locale(identifier: "en_US_POSIX")
         return df
     }()
+    
+    init(storage: DayResultManager) {
+        self.storage = storage
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor(red: 13 / 255, green: 13 / 255, blue: 13 / 255, alpha: 1)
+        view.backgroundColor = UIColor(named: "backgroundBlack")
         setupView()
     }
     private func setupView() {
@@ -131,8 +123,9 @@ final class CalendarController: UIViewController {
     }
     private func setupCalendar() {
         view.overrideUserInterfaceStyle = .dark
+        calendar.locale = Locale(identifier: "en_US_POSIX")
         calendar.preferredDatePickerStyle = .inline
-        calendar.date = Date.now
+        calendar.date = storage.date
         calendar.datePickerMode = .date
         calendar.tintColor = .systemGreen
         calendar.addAction(UIAction(handler: { [weak self] _ in
@@ -152,8 +145,7 @@ final class CalendarController: UIViewController {
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
     private func setupBarView() {
-        // MARK: sample заменить на реальные данные
-        guard let graphic = UIHostingController(rootView: BarChart(sample)).view else { return }
+        guard let graphic = UIHostingController(rootView: BarChart(storage.week)).view else { return }
         view.addSubview(graphic)
         graphic.translatesAutoresizingMaskIntoConstraints = false
         graphic.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -184,6 +176,8 @@ final class CalendarController: UIViewController {
         graphicRollerNext.addTarget(self, action: #selector(calendarNext), for: .touchUpInside)
     }
     private func dateChanged() {
+        let context = storage.context
+        storage = DayResultManager(day: calendar.date, context: context)
         dateText.text = CalendarController.dateFormatter.string(from: calendar.date)
         setupBarView()
     }
@@ -199,17 +193,6 @@ final class CalendarController: UIViewController {
     }
     @objc
     func buttonTapped(_ sender: UIButton) {
-        //self.setupBarView()
-    }
-}
-
-// MARK: для сэмплов
-extension Date {
-    init(_ dateString:String) {
-        let dateStringFormatter = DateFormatter()
-        dateStringFormatter.dateFormat = "yyyy-MM-dd"
-        dateStringFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX") as Locale
-        let date = dateStringFormatter.date(from: dateString)!
-        self.init(timeInterval:0, since:date)
+        onButtonDetails?()
     }
 }

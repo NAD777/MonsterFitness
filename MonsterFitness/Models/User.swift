@@ -7,13 +7,13 @@
 
 import Foundation
 
-enum Genders{
+enum Genders: Int {
     case male
     case female
     case other
 }
 
-enum PhysicalActivityLevel {
+enum PhysicalActivityLevel: Int {
     case passive
     case minimallyActive
     case moderatelyActive
@@ -28,7 +28,8 @@ struct User {
     var weight: Int?
     var height: Int?
     var gender: Genders?
-    var target: Int = 2500
+    var target: Int = 2200
+    var targetSteps: Int = 6000
     var activityLevel: PhysicalActivityLevel?
     
 }

@@ -87,7 +87,42 @@ final class CoreStorage {
         coreMenu.date = date
         return coreMenu
     }
-
+    
+    func saveDayResult(_ date: Date) {
+        let coreDayResult = fetchDayResult(date: date) ?? makeResult()
+        let stepcountmodel = StepCountModel()
+        let user = UserProfile().currentUser ?? User(name: "Boba", age: 20, weight: 45, height: 165, gender: .male, activityLevel: .passive)
+        let consEst = ConsumptionEstimation(pedometerImpl: stepcountmodel)
+        do {
+            try stepcountmodel.getStepCountsForPreviousYear { arg in
+                let burnt = try? consEst.getCalorieExpandatureForGivenSteps(user: user, steps: arg[date] ?? 0)
+                coreDayResult.burnt = burnt ?? 0.0
+            }
+        } catch {
+            coreDayResult.burnt = 0.0
+        }
+        let coreFoodManager = CoreFoodManager(date: date, context: persistentContainer.viewContext)
+        coreDayResult.consumed = coreFoodManager.getTotalCalorieIntake()
+        coreDayResult.date = date
+        saveContext()
+    }
+    
+    func fetchDayResult(date: Date) -> CoreDayResult? {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: String(describing: CoreDayResult.self))
+        request.predicate = NSPredicate(format: "date == %@", date as NSDate)
+        do {
+            if let results = try persistentContainer.viewContext.fetch(request) as? [CoreDayResult] {
+                return results.first
+            }
+        } catch {}
+        return nil
+    }
+    func makeResult() -> CoreDayResult {
+        let coreDayResult = CoreDayResult(context: persistentContainer.viewContext)
+        coreDayResult.burnt = 0.0
+        coreDayResult.consumed = 0.0
+        return coreDayResult
+    }
     // MARK: - Core Data stack
 
     lazy var persistentContainer: NSPersistentContainer = {
