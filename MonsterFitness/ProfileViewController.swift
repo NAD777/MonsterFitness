@@ -290,9 +290,9 @@ class ProfileViewController: UIViewController {
         name.text = currentUser?.name
         targetCalories.target.text = String(currentUser?.target ?? 0)
         targetSteps.target.text = String(currentUser?.targetSteps ?? 0)
-        stackArr[0].selectRow((currentUser?.age ?? 1) - 1, inComponent: 0, animated: true)
-        stackArr[1].selectRow((currentUser?.weight ?? 20) - 20, inComponent: 0, animated: true)
-        stackArr[2].selectRow((currentUser?.height ?? 100) - 100, inComponent: 0, animated: true)
+        stackArr[0].selectRow(max((currentUser?.age ?? 1) - 1, 0), inComponent: 0, animated: true)
+        stackArr[1].selectRow(max((currentUser?.weight ?? 20) - 20, 0), inComponent: 0, animated: true)
+        stackArr[2].selectRow(max((currentUser?.height ?? 100) - 100, 0), inComponent: 0, animated: true)
         stackArr[3].selectRow(currentUser?.gender?.rawValue ?? 0, inComponent: 0, animated: true)
         stackArr[4].selectRow(currentUser?.activityLevel?.rawValue ?? 0, inComponent: 0, animated: true)
     }

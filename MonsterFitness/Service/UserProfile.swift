@@ -15,12 +15,16 @@ final class UserProfile {
         }
     }
     init() {
-        let name = defaults.string(forKey: "name") ?? "Unknown"
+        let name = defaults.string(forKey: "name") ?? ""
         let age = defaults.integer(forKey: "age")
         let weight = defaults.integer(forKey: "weight")
         let height = defaults.integer(forKey: "height")
-        let target = defaults.integer(forKey: "target")
-        let targetSteps = defaults.integer(forKey: "targetSteps")
+        var target = defaults.integer(forKey: "target")
+        var targetSteps = defaults.integer(forKey: "targetSteps")
+        if name.isEmpty {
+            target = 2200
+            targetSteps = 6000
+        }
         let gender = Genders(rawValue: defaults.integer(forKey: "gender"))
         let type = PhysicalActivityLevel(rawValue: defaults.integer(forKey: "type"))
         currentUser = User(name: name, age: age, weight: weight, height: height, gender: gender, target: target, targetSteps: targetSteps, activityLevel: type)
