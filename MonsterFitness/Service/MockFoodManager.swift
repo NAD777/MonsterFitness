@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct Portion {
     enum DayPart: String {
@@ -30,9 +31,19 @@ protocol FoodStorage {
     func deleteDish(index: Int) throws
 
     func getTotalCalorieIntake() -> Double
+    
+    func updateStorage()
 }
 
 final class MockFoodManager: FoodStorage {
+    func updateStorage(newDate: Date, context: NSManagedObjectContext) {
+        fatalError()
+    }
+    
+    func updateStorage() {
+        fatalError()
+    }
+    
     enum Errors: Error {
         case doesNotExist
     }
