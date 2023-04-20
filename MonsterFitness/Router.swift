@@ -12,7 +12,7 @@ class Router {
     let storage = CoreStorage()
     let defaults = UserDefaults.standard
     let rootViewController: RootViewController
-    lazy var coreStorage = CoreFoodManager(date: Calendar.current.startOfDay(for: Date()), context: stoage.persistentContainer.viewContext)
+    lazy var coreStorage = CoreFoodManager(date: Calendar.current.startOfDay(for: Date()), context: storage.persistentContainer.viewContext)
     lazy var homeScreenViewController = MainScreen(storage: coreStorage)
 
     init(rootViewController: RootViewController) {
@@ -23,7 +23,9 @@ class Router {
         let today = Calendar.current.startOfDay(for: Date())
         let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
         let homeScreenViewController = MainScreen(storage: coreStorage)
-
+        
+        openNewMain(date: today)
+/*
         homeScreenViewController.onSearchFoodSelected = { [weak self] in
             self?.openFood()
         }
@@ -33,7 +35,7 @@ class Router {
         homeScreenViewController.onGraphSelected = { [weak self] in
             self?.openCalendar(date: today)
         }
-
+*/
         let loggedIn = defaults.integer(forKey: "LoggedIn")
         if loggedIn == 1 {
             // TODO: - убрано изменение цвета, нужно придумать как прокинуть статус на экран лучше
@@ -42,7 +44,7 @@ class Router {
 //            homeScreenViewController.view.backgroundColor = .red
             defaults.set(1, forKey: "LoggedIn")
         }
-        rootViewController.pushViewController(homeScreenViewController, animated: false)
+        //rootViewController.pushViewController(homeScreenViewController, animated: false)
     }
 
     func openFood() {
@@ -113,7 +115,25 @@ class Router {
     func openCalendar(date: Date) {
         let manager = DayResultManager(day: date, context: storage.persistentContainer.viewContext)
         let calendarViewController = CalendarController(storage: manager)
+        calendarViewController.onButtonDetails = { [weak self] in
+            self?.openNewMain(date: calendarViewController.date)
+        }
         rootViewController.pushViewController(calendarViewController, animated: true)
+    }
+    
+    func openNewMain(date: Date) {
+        let newMain = MainScreen(storage: CoreFoodManager(date: date, context: storage.persistentContainer.viewContext))
+        
+        newMain.onSearchFoodSelected = { [weak self] in
+            self?.openFood()
+        }
+        newMain.onPersonSelected = { [weak self] in
+            self?.openProfile()
+        }
+        newMain.onGraphSelected = { [weak self] in
+            self?.openCalendar(date: date)
+        }
+        rootViewController.pushViewController(newMain, animated: true)
     }
 
     var topMainScreen: MainScreen? {

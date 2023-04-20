@@ -73,11 +73,16 @@ final class CalendarController: UIViewController {
     private var calendar = UIDatePicker()
     private var dateText = UILabel()
     private var button = UIButton(type: .system)
+    var date: Date {
+        calendar.date
+    }
+    var onButtonDetails: (() -> Void)?
     private var graphicRollerNext = UIButton(type: .system)
     private var graphicRollerPrev = UIButton(type: .system)
     private static var dateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateFormat = "MMM d, y"
+        df.locale = Locale(identifier: "en_US_POSIX")
         return df
     }()
     
@@ -118,6 +123,7 @@ final class CalendarController: UIViewController {
     }
     private func setupCalendar() {
         view.overrideUserInterfaceStyle = .dark
+        calendar.locale = Locale(identifier: "en_US_POSIX")
         calendar.preferredDatePickerStyle = .inline
         calendar.date = storage.date
         calendar.datePickerMode = .date
@@ -187,5 +193,6 @@ final class CalendarController: UIViewController {
     }
     @objc
     func buttonTapped(_ sender: UIButton) {
+        onButtonDetails?()
     }
 }
