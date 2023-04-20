@@ -17,9 +17,20 @@ final class MainScreen: UIViewController {
     
     private let mockStorage: FoodStorage
     private let consumptionEstimator = ConsumptionEstimation(pedometerImpl: StepCountModel())
-    private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, targetSteps: 6000, activityLevel: .moderatelyActive)
+//    private let userMock = User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, targetSteps: 6000, activityLevel: .moderatelyActive)
 
     var date: Date { mockStorage.date }
+    
+    var defaultsUser: User = {
+        
+        let user = UserProfile().currentUser
+        guard let user = user else {
+            print("defaults is unavailable")
+            return User(name: "mockname", age: 23, weight: 64, height: 140, gender: .male, target: 1800, targetSteps: 6000, activityLevel: .moderatelyActive)
+        }
+        return user
+    }()
+    
     
     private let stepModel = StepCountModel()
 
@@ -41,10 +52,10 @@ final class MainScreen: UIViewController {
     }
 
     private func setDataForSubviews() {
-        try? consumptionEstimator.getCalorieExpandatureForToday(user: userMock) { [weak self] calories in
+        try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
             DispatchQueue.main.async {
                 let consumed = self?.mockStorage.getTotalCalorieIntake() ?? 0
-                self?.circleIndicator.setCalories(desired: Double(self?.userMock.target ?? 0), actual: consumed)
+                self?.circleIndicator.setCalories(desired: Double(self?.defaultsUser.target ?? 0), actual: consumed)
                 self?.summary.setData(burned: calories, consumed: consumed)
                 
             }
@@ -158,7 +169,7 @@ final class MainScreen: UIViewController {
             DispatchQueue.main.async {
                 switch arg {
                 case .success(let success):
-                    self?.circleIndicator.setActivity(desired: Double(self?.userMock.targetSteps ?? 300), actual: Double(success))
+                    self?.circleIndicator.setActivity(desired: Double(self?.defaultsUser.targetSteps ?? 300), actual: Double(success))
                 case .failure(let failure):
                     print("failure")
                     return
