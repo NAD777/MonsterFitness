@@ -77,7 +77,7 @@ final class ConsumptionEstimation: CalorieEstimator {
         }
     }
     
-    public func getCalorieExpandatureForGivenSteps(user: User, steps: Int, closure: @escaping (Double)->Void) throws {
+    public func getCalorieExpandatureForGivenSteps(user: User, steps: Int) throws -> Double {
         guard let age = user.age else {
             throw Errors.ageNotSpecified
         }
@@ -98,9 +98,8 @@ final class ConsumptionEstimation: CalorieEstimator {
                            activityLevel: activityLevel)
         
         let basalExpandature = calculateBasalConsumption(user: newUser)
-        let physicalActivityExpandature = calculatePhysicalCalorieExpandatureForGivenSteps(user: newUser, steps: steps) { arg in
-            closure(arg+basalExpandature)
-        }
+        let physicalActivityExpandature = calculatePhysicalCalorieExpandatureForGivenSteps(user: newUser, steps: steps)
+        return physicalActivityExpandature+basalExpandature
     }
     
     public func getCalorieExpandatureForToday(user: User, closure: @escaping (Double)->Void) throws {
@@ -130,15 +129,13 @@ final class ConsumptionEstimation: CalorieEstimator {
     }
     
     
-    internal func calculatePhysicalCalorieExpandatureForGivenSteps(user: User, steps: Int, closure: @escaping (Double)->Void) {
+    internal func calculatePhysicalCalorieExpandatureForGivenSteps(user: User, steps: Int) -> Double {
         // FIXME: формула сомнительная, я в математике не силен
-        Task {
-            let steps = steps
-            let caloriesSpentForAMile = 0.57 * Double(user.weight ?? 100000) * 0.453592
-            let stepLengthInMeters = Double(user.height ?? 0)/400 + 0.37
-            let caloriesSpent = Double(steps) * stepLengthInMeters / caloriesSpentForAMile
-            closure(caloriesSpent)
-        }
+        let steps = steps
+        let caloriesSpentForAMile = 0.57 * Double(user.weight ?? 100000) * 0.453592
+        let stepLengthInMeters = Double(user.height ?? 0)/400 + 0.37
+        let caloriesSpent = Double(steps) * stepLengthInMeters / caloriesSpentForAMile
+        return caloriesSpent
     }
     
     
