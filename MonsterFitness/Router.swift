@@ -137,7 +137,7 @@ class Router {
         newMain.onPersonSelected = { [weak self] in
             self?.openProfile()
         }
-        newMain.onGraphSelected = { [weak self] in
+        newMain.onCalendarSelected = { [weak self] in
             self?.openCalendar(date: date)
         }
         rootViewController.pushViewController(newMain, animated: true)
