@@ -25,10 +25,8 @@ protocol FoodStorage {
     var date: Date { get }
 
     var allPortions: [Portion] { get }
-    
-    func addConsumedDish(_ model: Portion)
-    
-    func deleteDish(index: Int) throws
+        
+    func deletePortion(index: Int)
 
     func getTotalCalorieIntake() -> Double
     

@@ -54,17 +54,24 @@ final class CoreFoodManager: FoodStorage {
         return calorieTotal
     }
 
-    public func addConsumedDish(_ model: Portion) {
-        assertionFailure("not implemented")
-    }
+    public func deletePortion(index: Int) {
+        let context = CoreStorage().persistentContainer.viewContext
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: String(describing: CoreMenu.self))
+        request.predicate = NSPredicate(format: "date == %@", date as NSDate)
 
-    public func deleteDish(index: Int) throws {
-        assertionFailure("not implemented")
+        do {
+            guard let results = try context.fetch(request) as? [CoreMenu],
+                let result = results.first,
+                let portions = result.breakfast?.array as? [CorePortion] else {
+                return
+            }
+            context.delete(portions[index])
+            result.dayResult?.consumed = getTotalCalorieIntake()
+            try context.save()
+        } catch {}
+
+        updateStorage()
     }
-    
-//    public func deleteDishFromFavourite(index: Int) throws {
-//        assertionFailure("delete from favaurite does not implemented")
-//    }
 }
 
 extension Int32 {

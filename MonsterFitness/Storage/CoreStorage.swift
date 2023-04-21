@@ -52,7 +52,7 @@ final class CoreStorage {
         saveContext()
     }
     
-    func savePortion(_ portion: UIPortion, date: Date) {
+    func savePortion(_ portion: UIPortion, date: Date) -> CoreMenu {
         let coreDish = CoreDish(context: persistentContainer.viewContext)
         coreDish.energyKcal = portion.dish?.kcal ?? 0
         coreDish.proteinG = portion.dish?.prot ?? 0
@@ -69,6 +69,8 @@ final class CoreStorage {
         coreMenu.insertIntoBreakfast(corePortion, at: coreMenu.breakfast?.count ?? 0)
 
         saveContext()
+
+        return coreMenu
     }
 
     func fetchMenu(date: Date) -> CoreMenu? {
@@ -88,7 +90,7 @@ final class CoreStorage {
         return coreMenu
     }
     
-    func saveDayResult(_ date: Date) {
+    func saveDayResult(_ date: Date, menu: CoreMenu) {
         let coreDayResult = fetchDayResult(date: date) ?? makeResult()
         let stepcountmodel = StepCountModel()
         let user = UserProfile().currentUser ?? User(name: "Boba", age: 20, weight: 45, height: 165, gender: .male, activityLevel: .passive)
@@ -104,6 +106,7 @@ final class CoreStorage {
         let coreFoodManager = CoreFoodManager(date: date, context: persistentContainer.viewContext)
         coreDayResult.consumed = coreFoodManager.getTotalCalorieIntake()
         coreDayResult.date = date
+        coreDayResult.menu = menu
         saveContext()
     }
     

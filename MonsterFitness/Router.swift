@@ -72,8 +72,8 @@ class Router {
             assertionFailure("main screen not found")
             return
         }
-        storage.savePortion(portion, date: date)
-        storage.saveDayResult(date)
+        let menu = storage.savePortion(portion, date: date)
+        storage.saveDayResult(date, menu: menu)
         topMainScreen?.updateAll()
 //        topMainScreen?.updateUser()
         rootViewController.popViewController(animated: true)

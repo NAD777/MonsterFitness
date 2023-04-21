@@ -283,8 +283,10 @@ extension MainScreen: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
-            print(indexPath)
-            
+            self.mockStorage.deletePortion(index: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            completionHandler(true)
+            self.updateAll()
         }
         return UISwipeActionsConfiguration(actions: [action])
     }
