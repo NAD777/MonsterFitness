@@ -23,9 +23,7 @@ final class CoreFoodManager: FoodStorage {
         request.predicate = NSPredicate(format: "date == %@", date as NSDate)
 
         do {
-            guard let results = try context.fetch(request) as? [CoreMenu],
-                let portions = results.first?.breakfast?.array as? [CorePortion] else {
-                allPortions = []
+            guard let results = try context.fetch(request) as? [CoreMenu] else {
                 return
             }
 
