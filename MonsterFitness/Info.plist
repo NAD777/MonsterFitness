@@ -7,9 +7,9 @@
 		<string>Montserrat-VariableFont_wght.ttf</string>
 	</array>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Еще шаги!</string>
+	<string>more steps</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Нам нужны твои шаги!</string>
+	<string>we need your steps</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

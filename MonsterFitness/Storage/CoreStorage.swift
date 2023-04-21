@@ -102,7 +102,7 @@ final class CoreStorage {
             coreDayResult.burnt = 0.0
         }
         let coreFoodManager = CoreFoodManager(date: date, context: persistentContainer.viewContext)
-        coreDayResult.consumed = coreFoodManager.getTotalCalorieIntake()
+        coreDayResult.consumed = coreFoodManager.getTotalCalorieIntake() / 100
         coreDayResult.date = date
         saveContext()
     }
