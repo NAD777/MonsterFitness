@@ -18,12 +18,18 @@
     </entity>
     <entity name="CoreMenu" representedClassName="CoreMenu" syncable="YES" codeGenerationType="class">
         <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="breakfast" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion" inverseName="menu" inverseEntity="CorePortion"/>
+        <relationship name="breakfast" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion" inverseName="menu" inverseEntity="CorePortion"/>
+        <relationship name="dinner" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion" inverseName="menuD" inverseEntity="CorePortion"/>
+        <relationship name="lunch" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion" inverseName="menuL" inverseEntity="CorePortion"/>
+        <relationship name="other" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="CorePortion" inverseName="menuO" inverseEntity="CorePortion"/>
     </entity>
     <entity name="CorePortion" representedClassName="CorePortion" syncable="YES" codeGenerationType="class">
-        <attribute name="dayPart" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dayPart" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="weight" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="dish" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDish" inverseName="portion" inverseEntity="CoreDish"/>
-        <relationship name="menu" maxCount="1" deletionRule="Nullify" destinationEntity="CoreMenu" inverseName="breakfast" inverseEntity="CoreMenu"/>
+        <relationship name="dish" maxCount="1" deletionRule="Nullify" destinationEntity="CoreDish"/>
+        <relationship name="menu" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreMenu" inverseName="breakfast" inverseEntity="CoreMenu"/>
+        <relationship name="menuD" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreMenu" inverseName="dinner" inverseEntity="CoreMenu"/>
+        <relationship name="menuL" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreMenu" inverseName="lunch" inverseEntity="CoreMenu"/>
+        <relationship name="menuO" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CoreMenu" inverseName="other" inverseEntity="CoreMenu"/>
     </entity>
 </model>

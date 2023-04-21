@@ -5,6 +5,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Montserrat-VariableFont_wght.ttf</string>
+		<string>PTSerif-Regular.ttf</string>
 	</array>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>more steps</string>

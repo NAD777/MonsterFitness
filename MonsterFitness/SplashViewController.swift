@@ -56,16 +56,15 @@ class SplashViewController: UIViewController {
         label.text = "Monster Fitness"
         label.textColor = .white
         
-//        guard let customFont = UIFont(name: "Montserrat-VariableFont_wght", size: 28) else {
-//            fatalError("""
-//                Failed to load the "CustomFont-Light" font.
-//                Make sure the font file is included in the project and the font name is spelled correctly.
-//                """
-//            )
-//        }
-        
-//        label.font = customFont
-        label.font = UIFont(name: label.font.fontName, size: 28)
+        guard let customFont = UIFont(name: "Helvetica", size: 28) else {
+            fatalError("""
+                Failed to load the "CustomFont-Light" font.
+                Make sure the font file is included in the project and the font name is spelled correctly.
+                """
+            )
+        }
+//
+        label.font = customFont
         label.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         label.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
         upperBracket()
