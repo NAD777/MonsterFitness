@@ -19,18 +19,6 @@ struct Portion {
     let weightConsumed: Double
     let dishConsumed: Dish
     let dayPart: DayPart
-    var dayPartInt: Int {
-        switch dayPart {
-        case .breakfast:
-            return 0
-        case .lunch:
-            return 1
-        case .dinner:
-            return 2
-        case .unspecified:
-            return 3
-        }
-    }
 }
 
 protocol FoodStorage {
@@ -46,4 +34,3 @@ protocol FoodStorage {
     
     func updateStorage()
 }
-

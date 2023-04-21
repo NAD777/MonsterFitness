@@ -235,6 +235,10 @@ extension MainScreen: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 20
     }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return translateOrderToDayPart(section: section).rawValue
+    }
     
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
@@ -259,40 +263,23 @@ extension MainScreen: UITableViewDataSource {
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return Set(mockStorage.allPortions.map { return $0.dayPart }).count
+        return  Set(mockStorage.allPortions.map { return $0.dayPart }).count
     }
-
-    func countDayPart(section: Int) -> Int {
-        let set = Set(mockStorage.allPortions.map { return $0.dayPartInt })
-        var array = Array(set)
-        array.sort()
-        return array[section]
-    }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let currentDay = translateOrderToDayPart(section: countDayPart(section: section))
+        let currentDay = translateOrderToDayPart(section: section)
         let amount = mockStorage.allPortions.filter { $0.dayPart == currentDay }.count
         return amount
     }
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let currentDay = translateOrderToDayPart(section: countDayPart(section: section))
-        return currentDay.rawValue
-    }
-
-    func findPortion(indexPath: IndexPath) -> Portion {
-        let dayPart = countDayPart(section: indexPath[0])
-        return mockStorage.allPortions.filter {$0.dayPartInt == dayPart} [indexPath[1]]
-        
-    }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: EatenProductsCell.identifier) as? EatenProductsCell else {
             return UITableViewCell()
         }
-        cell.setData(portion: findPortion(indexPath: indexPath))
+        cell.setData(portion: mockStorage.allPortions[indexPath.row])
+        
         return cell
     }
-
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let action = UIContextualAction(style: .destructive, title: "Delete") { (_, _, completionHandler) in
