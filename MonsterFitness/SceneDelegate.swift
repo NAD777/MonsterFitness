@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             router = Router(rootViewController: vc)
             window.rootViewController = vc
             self.window = window
-            router?.start()
+            router?.splashScreen()
             window.makeKeyAndVisible()
     }
 

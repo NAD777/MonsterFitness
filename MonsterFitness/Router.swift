@@ -20,6 +20,7 @@ class Router {
     }
 
     func start() {
+//        splashScreen()
         let today = Calendar.current.startOfDay(for: Date())
 //        let coreStorage = CoreFoodManager(date: today, context: storage.persistentContainer.viewContext)
 //        let homeScreenViewController = MainScreen(storage: coreStorage)
@@ -35,6 +36,14 @@ class Router {
             profileViewController.navigationItem.setHidesBackButton(true, animated: false)
             defaults.set(1, forKey: "LoggedIn")
         }
+    }
+    
+    func splashScreen() {
+        let splash = SplashViewController()
+        splash.callBack = { [weak self] in
+            self?.start()
+        }
+        rootViewController.pushViewController(splash, animated: false)
     }
 
     func openFood() {
