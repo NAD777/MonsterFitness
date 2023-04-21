@@ -65,20 +65,15 @@ final class CoreStorage {
         corePortion.dish = coreDish
         corePortion.dayPart = Int64(portion.mealTime.rawValue)
         let coreMenu = fetchMenu(date: date) ?? makeMenu(date: date)
-        switch portion.mealTime.rawValue {
-        case 0:
+        switch portion.mealTime {
+        case .breakfast:
             coreMenu.insertIntoBreakfast(corePortion, at: coreMenu.breakfast?.count ?? 0)
-            print("to bre")
-        case 1:
+        case .lunch:
             coreMenu.insertIntoLunch(corePortion, at: coreMenu.lunch?.count ?? 0)
-            print("to lunch")
-        case 2:
+        case .dinner:
             coreMenu.insertIntoDinner(corePortion, at: coreMenu.dinner?.count ?? 0)
-            print("to din")
-        case 3:
+        case .other:
             coreMenu.insertIntoOther(corePortion, at: coreMenu.other?.count ?? 0)
-        default:
-            print("haha lox")
         }
         saveContext()
     }
