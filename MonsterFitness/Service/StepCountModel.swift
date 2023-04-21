@@ -33,18 +33,53 @@ final class StepCountModel: StepAccess {
         guard let stepQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
             throw Errors.unknownError
         }
-        let now = Date()
+        print("for Today")
+        let now = Date.now
         let startOfDay = Calendar.current.startOfDay(for: now)
-
+        print(type(of: now))
+        print(now)
+        print(startOfDay)
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
 
         let query = HKStatisticsQuery(quantityType: stepQuantityType, quantitySamplePredicate: predicate,
                                       options: .cumulativeSum) { _, result, _ in
 
             guard let result = result, let sum = result.sumQuantity() else {
+                print("по нулям шаги")
                 completion(.success(0))
                 return
             }
+            print("на сегодня \(Int(sum.doubleValue(for: HKUnit.count())))")
+            completion(.success(Int(sum.doubleValue(for: HKUnit.count()))))
+        }
+        healthStore.execute(query)
+    }
+    
+    public func getStepCountForDate(date: Date, completion: @escaping (Result<Int, Error>) -> Void) throws {
+        guard let stepQuantityType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+            throw Errors.unknownError
+        }
+        print("For given Date")
+        let now = date
+        var startOfDay = Calendar.current.date(bySettingHour: 0, minute: 0, second: 0, of: date)!
+        
+//        startOfDay = startOfDay - now
+        print(now)
+        print(startOfDay)
+//        let now = Date()
+//        let startOfDay = Calendar.current.startOfDay(for: now)
+//        let newStart = Calendar.current.startOfDay(for: date)
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
+
+        let query = HKStatisticsQuery(quantityType: stepQuantityType, quantitySamplePredicate: predicate,
+                                      options: .cumulativeSum) { _, result, _ in
+
+            guard let result = result, let sum = result.sumQuantity() else {
+                print("в выбранный день по нулям")
+                completion(.success(0))
+                return
+            }
+            print("на выбранный день \(Int(sum.doubleValue(for: HKUnit.count())))")
             completion(.success(Int(sum.doubleValue(for: HKUnit.count()))))
         }
         healthStore.execute(query)
@@ -96,6 +131,16 @@ final class StepCountModel: StepAccess {
             completion(stepCounts)
         }
         healthStore.execute(query)
+    }
+
+}
+
+
+
+fileprivate extension Date {
+
+    static func - (lhs: Date, rhs: Date) -> TimeInterval {
+        return lhs.timeIntervalSinceReferenceDate - rhs.timeIntervalSinceReferenceDate
     }
 
 }

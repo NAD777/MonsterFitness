@@ -31,6 +31,8 @@ final class MainScreen: UIViewController {
     private let stepModel: StepCountModel = {
         let stepModel = StepCountModel()
         stepModel.authorizeHealthKit()
+        
+        print("current daytime \( Date() )")
         return stepModel
     }()
 
@@ -53,7 +55,7 @@ final class MainScreen: UIViewController {
         }
         defaultsUser = newUser
         // FIXME: - не обновляется юзер
-        print(defaultsUser.targetSteps)
+//        print(defaultsUser.targetSteps)
         DispatchQueue.main.async { [weak self] in
             self?.mockStorage.updateStorage()
             self?.tableView.reloadData()
@@ -68,6 +70,28 @@ final class MainScreen: UIViewController {
                 return
             }
         }
+        
+        try? stepModel.getStepCountForDate(date: date) { arg in
+            switch arg {
+            case .success(let success):
+                print("за эту дату \(success) шагов")
+            case .failure(let failure):
+                return
+            }
+            
+        }
+        
+//        try? stepModel.getStepCountForDate(date: date) { arg in
+//            switch arg {
+//            case .success(let success):
+//                self.circleIndicator.setActivity(desired: Double(self.defaultsUser.targetSteps ?? 5000), actual: Double(success))
+//                print(success)
+//            case .failure(let failure):
+//                print("AAAA")
+//                print(failure.localizedDescription)
+//                return
+//            }
+//        }
         
         try? consumptionEstimator.getCalorieExpandatureForToday(user: defaultsUser) { [weak self] calories in
             DispatchQueue.main.async {
@@ -202,6 +226,18 @@ final class MainScreen: UIViewController {
                 }
             }
         }
+        
+//        try? stepModel.getStepCountForDate(date: date) { arg in
+//            switch arg {
+//            case .success(let success):
+//                self.circleIndicator.setActivity(desired: Double(self.defaultsUser.targetSteps ?? 5000), actual: Double(success))
+////                print(success)
+//            case .failure(let failure):
+//                print("AAAA")
+//                print(failure.localizedDescription)
+//                return
+//            }
+//        }
     }
     
     override func viewWillLayoutSubviews() {
@@ -270,6 +306,7 @@ extension MainScreen: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
         let currentDay = translateOrderToDayPart(section: countDayPart(section: section))
         let amount = mockStorage.allPortions.filter { $0.dayPart == currentDay }.count
         return amount
