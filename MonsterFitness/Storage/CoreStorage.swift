@@ -63,11 +63,18 @@ final class CoreStorage {
         let corePortion = CorePortion(context: persistentContainer.viewContext)
         corePortion.weight = Double(portion.weight)
         corePortion.dish = coreDish
-        corePortion.dayPart = Int32(portion.mealTime.rawValue)
-
+        corePortion.dayPart = Int64(portion.mealTime.rawValue)
         let coreMenu = fetchMenu(date: date) ?? makeMenu(date: date)
-        coreMenu.insertIntoBreakfast(corePortion, at: coreMenu.breakfast?.count ?? 0)
-
+        switch portion.mealTime {
+        case .breakfast:
+            coreMenu.insertIntoBreakfast(corePortion, at: coreMenu.breakfast?.count ?? 0)
+        case .lunch:
+            coreMenu.insertIntoLunch(corePortion, at: coreMenu.lunch?.count ?? 0)
+        case .dinner:
+            coreMenu.insertIntoDinner(corePortion, at: coreMenu.dinner?.count ?? 0)
+        case .other:
+            coreMenu.insertIntoOther(corePortion, at: coreMenu.other?.count ?? 0)
+        }
         saveContext()
     }
 
