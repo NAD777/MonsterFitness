@@ -16,6 +16,8 @@
 		01472D6B29EC63C900845D4E /* WeightEnterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6A29EC63C900845D4E /* WeightEnterViewController.swift */; };
 		01472D6D29ED57D100845D4E /* FoodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01472D6C29ED57D100845D4E /* FoodTableViewCell.swift */; };
 		01C5BE4129F1576200A9087A /* CoreFavouritesDishManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C5BE4029F1576200A9087A /* CoreFavouritesDishManager.swift */; };
+		01C5BE5129F1EF3800A9087A /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C5BE5029F1EF3800A9087A /* SplashViewController.swift */; };
+		01C5BE5A29F2056A00A9087A /* Montserrat-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 01C5BE5929F2056A00A9087A /* Montserrat-VariableFont_wght.ttf */; };
 		01F06D2529E594100012CFE7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2429E594100012CFE7 /* AppDelegate.swift */; };
 		01F06D2729E594100012CFE7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2629E594100012CFE7 /* SceneDelegate.swift */; };
 		01F06D2929E594100012CFE7 /* RootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F06D2829E594100012CFE7 /* RootViewController.swift */; };
@@ -51,6 +53,8 @@
 		01472D6A29EC63C900845D4E /* WeightEnterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightEnterViewController.swift; sourceTree = "<group>"; };
 		01472D6C29ED57D100845D4E /* FoodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodTableViewCell.swift; sourceTree = "<group>"; };
 		01C5BE4029F1576200A9087A /* CoreFavouritesDishManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreFavouritesDishManager.swift; sourceTree = "<group>"; };
+		01C5BE5029F1EF3800A9087A /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		01C5BE5929F2056A00A9087A /* Montserrat-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-VariableFont_wght.ttf"; sourceTree = "<group>"; };
 		01F06D2129E594100012CFE7 /* MonsterFitness.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MonsterFitness.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01F06D2429E594100012CFE7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		01F06D2629E594100012CFE7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +107,14 @@
 			path = Food;
 			sourceTree = "<group>";
 		};
+		01C5BE5829F2053B00A9087A /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				01C5BE5929F2056A00A9087A /* Montserrat-VariableFont_wght.ttf */,
+			);
+			path = Font;
+			sourceTree = "<group>";
+		};
 		01F06D1829E594100012CFE7 = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +134,7 @@
 		01F06D2329E594100012CFE7 /* MonsterFitness */ = {
 			isa = PBXGroup;
 			children = (
+				01C5BE5829F2053B00A9087A /* Font */,
 				92C5C0A629E97A3F0001CD34 /* Views */,
 				92C7113A29E81C4F00A195E1 /* Service */,
 				92C7113829E6EC2C00A195E1 /* MonsterFitness.entitlements */,
@@ -137,6 +150,7 @@
 				01F06D2D29E594100012CFE7 /* MonsterFitness.xcdatamodeld */,
 				29B57BF029EFF11C00A1B0A7 /* Storage */,
 				0128BC8C29E6D92800321EF8 /* Router.swift */,
+				01C5BE5029F1EF3800A9087A /* SplashViewController.swift */,
 				0A57670029E9872C00648944 /* ProfileViewController.swift */,
 				0128BC9029E6E8B000321EF8 /* HomeScreenViewController.swift */,
 			);
@@ -255,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01F06D3429E594110012CFE7 /* LaunchScreen.storyboard in Resources */,
+				01C5BE5A29F2056A00A9087A /* Montserrat-VariableFont_wght.ttf in Resources */,
 				01F06D3129E594110012CFE7 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -318,6 +333,7 @@
 				01F06D2F29E594100012CFE7 /* MonsterFitness.xcdatamodeld in Sources */,
 				01C5BE4129F1576200A9087A /* CoreFavouritesDishManager.swift in Sources */,
 				9249CCEC29E999E30031A47A /* FatMeterView.swift in Sources */,
+				01C5BE5129F1EF3800A9087A /* SplashViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
